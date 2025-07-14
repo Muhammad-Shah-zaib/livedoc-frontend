@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
 import {
   type EmailPasswordLoginResponse,
@@ -10,12 +10,18 @@ import {
   type EmailPasswordSignupPayload,
   type EmailPasswordSignupResponse,
   type LogoutResponse,
+  type ForgetPassworPayload,
+  type ForgetPasswordResponse,
+  type ResetPasswordPayload,
+  type ResetPasswordResponse,
 } from "./types";
 
 const GOOGLE_LOGIN_ACTION = "auth/login/google";
 const EMAIL_PASSWORD_LOGIN_ACTION = "auth/login";
 const EMAIL_PASSWORD_SIGNUP_ACTION = "auth/signup";
 const LOGOUT_ACTION = "auth/logout";
+const FORGET_PASSWORD_ACTION = "auth/forget-password";
+const RESET_PASSWORD_ACTION = "auth/reset-password";
 
 // Async thunk for goole login
 export const googleLoginThunk = createAsyncThunk<
@@ -123,5 +129,53 @@ export const logoutThunk = createAsyncThunk<
     return thunkAPI.rejectWithValue({
       message,
     });
+  }
+});
+
+// Async thunk for forget password
+export const forgotPasswordThunk = createAsyncThunk<
+  ForgetPasswordResponse,
+  ForgetPassworPayload,
+  { rejectValue: ErrorResponse }
+>(FORGET_PASSWORD_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.post(API_ROUTES.AUTH.FORGOT_PASSWORD, payload);
+
+    return response.data;
+  } catch (e) {
+    let message = "Forget password failed";
+
+    if (axios.isAxiosError(e)) {
+      message = e.response?.data?.message || message;
+    }
+
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+// Async thunk for reset password
+export const resetPasswordThunk = createAsyncThunk<
+  ResetPasswordResponse,
+  ResetPasswordPayload,
+  { rejectValue: ErrorResponse }
+>(RESET_PASSWORD_ACTION, async (payload, thinkAPI) => {
+  try {
+    const response = await axios.post<ResetPasswordResponse>(
+      `${API_ROUTES.AUTH.RESET_PASSWORD}/${payload.uid}/${payload.token}/`,
+      payload,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    let message = "Reset password failed";
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.message || message;
+    }
+
+    return thinkAPI.rejectWithValue({ message });
   }
 });

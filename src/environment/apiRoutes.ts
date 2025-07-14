@@ -6,5 +6,7 @@ export const API_ROUTES = {
     LOGOUT: `${BASE_API_URL}/logout/`,
     REGISTER: `${BASE_API_URL}/register/`,
     GOOGLE_LOGIN: `${BASE_API_URL}/login/google/`,
+    FORGOT_PASSWORD: `${BASE_API_URL}/forgot-password/`,
+    RESET_PASSWORD: `${BASE_API_URL}/reset-password`,
   },
 };

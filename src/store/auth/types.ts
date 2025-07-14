@@ -7,6 +7,8 @@ export interface IAuthState {
   generalError: string | null;
   email_verification_required: boolean;
   errors: Record<string, string[]> | null;
+  forgetPasswordSuccess: boolean;
+  resetPasswordSuccess: boolean;
 }
 
 export interface IUser {
@@ -56,4 +58,23 @@ export interface EmailPasswordSignupResponse {
 
 export interface LogoutResponse {
   success: boolean;
+}
+
+export interface ForgetPassworPayload {
+  email: string;
+}
+export interface ForgetPasswordResponse {
+  message: string;
+}
+
+export interface ResetPasswordPayload {
+  // The uid and token will be sent in the route
+  uid: string;
+  token: string;
+  password: string;
+  confirm_password: string;
+}
+
+export interface ResetPasswordResponse {
+  message: string;
 }
