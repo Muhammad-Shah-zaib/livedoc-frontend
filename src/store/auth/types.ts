@@ -5,6 +5,8 @@ export interface IAuthState {
   loading: boolean;
   isAuthenticated: boolean;
   generalError: string | null;
+  email_verification_required: boolean;
+  errors: Record<string, string[]> | null;
 }
 
 export interface IUser {
@@ -26,6 +28,7 @@ export interface GoogleAuthResponse {
 
 export interface ErrorResponse {
   message: string;
+  errors?: Record<string, string[]> | null;
 }
 
 export interface EmailPasswordLoginPayload {
@@ -36,4 +39,21 @@ export interface EmailPasswordLoginPayload {
 export interface EmailPasswordLoginResponse {
   message: string;
   user: IUser;
+}
+
+export interface EmailPasswordSignupPayload {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+}
+
+export interface EmailPasswordSignupResponse {
+  message: string;
+  email_verification_required: boolean;
+  errors: Record<string, string[]> | null;
+}
+
+export interface LogoutResponse {
+  success: boolean;
 }

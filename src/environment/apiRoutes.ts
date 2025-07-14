@@ -1,10 +1,10 @@
-const BASE_API_URL = import.meta.env.VITE_API_BASE_URL
+const BASE_API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const API_ROUTES = {
-    AUTH: {
-        login: `${BASE_API_URL}/login/`,
-        logout: `${BASE_API_URL}/logout/`,
-        register: `${BASE_API_URL}/register/`,
-        googleLogin: `${BASE_API_URL}/login/google/`,
-    }
-}
+  AUTH: {
+    LOGIN: `${BASE_API_URL}/login/`,
+    LOGOUT: `${BASE_API_URL}/logout/`,
+    REGISTER: `${BASE_API_URL}/register/`,
+    GOOGLE_LOGIN: `${BASE_API_URL}/login/google/`,
+  },
+};
