@@ -1,6 +1,7 @@
 export interface DocumentState {
   documents: Document[];
   filteredDocuments: Document[];
+  currentDocument: Document | null;
   loading: boolean;
   error: Record<string, string[]> | null;
   generalError: string | null;

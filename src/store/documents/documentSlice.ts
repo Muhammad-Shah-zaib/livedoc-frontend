@@ -5,7 +5,6 @@ import {
   patchDocumentThunk,
   postDocumentThunk,
 } from "./documentThunk";
-import { stat } from "fs";
 
 const initialState: DocumentState = {
   documents: [],
@@ -17,6 +16,7 @@ const initialState: DocumentState = {
   isAppInitialized: false,
   isGridView: true,
   searchQuery: "",
+  currentDocument: null,
 };
 
 const documentSlice = createSlice({
@@ -28,6 +28,12 @@ const documentSlice = createSlice({
     },
     setSerachQuery: (state, { payload }: PayloadAction<string>) => {
       state.searchQuery = payload;
+    },
+    setCurrentDocument: (
+      state,
+      { payload }: PayloadAction<DocumentState["currentDocument"]>
+    ) => {
+      state.currentDocument = payload;
     },
   },
   extraReducers: (builder) => {
@@ -111,5 +117,6 @@ const documentSlice = createSlice({
   },
 });
 
-export const { setIsAppInitialized, setSerachQuery } = documentSlice.actions;
+export const { setIsAppInitialized, setSerachQuery, setCurrentDocument } =
+  documentSlice.actions;
 export default documentSlice.reducer;

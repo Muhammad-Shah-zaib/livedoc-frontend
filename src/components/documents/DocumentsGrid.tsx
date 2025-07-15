@@ -20,11 +20,16 @@ import {
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { patchDocumentThunk } from "@/store/documents/documentThunk";
+import { useNavigate } from "react-router-dom";
+import { setCurrentDocument } from "@/store/documents/documentSlice";
 
 function DocumentsView() {
   const { filteredDocuments } = useAppSelector((state) => state.documents);
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.documents);
+  const { loading, currentDocument } = useAppSelector(
+    (state) => state.documents
+  );
+  const navigate = useNavigate();
 
   const handleToggle = async (id: number, is_live: boolean) => {
     const toastId = toast.loading("Updating live status...");
@@ -49,6 +54,10 @@ function DocumentsView() {
       {filteredDocuments.map((doc) => (
         <Card
           key={doc.id}
+          onClick={() => {
+            navigate(`/documents/${doc.share_token}`);
+            dispatch(setCurrentDocument(doc));
+          }}
           className="group border-0 shadow-lg hover:shadow-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 cursor-pointer"
         >
           <CardHeader className="pb-3">

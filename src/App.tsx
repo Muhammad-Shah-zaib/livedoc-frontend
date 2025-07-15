@@ -7,6 +7,7 @@ import ResetPassword from "./shared/pages/ResetPassword";
 import AppBootStrapGuard from "./guards/AppBootstrapGuard";
 import PublicRouteGuard from "./guards/PublicRouteGuard";
 import MasterLayout from "./shared/layouts/MasterLayout";
+import DocumentDetail from "./components/documents/DocumentDetail";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         {/* PROTECTED ROUTES */}
         <Route path="/" element={<AppBootStrapGuard />}>
           <Route path="dashboard" element={<MasterLayout />} />
+          <Route path="documents/:shareToken" element={<DocumentDetail />} />
         </Route>
       </Routes>
 

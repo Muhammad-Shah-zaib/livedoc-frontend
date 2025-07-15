@@ -11,7 +11,6 @@ function Header() {
   const { user } = useAppSelector((state) => state.auth);
 
   const getUserInitials = () => {
-    console.log(user?.first_name, user?.last_name);
     if (user?.first_name && user?.last_name) {
       return `${user.first_name[0]}${user.last_name[0]}`;
     } else if (user?.first_name) {
