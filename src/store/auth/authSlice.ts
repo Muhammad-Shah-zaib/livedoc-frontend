@@ -162,7 +162,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.generalError = null;
         state.initialAuthChecked = true;
-        state.user = payload.user;
+        state.user = payload;
       })
       .addCase(getUserProfileThunk.rejected, (state, action) => {
         state.loading = false;

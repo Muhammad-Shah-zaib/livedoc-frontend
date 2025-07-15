@@ -14,8 +14,8 @@ export interface IAuthState {
 
 export interface IUser {
   id: number;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   isOauthVerified: boolean;
   isActive: boolean;
@@ -80,6 +80,4 @@ export interface ResetPasswordResponse {
   message: string;
 }
 
-export interface GetUserProfileResponse {
-  user: IUser;
-}
+export type GetUserProfileResponse = IUser;

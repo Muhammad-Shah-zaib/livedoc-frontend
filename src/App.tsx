@@ -5,8 +5,8 @@ import VerifyEmail from "./shared/pages/VerifyEmail";
 import ForgotPassword from "./shared/pages/ForgotPassword";
 import ResetPassword from "./shared/pages/ResetPassword";
 import AppBootStrapGuard from "./guards/AppBootstrapGuard";
-import Dashboard from "./components/ui/Dashboard";
 import PublicRouteGuard from "./guards/PublicRouteGuard";
+import MasterLayout from "./shared/layouts/MasterLayout";
 
 function App() {
   return (
@@ -29,7 +29,7 @@ function App() {
 
         {/* PROTECTED ROUTES */}
         <Route path="/" element={<AppBootStrapGuard />}>
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<MasterLayout />} />
         </Route>
       </Routes>
 

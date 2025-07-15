@@ -1,10 +1,13 @@
 export interface DocumentState {
   documents: Document[];
+  filteredDocuments: Document[];
   loading: boolean;
   error: Record<string, string[]> | null;
   generalError: string | null;
   initialDocumentFetch: boolean;
   isAppInitialized: boolean;
+  isGridView: boolean;
+  searchQuery: string;
 }
 
 export interface Document {
@@ -26,6 +29,20 @@ export interface ErrorResponse {
 }
 
 // GET DOCUMENTS
-export type GetDocumentsResponse = Document[];
+export type GetDocumentsResponse = Document[]; // no payload required since http cookies has already been set
 
-// no payload required since http cookies has already been set
+// POST DOCUMENTS
+export interface PostDocumentsPayload {
+  name: string;
+}
+
+export interface PostDocumentsResponse {
+  id: number;
+  name: string | string[];
+  content: string;
+  is_live: boolean;
+  share_token: string;
+  created_at: string;
+  updated_at: string;
+  admin: number;
+}
