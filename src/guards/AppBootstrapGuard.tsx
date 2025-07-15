@@ -1,6 +1,5 @@
 import AppBootstrap from "@/shared/pages/AppBootstrap";
-import { setGeneralError } from "@/store/auth/authSlice";
-import { getUserProfileThunk, logoutThunk } from "@/store/auth/authThunk";
+import { getUserProfileThunk } from "@/store/auth/authThunk";
 import { getDocumentsThunk } from "@/store/documents/documentThunk";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { useEffect } from "react";
@@ -18,21 +17,16 @@ const AppBootStrapGuard = () => {
   );
 
   useEffect(() => {
+    if (!isAuthenticated && !user) {
+      navigate("/login");
+    }
     if (!initialAuthChecked) {
       dispatch(getUserProfileThunk());
     }
-    if (initialAuthChecked && !initialDocumentFetch) {
+    if (initialAuthChecked && isAuthenticated && !initialDocumentFetch) {
       dispatch(getDocumentsThunk());
     }
   }, [initialAuthChecked, dispatch]);
-
-  useEffect(() => {
-    if (initialAuthChecked && !isAuthenticated && !user) {
-      dispatch(logoutThunk());
-      dispatch(setGeneralError(null));
-      navigate("/login");
-    }
-  }, [initialAuthChecked, isAuthenticated, user, navigate]);
 
   if (!isAppInitialized) {
     return (

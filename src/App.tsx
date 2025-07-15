@@ -14,7 +14,7 @@ function App() {
       <Routes>
         {/* NON PROTECTED ROUTES */}
         {/* REDIRECTION */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         {/* AUTH ROUTES */}
         <Route path="/" element={<PublicRouteGuard />}>
           <Route path="/login" element={<Login />} />

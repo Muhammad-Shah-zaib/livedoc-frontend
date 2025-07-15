@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 function Dashboard() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const handleClick = () => {
-    dispatch(logoutThunk());
+  const handleClick = async () => {
+    await dispatch(logoutThunk());
     navigate("/login");
   };
   return (
