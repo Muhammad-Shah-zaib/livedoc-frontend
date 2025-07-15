@@ -1,5 +1,5 @@
-import DashboardActionBar from "@/shared/components/DashboardActionBar";
-import DocumentsView from "@/shared/layouts/DocumentsGridView";
+import DashboardActionBar from "@/components/dashboard/DashboardActionBar";
+import DocumentsView from "@/components/documents/DocumentsGridView";
 
 function Dashboard() {
   return (

@@ -1,5 +1,5 @@
-import Header from "../components/Header";
-import Dashboard from "@/components/Dashboard";
+import Header from "../components/Header/Header";
+import Dashboard from "@/components/dashboard/Dashboard";
 
 const MasterLayout = () => {
   return (

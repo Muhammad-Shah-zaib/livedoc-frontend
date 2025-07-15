@@ -4,13 +4,15 @@ import type {
   ErrorResponse,
   PostDocumentsResponse,
   PostDocumentsPayload,
+  PatchDocumentPayload,
+  PatchDocumentResponse,
 } from "./types";
 import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
-import { TypeOutline } from "lucide-react";
 
 const GET_DOCUMENTS_ACTION = "documents/getDocuments";
 const POST_DOCUMENTS_ACTION = "documents/postDocument";
+const PATCH_DOCUMENT_ACTION = "documents/patchDocument";
 
 export const getDocumentsThunk = createAsyncThunk<
   GetDocumentsResponse,
@@ -19,7 +21,7 @@ export const getDocumentsThunk = createAsyncThunk<
 >(GET_DOCUMENTS_ACTION, async (_, thunkAPI) => {
   try {
     const response = await axios.get<GetDocumentsResponse>(
-      API_ROUTES.DOCUMENTS.GET,
+      API_ROUTES.DOCUMENTS.GET_POST,
       {
         withCredentials: true,
         headers: {
@@ -48,7 +50,7 @@ export const postDocumentThunk = createAsyncThunk<
 >(POST_DOCUMENTS_ACTION, async (payload, thunkAPI) => {
   try {
     const response = await axios.post<PostDocumentsResponse>(
-      API_ROUTES.DOCUMENTS.POST,
+      API_ROUTES.DOCUMENTS.GET_POST,
       payload,
       {
         withCredentials: true,
@@ -70,5 +72,31 @@ export const postDocumentThunk = createAsyncThunk<
     }
 
     return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+// patch request
+export const patchDocumentThunk = createAsyncThunk<
+  PatchDocumentResponse,
+  PatchDocumentPayload,
+  { rejectValue: ErrorResponse }
+>(PATCH_DOCUMENT_ACTION, async (payload) => {
+  try {
+    const response = await axios.patch(
+      API_ROUTES.DOCUMENTS.PATCH_PUT_DETAIL(payload.id),
+      payload,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    let message = "Failed to update document";
+
+    return { message };
   }
 });

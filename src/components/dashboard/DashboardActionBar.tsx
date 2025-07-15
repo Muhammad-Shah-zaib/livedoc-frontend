@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/store/store";
 import { Plus } from "lucide-react";
-import NewDocumentDialog from "./NewDocumentDialog";
+import NewDocumentDialog from "../documents/NewDocumentDialog";
 
 function DashboardActionBar() {
   const { documents, searchQuery } = useAppSelector((state) => state.documents);
@@ -20,11 +20,7 @@ function DashboardActionBar() {
           {filteredDocuments.length !== 1 ? "s" : ""} found
         </p>
       </div>
-      <NewDocumentDialog
-        onCreate={(title) => {
-          console.log("Create document:", title);
-        }}
-      />
+      <NewDocumentDialog />
     </div>
   );
 }

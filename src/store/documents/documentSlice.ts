@@ -1,6 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { DocumentState } from "./types";
-import { getDocumentsThunk, postDocumentThunk } from "./documentThunk";
+import {
+  getDocumentsThunk,
+  patchDocumentThunk,
+  postDocumentThunk,
+} from "./documentThunk";
 import { stat } from "fs";
 
 const initialState: DocumentState = {
@@ -81,6 +85,28 @@ const documentSlice = createSlice({
           name: payload?.message ? [payload.message] : [],
         };
         state.generalError = "Unable to create new Document";
+      })
+      // patch request
+      .addCase(patchDocumentThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(patchDocumentThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        // Update the document in both documents and filteredDocuments
+        const index = state.documents.findIndex((doc) => doc.id === payload.id);
+        if (index !== -1) {
+          state.documents[index] = payload;
+          state.filteredDocuments[index] = payload;
+        }
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(patchDocumentThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload?.erros || null;
+        state.generalError = payload?.message || "Unable to update Document";
       });
   },
 });

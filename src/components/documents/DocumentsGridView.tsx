@@ -6,7 +6,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAppSelector } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
 import {
   Clock,
@@ -15,11 +17,33 @@ import {
   Eye,
   Share2,
   Trash2,
-  Badge,
 } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { patchDocumentThunk } from "@/store/documents/documentThunk";
 
 function DocumentsView() {
   const { filteredDocuments } = useAppSelector((state) => state.documents);
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.documents);
+
+  const handleToggle = async (id: number, is_live: boolean) => {
+    const toastId = toast.loading("Updating live status...");
+    try {
+      await dispatch(
+        patchDocumentThunk({
+          id,
+          is_live,
+        })
+      );
+      toast.success(
+        `document #${id} is set to ${is_live ? "LIVE" : "OFFLINE"}`,
+        { id: toastId }
+      );
+    } catch (error) {
+      toast.error("Failed to update live status.", { id: toastId });
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {filteredDocuments.map((doc) => (
@@ -78,15 +102,24 @@ function DocumentsView() {
                 : doc.content}
             </p>
             <div className="flex items-center justify-between">
-              <Badge
-                className={
-                  doc.is_live
-                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                    : ""
-                }
-              >
-                {doc.is_live ? "LIVE" : "OFFLINE"}
-              </Badge>
+              <div className="flex items-center space-x-2 font-mono text-sm ">
+                <Switch
+                  checked={doc.is_live}
+                  onCheckedChange={() => handleToggle(doc.id, !doc.is_live)}
+                  id={`switch-${doc.id}`}
+                  disabled={loading}
+                />
+                <Label
+                  htmlFor={`switch-${doc.id}`}
+                  className={
+                    doc.is_live
+                      ? "text-green-600 dark:text-green-300 font-bold"
+                      : "text-slate-500 dark:text-slate-400 font-bold"
+                  }
+                >
+                  {doc.is_live ? "LIVE" : "OFFLINE"}
+                </Label>
+              </div>
               <div className="flex items-center space-x-2">
                 <Button size="sm" variant="ghost" className="h-8 px-3">
                   <Share2 className="h-3 w-3 mr-1" />

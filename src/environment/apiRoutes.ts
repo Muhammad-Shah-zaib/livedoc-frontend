@@ -11,8 +11,7 @@ export const API_ROUTES = {
     GET_USER_PROFILE: `${BASE_API_URL}/user/get-profile/`,
   },
   DOCUMENTS: {
-    GET: `${BASE_API_URL}/documents/`,
-    GET_BY_ID: (id: number) => `${BASE_API_URL}/documents/${id}/`,
-    POST: `${BASE_API_URL}/documents/`,
+    GET_POST: `${BASE_API_URL}/documents/`,
+    PATCH_PUT_DETAIL: (id: number) => `${BASE_API_URL}/documents/${id}/`,
   },
 };

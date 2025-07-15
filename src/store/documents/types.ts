@@ -46,3 +46,12 @@ export interface PostDocumentsResponse {
   updated_at: string;
   admin: number;
 }
+
+// PATCH
+export interface PatchDocumentPayload {
+  id: number;
+  name?: string;
+  content?: string;
+  is_live?: boolean;
+}
+export interface PatchDocumentResponse extends Document {}
