@@ -14,6 +14,7 @@ import {
   type ForgetPasswordResponse,
   type ResetPasswordPayload,
   type ResetPasswordResponse,
+  type GetUserProfileResponse,
 } from "./types";
 
 const GOOGLE_LOGIN_ACTION = "auth/login/google";
@@ -22,6 +23,7 @@ const EMAIL_PASSWORD_SIGNUP_ACTION = "auth/signup";
 const LOGOUT_ACTION = "auth/logout";
 const FORGET_PASSWORD_ACTION = "auth/forget-password";
 const RESET_PASSWORD_ACTION = "auth/reset-password";
+const GET_USER_PROFILE_ACTION = "auth/get-user-profile";
 
 // Async thunk for goole login
 export const googleLoginThunk = createAsyncThunk<
@@ -106,7 +108,7 @@ export const emailPasswordSignupThunk = createAsyncThunk<
 // Async thunk for logout
 export const logoutThunk = createAsyncThunk<
   LogoutResponse,
-  null,
+  void,
   { rejectValue: ErrorResponse }
 >(LOGOUT_ACTION, async (_, thunkAPI) => {
   try {
@@ -177,5 +179,32 @@ export const resetPasswordThunk = createAsyncThunk<
     }
 
     return thinkAPI.rejectWithValue({ message });
+  }
+});
+
+// Async think for getting user porfile
+export const getUserProfileThunk = createAsyncThunk<
+  GetUserProfileResponse,
+  void,
+  { rejectValue: ErrorResponse }
+>(GET_USER_PROFILE_ACTION, async (__dirname, thunkAPI) => {
+  try {
+    const response = await axios.get<GetUserProfileResponse>(
+      API_ROUTES.AUTH.GET_USER_PROFILE,
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    let message = "Failed to get user profile";
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+
+    return thunkAPI.rejectWithValue({ message });
   }
 });

@@ -7,8 +7,8 @@ import {
   logoutThunk,
   forgotPasswordThunk,
   resetPasswordThunk,
+  getUserProfileThunk,
 } from "./authThunk";
-import { set } from "react-hook-form";
 
 const initialState: IAuthState = {
   user: null,
@@ -19,6 +19,7 @@ const initialState: IAuthState = {
   errors: null,
   forgetPasswordSuccess: false,
   resetPasswordSuccess: false,
+  initialAuthChecked: false,
 };
 
 const authSlice = createSlice({
@@ -36,6 +37,9 @@ const authSlice = createSlice({
     },
     setResetPasswordSuccess: (state, { payload }: PayloadAction<boolean>) => {
       state.resetPasswordSuccess = payload;
+    },
+    setGeneralError: (state, { payload }: PayloadAction<string | null>) => {
+      state.generalError = payload;
     },
   },
   extraReducers: (builder) => {
@@ -110,7 +114,7 @@ const authSlice = createSlice({
       })
       .addCase(logoutThunk.rejected, (state, action) => {
         state.loading = false;
-        state.generalError = action.payload?.message || "Logout failed";
+        state.generalError = null;
         state.errors = action.payload?.errors || null;
       })
       // forgot password
@@ -146,6 +150,27 @@ const authSlice = createSlice({
         state.loading = false;
         state.generalError = payload?.message || "Reset password failed";
         state.errors = payload?.errors || null;
+      })
+      // user Profile
+      .addCase(getUserProfileThunk.pending, (state) => {
+        state.loading = true;
+        state.generalError = null;
+        state.errors = null;
+      })
+      .addCase(getUserProfileThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.generalError = null;
+        state.initialAuthChecked = true;
+        state.user = payload.user;
+      })
+      .addCase(getUserProfileThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.generalError = null;
+        state.errors = action.payload?.errors || null;
+        state.isAuthenticated = false;
+        state.initialAuthChecked = true;
+        state.user = null;
       });
   },
 });
@@ -155,5 +180,6 @@ export const {
   serVerifyEmailRequired,
   setForgetPasswordSuccess,
   setResetPasswordSuccess,
+  setGeneralError,
 } = authSlice.actions;
 export default authSlice.reducer;

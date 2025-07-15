@@ -8,5 +8,11 @@ export const API_ROUTES = {
     GOOGLE_LOGIN: `${BASE_API_URL}/login/google/`,
     FORGOT_PASSWORD: `${BASE_API_URL}/forgot-password/`,
     RESET_PASSWORD: `${BASE_API_URL}/reset-password`,
+    GET_USER_PROFILE: `${BASE_API_URL}/user/get-profile/`,
+  },
+  DOCUMENTS: {
+    GET: `${BASE_API_URL}/documents/`,
+    GET_BY_ID: (id: number) => `${BASE_API_URL}/documents/${id}/`,
+    POST: `${BASE_API_URL}/documents/`,
   },
 };

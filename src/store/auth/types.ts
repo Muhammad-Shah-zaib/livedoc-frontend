@@ -9,6 +9,7 @@ export interface IAuthState {
   errors: Record<string, string[]> | null;
   forgetPasswordSuccess: boolean;
   resetPasswordSuccess: boolean;
+  initialAuthChecked: boolean;
 }
 
 export interface IUser {
@@ -77,4 +78,8 @@ export interface ResetPasswordPayload {
 
 export interface ResetPasswordResponse {
   message: string;
+}
+
+export interface GetUserProfileResponse {
+  user: IUser;
 }
