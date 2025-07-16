@@ -33,7 +33,6 @@ export const useYjsLiveSocket = (shareToken: string | null) => {
       // Request sync (optional, depends on backend)
       const stateVector = Y.encodeStateVector(ydoc);
       ws.send(stateVector);
-      console.log("chekcing this");
     };
 
     ws.onmessage = (event) => {

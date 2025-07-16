@@ -36,9 +36,9 @@ const useTipTapEditor = (ydoc: Y.Doc) => {
         field: "default",
       }),
     ],
+    autofocus: true,
     onUpdate: debounce(({ editor }) => {
       const content = editor.getHTML();
-      console.log("📝 Updated content:", content);
 
       if (currentDocument) {
         dispatch(

@@ -56,7 +56,6 @@ export default function Signup() {
   });
 
   const onSubmit: SubmitHandler<SignupFormInputs> = (data) => {
-    console.log(data);
     dispatch(emailPasswordSignupThunk(data));
   };
 

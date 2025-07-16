@@ -14,6 +14,9 @@ import {
 } from "lucide-react";
 import useTipTapEditor from "@/hooks/useTipTapEditor";
 import * as Y from "yjs";
+import "./style.css";
+import { useEffect } from "react";
+import { useAppSelector } from "@/store/store";
 
 export interface TiptapEditorProps {
   ydoc: Y.Doc;
@@ -21,13 +24,20 @@ export interface TiptapEditorProps {
 
 export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
   const editor = useTipTapEditor(ydoc);
+  const { currentDocument } = useAppSelector((state) => state.documents);
+
+  useEffect(() => {
+    if (currentDocument && editor) {
+      editor.commands.setContent(currentDocument.content || "");
+    }
+  }, [editor, currentDocument]);
 
   if (!editor) return <div>Loading editor...</div>;
 
   return (
-    <div className="rounded-xl border bg-white p-4 shadow-sm">
+    <div className="rounded-xl border bg-white shadow-sm p-4 flex flex-col w-full max-w-7xl px-8 mx-auto">
       {/* Toolbar */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 w-full">
         <div className="flex flex-wrap items-center gap-2">
           {/* Undo / Redo */}
           <Button
@@ -54,7 +64,6 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
             <ToggleGroupItem
               value="bold"
               aria-label="Bold"
-              pressed={editor.isActive("bold")}
               onClick={() => editor.chain().focus().toggleBold().run()}
             >
               <Bold className="h-4 w-4" />
@@ -63,7 +72,6 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
             <ToggleGroupItem
               value="italic"
               aria-label="Italic"
-              pressed={editor.isActive("italic")}
               onClick={() => editor.chain().focus().toggleItalic().run()}
             >
               <Italic className="h-4 w-4" />
@@ -72,7 +80,6 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
             <ToggleGroupItem
               value="underline"
               aria-label="Underline"
-              pressed={editor.isActive("underline")}
               onClick={() => editor.chain().focus().toggleUnderline().run()}
             >
               <UnderlineIcon className="h-4 w-4" />
@@ -81,7 +88,6 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
             <ToggleGroupItem
               value="heading1"
               aria-label="H1"
-              pressed={editor.isActive("heading", { level: 1 })}
               onClick={() =>
                 editor.chain().focus().toggleHeading({ level: 1 }).run()
               }
@@ -92,7 +98,6 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
             <ToggleGroupItem
               value="heading2"
               aria-label="H2"
-              pressed={editor.isActive("heading", { level: 2 })}
               onClick={() =>
                 editor.chain().focus().toggleHeading({ level: 2 }).run()
               }
@@ -103,7 +108,6 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
             <ToggleGroupItem
               value="blockquote"
               aria-label="Blockquote"
-              pressed={editor.isActive("blockquote")}
               onClick={() => editor.chain().focus().toggleBlockquote().run()}
             >
               <Quote className="h-4 w-4" />
@@ -112,7 +116,6 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
             <ToggleGroupItem
               value="bulletList"
               aria-label="Bullet List"
-              pressed={editor.isActive("bulletList")}
               onClick={() => editor.chain().focus().toggleBulletList().run()}
             >
               <List className="h-4 w-4" />
@@ -120,10 +123,14 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
           </ToggleGroup>
         </div>
       </div>
-
       {/* Editor */}
-      <div className="max-h-[400px] overflow-auto border rounded-md p-3 prose prose-sm focus:outline-none">
-        <EditorContent editor={editor} />
+      <div
+        onClick={() => {
+          editor.commands.focus();
+        }}
+        className="rounded-md p-3 w-full max-w-none prose prose-sm overflow-auto min-h-[300px] max-h-[500px]"
+      >
+        <EditorContent editor={editor} className="tiptap-editor" />
       </div>
     </div>
   );

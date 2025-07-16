@@ -25,10 +25,13 @@ import {
   Trash2,
   Moon,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function DocumentDetailHeader() {
-  const { currentDocument } = useAppSelector((state) => state.documents);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const { currentDocument } = useAppSelector((state) => state.documents);
   const { toggleLive, loading } = useLiveToggle();
 
   if (!currentDocument) {
@@ -37,13 +40,21 @@ function DocumentDetailHeader() {
   const setDocumentTitle = (e: any) => {
     dispatch(setCurrentDocument({ ...currentDocument, name: e.target.value }));
   };
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
   return (
     <div className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="rounded-full">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              onClick={() => handleGoBack()}
+            >
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <Input

@@ -45,7 +45,6 @@ export default function ResetPassword() {
   const isSuccess = useAppSelector((state) => state.auth.resetPasswordSuccess);
 
   const onSubmit = async (data: ResetPasswordPayload) => {
-    console.log(data);
     await dispatch(resetPasswordThunk(data));
     reset();
   };
