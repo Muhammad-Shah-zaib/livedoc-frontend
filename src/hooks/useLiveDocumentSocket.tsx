@@ -1,42 +1,53 @@
-import { setCurrentDocument } from "@/store/documents/documentSlice";
-import { useAppDispatch, useAppSelector } from "@/store/store";
 import { useEffect, useRef } from "react";
 import ReconnectingWebSocket from "reconnecting-websocket";
+import * as Y from "yjs";
 import { toast } from "sonner";
+import { SOCKET_ROUTES } from "@/environment/socketRoutes";
 
-type MessageHandler = (data: any) => void;
-
-export const useLiveDocSocket = (
-  shareToken: string | null,
-  onMessage?: MessageHandler
-) => {
-  const { currentDocument } = useAppSelector((state) => state.documents);
-  const dispatch = useAppDispatch();
+export const useYjsLiveSocket = (shareToken: string | null) => {
   const wsRef = useRef<ReconnectingWebSocket | null>(null);
-
-  const sendMessage = (data: any) => {
-    const ws = wsRef.current;
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify(data));
-    } else {
-      toast.error("⚠️ Cannot send message. WebSocket is not open.");
-    }
-  };
+  const ydocRef = useRef<Y.Doc>(new Y.Doc());
 
   useEffect(() => {
     if (!shareToken) return;
 
     const ws = new ReconnectingWebSocket(
-      `ws://localhost:8000/ws/documents/${shareToken}/`
+      SOCKET_ROUTES.DOCUMENTS.LIVE(shareToken)
     );
+    ws.binaryType = "arraybuffer";
     wsRef.current = ws;
+
+    const ydoc = ydocRef.current;
+
+    // Send Yjs document updates to server
+    const handleDocUpdate = (update: Uint8Array) => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(update);
+      }
+    };
+
+    ydoc.on("update", handleDocUpdate);
 
     ws.onopen = () => {
       toast.success("📡 Connected to live document");
+      // Request sync (optional, depends on backend)
+      const stateVector = Y.encodeStateVector(ydoc);
+      ws.send(stateVector);
+      console.log("chekcing this");
+    };
+
+    ws.onmessage = (event) => {
+      const binary = new Uint8Array(event.data);
+
+      try {
+        Y.applyUpdate(ydoc, binary);
+      } catch (err) {
+        console.error("❌ Failed to apply Yjs update:", err);
+      }
     };
 
     ws.onclose = () => {
-      toast.warning("🔌 Disconnected from document");
+      toast.warning("🔌 Disconnected from live document");
     };
 
     ws.onerror = (err) => {
@@ -44,56 +55,14 @@ export const useLiveDocSocket = (
       toast.error("⚠️ WebSocket Error");
     };
 
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        console.log(data);
-
-        // Optional: handle common socket events
-        switch (data.type) {
-          case "connection":
-            toast.success("✅ Document socket initialized");
-            break;
-          case "document_update":
-            if (currentDocument && typeof currentDocument.id === "number") {
-              dispatch(
-                setCurrentDocument({
-                  ...currentDocument,
-                  content: data.content,
-                })
-              );
-              console.log({
-                ...currentDocument,
-                content: data.content,
-              });
-            }
-            toast.info("✍️ Document was updated");
-            break;
-          case "document_live":
-            toast.success(data.message);
-            break;
-          case "force_disconnect":
-            toast.warning(data.message);
-            ws.close();
-            break;
-          case "error":
-            toast.error(data.message || "Something went wrong");
-            break;
-        }
-
-        if (onMessage) onMessage(data);
-      } catch (e) {
-        console.error("Failed to parse WebSocket message", e);
-      }
-    };
-
     return () => {
+      ydoc.off("update", handleDocUpdate);
       ws.close();
     };
   }, [shareToken]);
 
   return {
-    sendMessage,
+    ydoc: ydocRef.current,
     socket: wsRef,
   };
 };

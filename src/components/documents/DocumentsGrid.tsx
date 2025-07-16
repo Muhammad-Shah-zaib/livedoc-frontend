@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "sonner";
 
 import {
   Clock,
@@ -19,34 +18,21 @@ import {
   Trash2,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { patchDocumentThunk } from "@/store/documents/documentThunk";
 import { useNavigate } from "react-router-dom";
 import { setCurrentDocument } from "@/store/documents/documentSlice";
+import type { Document } from "@/store/documents/types";
+import { useLiveToggle } from "@/hooks/useLiveToggle";
 
 function DocumentsView() {
   const { filteredDocuments } = useAppSelector((state) => state.documents);
   const dispatch = useAppDispatch();
-  const { loading, currentDocument } = useAppSelector(
-    (state) => state.documents
-  );
+  const { loading } = useAppSelector((state) => state.documents);
   const navigate = useNavigate();
+  const { toggleLive } = useLiveToggle();
 
-  const handleToggle = async (id: number, is_live: boolean) => {
-    const toastId = toast.loading("Updating live status...");
-    try {
-      await dispatch(
-        patchDocumentThunk({
-          id,
-          is_live,
-        })
-      );
-      toast.success(
-        `document #${id} is set to ${is_live ? "LIVE" : "OFFLINE"}`,
-        { id: toastId }
-      );
-    } catch (error) {
-      toast.error("Failed to update live status.", { id: toastId });
-    }
+  const handleOpenDocumentDetail = (doc: Document) => {
+    navigate(`/documents/${doc.share_token}`);
+    dispatch(setCurrentDocument(doc));
   };
 
   return (
@@ -54,10 +40,6 @@ function DocumentsView() {
       {filteredDocuments.map((doc) => (
         <Card
           key={doc.id}
-          onClick={() => {
-            navigate(`/documents/${doc.share_token}`);
-            dispatch(setCurrentDocument(doc));
-          }}
           className="group border-0 shadow-lg hover:shadow-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 cursor-pointer"
         >
           <CardHeader className="pb-3">
@@ -88,7 +70,9 @@ function DocumentsView() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleOpenDocumentDetail(doc)}
+                  >
                     <Eye className="h-4 w-4 mr-2" />
                     Open
                   </DropdownMenuItem>
@@ -114,7 +98,7 @@ function DocumentsView() {
               <div className="flex items-center space-x-2 font-mono text-sm ">
                 <Switch
                   checked={doc.is_live}
-                  onCheckedChange={() => handleToggle(doc.id, !doc.is_live)}
+                  onCheckedChange={() => toggleLive(doc.id, !doc.is_live)}
                   id={`switch-${doc.id}`}
                   disabled={loading}
                 />
@@ -134,7 +118,12 @@ function DocumentsView() {
                   <Share2 className="h-3 w-3 mr-1" />
                   Share
                 </Button>
-                <Button size="sm" variant="ghost" className="h-8 px-3">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 px-3"
+                  onClick={() => handleOpenDocumentDetail(doc)}
+                >
                   <Eye className="h-3 w-3 mr-1" />
                   Open
                 </Button>

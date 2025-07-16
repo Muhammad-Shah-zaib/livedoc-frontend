@@ -106,6 +106,9 @@ const documentSlice = createSlice({
           state.documents[index] = payload;
           state.filteredDocuments[index] = payload;
         }
+        if (state.currentDocument && state.currentDocument.id == payload.id) {
+          state.currentDocument = payload;
+        }
         state.error = null;
         state.generalError = null;
       })
