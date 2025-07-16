@@ -1,11 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type {
-  GetDocumentsResponse,
-  ErrorResponse,
-  PostDocumentsResponse,
-  PostDocumentsPayload,
-  PatchDocumentPayload,
-  PatchDocumentResponse,
+import {
+  type GetDocumentsResponse,
+  type ErrorResponse,
+  type PostDocumentsResponse,
+  type PostDocumentsPayload,
+  type PatchDocumentPayload,
+  type PatchDocumentResponse,
+  type RequestAccessPayload,
+  type RequestAccessResponse,
+  type GetDocumentByShareTokenResponse,
+  type GetDocuemntByShareTokenPayload,
 } from "./types";
 import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
@@ -13,6 +17,8 @@ import { API_ROUTES } from "@/environment/apiRoutes";
 const GET_DOCUMENTS_ACTION = "documents/getDocuments";
 const POST_DOCUMENTS_ACTION = "documents/postDocument";
 const PATCH_DOCUMENT_ACTION = "documents/patchDocument";
+const REQUEST_ACCESS_ACTION = "documents/requestAccess";
+const GET_DOCUMENT_BY_SHARE_TOKEN_ACTION = "documents/getDocumentByShareToken";
 
 export const getDocumentsThunk = createAsyncThunk<
   GetDocumentsResponse,
@@ -98,5 +104,63 @@ export const patchDocumentThunk = createAsyncThunk<
     let message = "Failed to update document";
 
     return { message };
+  }
+});
+
+// request access
+export const requestAccessThunk = createAsyncThunk<
+  RequestAccessResponse,
+  RequestAccessPayload,
+  { rejectValue: ErrorResponse }
+>(REQUEST_ACCESS_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.post<RequestAccessResponse>(
+      API_ROUTES.DOCUMENTS.REQUEST_ACCESS(payload.share_token),
+      null,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Request access failed";
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+// get document by shraetoken
+export const getDocumentByShareTokenThunk = createAsyncThunk<
+  GetDocumentByShareTokenResponse,
+  GetDocuemntByShareTokenPayload,
+  { rejectValue: ErrorResponse }
+>(GET_DOCUMENT_BY_SHARE_TOKEN_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.get<GetDocumentByShareTokenResponse>(
+      API_ROUTES.DOCUMENTS.GET_DETAIL_BY_SHARE_TOKEN(payload.share_token),
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    let message = "Failed to fetch document by share token";
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+
+    return thunkAPI.rejectWithValue({ message });
   }
 });

@@ -13,5 +13,10 @@ export const API_ROUTES = {
   DOCUMENTS: {
     GET_POST: `${BASE_API_URL}/documents/`,
     PATCH_PUT_DETAIL: (id: number) => `${BASE_API_URL}/documents/${id}/`,
+    REQUEST_ACCESS: (share_token: string) =>
+      `${BASE_API_URL}/documents/${share_token}/request-access`,
+    GET_DETAIL_BY_SHARE_TOKEN: (share_token: string) => {
+      return `${BASE_API_URL}/documents/by-token/${share_token}/`;
+    },
   },
 };

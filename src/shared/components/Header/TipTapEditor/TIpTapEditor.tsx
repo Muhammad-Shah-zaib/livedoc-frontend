@@ -30,9 +30,11 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
     if (currentDocument && editor) {
       editor.commands.setContent(currentDocument.content || "");
     }
-  }, [editor, currentDocument]);
+  }, []);
 
   if (!editor) return <div>Loading editor...</div>;
+
+  console.log(ydoc.guid);
 
   return (
     <div className="rounded-xl border bg-white shadow-sm p-4 flex flex-col w-full max-w-7xl px-8 mx-auto">
@@ -130,7 +132,11 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
         }}
         className="rounded-md p-3 w-full max-w-none prose prose-sm overflow-auto min-h-[300px] max-h-[500px]"
       >
-        <EditorContent editor={editor} className="tiptap-editor" />
+        <EditorContent
+          key={ydoc.guid}
+          editor={editor}
+          className="tiptap-editor"
+        />
       </div>
     </div>
   );

@@ -56,3 +56,19 @@ export interface PatchDocumentPayload {
   is_live?: boolean;
 }
 export interface PatchDocumentResponse extends Document {}
+
+// REQEUST ACCESS
+export interface RequestAccessPayload {
+  share_token: string;
+}
+
+export interface RequestAccessResponse {
+  detail: string;
+}
+
+// GET REQUEST BY SHARE TOKEN
+export interface GetDocumentByShareTokenResponse extends Document {}
+
+export interface GetDocuemntByShareTokenPayload {
+  share_token: string;
+}

@@ -1,10 +1,14 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { DocumentState } from "./types";
 import {
+  getDocumentByShareTokenThunk,
   getDocumentsThunk,
   patchDocumentThunk,
   postDocumentThunk,
+  requestAccessThunk,
 } from "./documentThunk";
+import { toast } from "sonner";
+import { totalmem } from "os";
 
 const initialState: DocumentState = {
   documents: [],
@@ -116,6 +120,41 @@ const documentSlice = createSlice({
         state.loading = false;
         state.error = payload?.erros || null;
         state.generalError = payload?.message || "Unable to update Document";
+      })
+      .addCase(requestAccessThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(requestAccessThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+        toast.success(payload.detail);
+      })
+      .addCase(requestAccessThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+        toast.error(payload?.message || "Request access failed");
+      })
+      .addCase(getDocumentByShareTokenThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+        state.currentDocument = null;
+      })
+      .addCase(getDocumentByShareTokenThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+        state.currentDocument = payload;
+      })
+      .addCase(getDocumentByShareTokenThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload?.erros || null;
+        state.generalError = payload?.message || "Unable to fetch document";
+        state.currentDocument = null;
       });
   },
 });

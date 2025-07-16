@@ -1,7 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/store/store";
-import { Plus } from "lucide-react";
 import NewDocumentDialog from "../documents/NewDocumentDialog";
+import ConnectLiveDocumentDialog from "../documents/ConnectLiveDocumentDialog";
 
 function DashboardActionBar() {
   const { documents, searchQuery } = useAppSelector((state) => state.documents);
@@ -20,7 +19,10 @@ function DashboardActionBar() {
           {filteredDocuments.length !== 1 ? "s" : ""} found
         </p>
       </div>
-      <NewDocumentDialog />
+      <div className="flex gap-4">
+        <ConnectLiveDocumentDialog />
+        <NewDocumentDialog />
+      </div>
     </div>
   );
 }
