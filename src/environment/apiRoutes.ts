@@ -19,4 +19,17 @@ export const API_ROUTES = {
       return `${BASE_API_URL}/documents/by-token/${share_token}/`;
     },
   },
+  NOTIFICATIONS: {
+    GET_POST: `${BASE_API_URL}/notifications/`,
+    MARK_READ: (id: number) =>
+      `${BASE_API_URL}/notifications/${id}/mark_as_read/`,
+    UN_MARK_READ: (id: number) =>
+      `${BASE_API_URL}/notifications/${id}/mark_as_unread/`,
+    PATCH_PUT_DELETE: (id: number) => `${BASE_API_URL}/notifications/${id}/`,
+    DELETE_ALL: `${BASE_API_URL}/notifications/delete_all/`,
+  },
+  DOCUMENT_ACCESS: {
+    GET_POST: `${BASE_API_URL}/document_access/`,
+    PATCH_PUT_DELETE: (id: number) => `${BASE_API_URL}/document_access/${id}/`,
+  },
 };

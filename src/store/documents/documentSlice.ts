@@ -6,6 +6,8 @@ import {
   patchDocumentThunk,
   postDocumentThunk,
   requestAccessThunk,
+  getAllDocumentAccessThunk,
+  getSingleDocumentAccessThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
 
@@ -24,6 +26,7 @@ const initialState: DocumentState = {
   searchQuery: "",
   currentDocument: null,
   canNavigateToDetailFromConnect: false,
+  documentAccess: [],
 };
 
 // --------------------
@@ -191,6 +194,57 @@ const documentSlice = createSlice({
         state.generalError = payload?.message || "Unable to fetch document";
         state.currentDocument = null;
         state.canNavigateToDetailFromConnect = false;
+      })
+
+      // --------------------
+      // Get All Document Access
+      // --------------------
+      .addCase(getAllDocumentAccessThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(getAllDocumentAccessThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.documentAccess = payload;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(getAllDocumentAccessThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.documentAccess = [];
+        state.error = payload?.erros || null;
+        state.generalError =
+          payload?.message || "Unable to fetch document access list";
+      })
+
+      // --------------------
+      // Get Single Document Access
+      // --------------------
+      .addCase(getSingleDocumentAccessThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(getSingleDocumentAccessThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        // Replace or add the single access in documentAccess array
+        const index = state.documentAccess.findIndex(
+          (access) => access.id === payload.id
+        );
+        if (index !== -1) {
+          state.documentAccess[index] = payload;
+        } else {
+          state.documentAccess.push(payload);
+        }
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(getSingleDocumentAccessThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload?.erros || null;
+        state.generalError =
+          payload?.message || "Unable to fetch single document access";
       });
   },
 });

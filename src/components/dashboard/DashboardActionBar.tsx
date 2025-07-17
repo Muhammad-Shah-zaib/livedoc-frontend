@@ -1,13 +1,28 @@
 import { useAppSelector } from "@/store/store";
 import NewDocumentDialog from "../documents/NewDocumentDialog";
 import ConnectLiveDocumentDialog from "../documents/ConnectLiveDocumentDialog";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Users } from "lucide-react";
+import DocumentAccessDialog from "../documents/DocumentAccessDialog";
+import React from "react";
 
 function DashboardActionBar() {
-  const { documents, searchQuery } = useAppSelector((state) => state.documents);
+  const { documents, searchQuery, documentAccess } = useAppSelector(
+    (state) => state.documents
+  );
 
   const filteredDocuments = documents.filter((doc) =>
     doc.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const [accessDialogOpen, setAccessDialogOpen] = React.useState(false);
+
   return (
     <div className="flex items-center justify-between mb-8">
       <div>
@@ -20,8 +35,26 @@ function DashboardActionBar() {
         </p>
       </div>
       <div className="flex gap-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Manage Access
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setAccessDialogOpen(true)}>
+              <Users className="w-4 h-4 mr-2" />
+              Show All Document Accesses
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <ConnectLiveDocumentDialog />
         <NewDocumentDialog />
+        <DocumentAccessDialog
+          open={accessDialogOpen}
+          onOpenChange={setAccessDialogOpen}
+        />
       </div>
     </div>
   );

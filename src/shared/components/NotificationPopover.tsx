@@ -1,12 +1,16 @@
 import { useAppSelector, useAppDispatch } from "@/store/store";
-import { markNotificationReadThunk } from "@/store/notification/notificationThunk";
+import {
+  markNotificationReadThunk,
+  markNotificationUnreadThunk,
+  deleteNotificationThunk,
+} from "@/store/notification/notificationThunk";
 import { clearNotifications } from "@/store/notification/notificationSlice";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { Bell, Check, Trash } from "lucide-react";
+import { Bell, Check, Trash, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Spinner from "./spinner";
 
@@ -18,6 +22,14 @@ const NotificationPopover = () => {
 
   const handleMarkRead = (id: number) => {
     dispatch(markNotificationReadThunk({ id }));
+  };
+
+  const handleMarkUnread = (id: number) => {
+    dispatch(markNotificationUnreadThunk({ id }));
+  };
+
+  const handleDelete = (id: number) => {
+    dispatch(deleteNotificationThunk({ id }));
   };
 
   // Placeholder for delete (clear all)
@@ -75,7 +87,16 @@ const NotificationPopover = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 ml-2">
-                  {!notif.is_read && (
+                  {notif.is_read ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleMarkUnread(notif.id)}
+                      title="Mark as unread"
+                    >
+                      <Undo2 className="w-4 h-4" />
+                    </Button>
+                  ) : (
                     <Button
                       variant="ghost"
                       size="icon"
@@ -85,7 +106,14 @@ const NotificationPopover = () => {
                       <Check className="w-4 h-4" />
                     </Button>
                   )}
-                  {/* Individual delete not implemented in store, so only clear all for now */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDelete(notif.id)}
+                    title="Delete notification"
+                  >
+                    <Trash className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
             ))

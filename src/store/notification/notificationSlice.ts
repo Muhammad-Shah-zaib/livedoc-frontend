@@ -6,6 +6,8 @@ import {
   postNotificationThunk,
   markNotificationReadThunk,
   markNotificationUnreadThunk,
+  deleteNotificationThunk,
+  deleteAllNotificationsThunk,
 } from "./notificationThunk";
 
 // --------------------
@@ -60,8 +62,8 @@ const notificationSlice = createSlice({
       })
       .addCase(getNotificationsThunk.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.notifications = payload.results;
-        state.total = payload.count;
+        state.notifications = payload;
+        state.total = payload.filter((n) => !n.is_read).length;
         state.error = null;
       })
       .addCase(getNotificationsThunk.rejected, (state, { payload }) => {
@@ -128,6 +130,44 @@ const notificationSlice = createSlice({
         state.loading = false;
         state.error =
           payload?.message || "Failed to mark notification as unread";
+      })
+
+      // --------------------
+      // Delete Single Notification
+      // --------------------
+      .addCase(deleteNotificationThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteNotificationThunk.fulfilled, (state, { meta }) => {
+        state.loading = false;
+        state.notifications = state.notifications.filter(
+          (n) => n.id !== meta.arg.id
+        );
+        state.total = state.notifications.filter((n) => !n.is_read).length;
+        state.error = null;
+      })
+      .addCase(deleteNotificationThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload?.message || "Failed to delete notification";
+      })
+
+      // --------------------
+      // Delete All Notifications
+      // --------------------
+      .addCase(deleteAllNotificationsThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAllNotificationsThunk.fulfilled, (state) => {
+        state.loading = false;
+        state.notifications = [];
+        state.total = 0;
+        state.error = null;
+      })
+      .addCase(deleteAllNotificationsThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload?.message || "Failed to delete all notifications";
       });
   },
 });

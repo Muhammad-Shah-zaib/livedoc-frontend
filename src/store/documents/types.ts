@@ -1,3 +1,5 @@
+import type { IUser } from "../auth/types";
+
 export interface DocumentState {
   documents: Document[];
   filteredDocuments: Document[];
@@ -10,6 +12,18 @@ export interface DocumentState {
   isGridView: boolean;
   searchQuery: string;
   canNavigateToDetailFromConnect: boolean;
+  documentAccess: DocumentAccess[];
+}
+
+export interface DocumentAccess {
+  id: number;
+  user: IUser;
+  document: Document;
+  can_edit: boolean;
+  access_requested: boolean;
+  access_approved: boolean;
+  request_at: string;
+  approved_at: string;
 }
 
 export interface Document {
@@ -74,3 +88,15 @@ export interface GetDocumentByShareTokenResponse extends Document {}
 export interface GetDocuemntByShareTokenPayload {
   share_token: string;
 }
+
+export type GetAllDocumentAccessResponse = DocumentAccess[];
+
+export interface GetSingleDocumentAccessPayload {
+  id: number;
+  // filter fields
+  docuemnt?: number;
+  access_requested?: boolean;
+  access_approved?: boolean;
+}
+
+export interface GetSingleDocumentAccessResponse extends DocumentAccess {}

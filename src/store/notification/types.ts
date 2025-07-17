@@ -23,10 +23,7 @@ export interface GetNotificationsPayload {
   is_read?: boolean;
 }
 
-export interface GetNotificationsResponse {
-  count: number;
-  results: Notification[];
-}
+export type GetNotificationsResponse = Notification[];
 
 export interface PostNotificationPayload {
   message: string;
@@ -40,9 +37,20 @@ export interface MarkNotificationResponse extends Notification {}
 export interface DeleteNotificationResponse {
   success: boolean;
   message: string;
+  deleted: Notification;
+}
+export interface DeletAllNotificationsResponse {
+  success: boolean;
+  message: string;
+  deleted_count: number;
 }
 
 export interface ErrorResponse {
   message: string;
   erros?: Record<string, string[]> | null;
 }
+
+export interface DeleteNotificationPayload {
+  id: number;
+}
+// no response object for delete notificaiotn

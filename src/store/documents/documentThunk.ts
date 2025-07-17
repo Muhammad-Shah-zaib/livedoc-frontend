@@ -10,6 +10,9 @@ import {
   type RequestAccessResponse,
   type GetDocumentByShareTokenResponse,
   type GetDocuemntByShareTokenPayload,
+  type GetAllDocumentAccessResponse,
+  type GetSingleDocumentAccessPayload,
+  type GetSingleDocumentAccessResponse,
 } from "./types";
 import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
@@ -19,6 +22,8 @@ const POST_DOCUMENTS_ACTION = "documents/postDocument";
 const PATCH_DOCUMENT_ACTION = "documents/patchDocument";
 const REQUEST_ACCESS_ACTION = "documents/requestAccess";
 const GET_DOCUMENT_BY_SHARE_TOKEN_ACTION = "documents/getDocumentByShareToken";
+const GET_ALL_DOCUMENT_ACCESS_ACTION = "documents/getAllDocumentAccess";
+const GET_SINGLE_DOCUMENT_ACCESS_ACTION = "documents/getSingleDocumentAccess";
 
 export const getDocumentsThunk = createAsyncThunk<
   GetDocumentsResponse,
@@ -161,6 +166,65 @@ export const getDocumentByShareTokenThunk = createAsyncThunk<
       message = error.response?.data?.detail || message;
     }
 
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const getAllDocumentAccessThunk = createAsyncThunk<
+  GetAllDocumentAccessResponse,
+  void,
+  { rejectValue: ErrorResponse }
+>(GET_ALL_DOCUMENT_ACCESS_ACTION, async (_, thunkAPI) => {
+  try {
+    const response = await axios.get<GetAllDocumentAccessResponse>(
+      API_ROUTES.DOCUMENT_ACCESS.GET_POST,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to fetch document access list";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const getSingleDocumentAccessThunk = createAsyncThunk<
+  GetSingleDocumentAccessResponse,
+  GetSingleDocumentAccessPayload,
+  { rejectValue: ErrorResponse }
+>(GET_SINGLE_DOCUMENT_ACCESS_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.get<GetSingleDocumentAccessResponse>(
+      API_ROUTES.DOCUMENT_ACCESS.PATCH_PUT_DELETE(payload.id),
+      {
+        params: {
+          ...(payload.docuemnt !== undefined && { docuemnt: payload.docuemnt }),
+          ...(payload.access_requested !== undefined && {
+            access_requested: payload.access_requested,
+          }),
+          ...(payload.access_approved !== undefined && {
+            access_approved: payload.access_approved,
+          }),
+        },
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to fetch single document access";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
     return thunkAPI.rejectWithValue({ message });
   }
 });

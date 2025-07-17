@@ -1,7 +1,11 @@
 import useNotificationSocket from "@/hooks/useNotificationSocket";
 import AppBootstrap from "@/shared/pages/AppBootstrap";
 import { getUserProfileThunk } from "@/store/auth/authThunk";
-import { getDocumentsThunk } from "@/store/documents/documentThunk";
+import {
+  getAllDocumentAccessThunk,
+  getDocumentsThunk,
+} from "@/store/documents/documentThunk";
+import { getNotificationsThunk } from "@/store/notification/notificationThunk";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -28,6 +32,8 @@ const AppBootStrapGuard = () => {
     }
     if (initialAuthChecked && isAuthenticated && !initialDocumentFetch) {
       dispatch(getDocumentsThunk());
+      dispatch(getNotificationsThunk());
+      dispatch(getAllDocumentAccessThunk());
     }
   }, [initialAuthChecked, dispatch]);
 
