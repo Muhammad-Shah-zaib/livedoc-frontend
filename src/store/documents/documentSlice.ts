@@ -8,8 +8,10 @@ import {
   requestAccessThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
-import { totalmem } from "os";
 
+// --------------------
+// Initial State
+// --------------------
 const initialState: DocumentState = {
   documents: [],
   filteredDocuments: [],
@@ -21,28 +23,44 @@ const initialState: DocumentState = {
   isGridView: true,
   searchQuery: "",
   currentDocument: null,
+  canNavigateToDetailFromConnect: false,
 };
 
+// --------------------
+// Slice
+// --------------------
 const documentSlice = createSlice({
   initialState,
   name: "documents",
   reducers: {
+    // Set app initialization state
     setIsAppInitialized: (state, { payload }: PayloadAction<boolean>) => {
       state.isAppInitialized = payload;
     },
+    // Set search query for filtering documents
     setSerachQuery: (state, { payload }: PayloadAction<string>) => {
       state.searchQuery = payload;
     },
+    // Set the current document
     setCurrentDocument: (
       state,
       { payload }: PayloadAction<DocumentState["currentDocument"]>
     ) => {
       state.currentDocument = payload;
     },
+    // Set navigation flag for connect dialog
+    setCanNavigateToDetailFromConnect: (
+      state,
+      { payload }: PayloadAction<boolean>
+    ) => {
+      state.canNavigateToDetailFromConnect = payload;
+    },
   },
   extraReducers: (builder) => {
+    // --------------------
+    // Get Documents
+    // --------------------
     builder
-      // get documents
       .addCase(getDocumentsThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -63,7 +81,10 @@ const documentSlice = createSlice({
         state.generalError = payload?.message || null;
         state.initialDocumentFetch = true;
       })
-      // postDOcument
+
+      // --------------------
+      // Post Document
+      // --------------------
       .addCase(postDocumentThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -82,6 +103,7 @@ const documentSlice = createSlice({
           created_at: payload.created_at,
           updated_at: payload.updated_at,
           admin: payload.admin,
+          can_write_access: (payload as any).can_write_access ?? false,
         };
         state.documents.push(newDoc);
         state.filteredDocuments.push(newDoc);
@@ -96,7 +118,10 @@ const documentSlice = createSlice({
         };
         state.generalError = "Unable to create new Document";
       })
-      // patch request
+
+      // --------------------
+      // Patch Document
+      // --------------------
       .addCase(patchDocumentThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -121,6 +146,10 @@ const documentSlice = createSlice({
         state.error = payload?.erros || null;
         state.generalError = payload?.message || "Unable to update Document";
       })
+
+      // --------------------
+      // Request Access
+      // --------------------
       .addCase(requestAccessThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -138,27 +167,41 @@ const documentSlice = createSlice({
         state.generalError = null;
         toast.error(payload?.message || "Request access failed");
       })
+
+      // --------------------
+      // Get Document by Share Token
+      // --------------------
       .addCase(getDocumentByShareTokenThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.generalError = null;
         state.currentDocument = null;
+        state.canNavigateToDetailFromConnect = false;
       })
       .addCase(getDocumentByShareTokenThunk.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.error = null;
         state.generalError = null;
         state.currentDocument = payload;
+        state.canNavigateToDetailFromConnect = true;
       })
       .addCase(getDocumentByShareTokenThunk.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload?.erros || null;
         state.generalError = payload?.message || "Unable to fetch document";
         state.currentDocument = null;
+        state.canNavigateToDetailFromConnect = false;
       });
   },
 });
 
-export const { setIsAppInitialized, setSerachQuery, setCurrentDocument } =
-  documentSlice.actions;
+// --------------------
+// Exports
+// --------------------
+export const {
+  setCanNavigateToDetailFromConnect,
+  setIsAppInitialized,
+  setSerachQuery,
+  setCurrentDocument,
+} = documentSlice.actions;
 export default documentSlice.reducer;

@@ -5,4 +5,5 @@ export const SOCKET_ROUTES = {
   DOCUMENTS: {
     LIVE: (shareToken: string) => `${BASE_URL}/documents/${shareToken}/`,
   },
+  NOTIFICATION: (id: number) => `${BASE_URL}/notifications/${id}/`,
 };

@@ -10,6 +10,9 @@ import {
   getUserProfileThunk,
 } from "./authThunk";
 
+// --------------------
+// Initial State
+// --------------------
 const initialState: IAuthState = {
   user: null,
   loading: false,
@@ -22,29 +25,39 @@ const initialState: IAuthState = {
   initialAuthChecked: false,
 };
 
+// --------------------
+// Slice
+// --------------------
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    // Logout reducer (logic to be implemented if needed)
     logout: (state) => {
-      // implement logout login later
+      // implement logout logic later
     },
+    // Set email verification required flag
     serVerifyEmailRequired: (state, { payload }: PayloadAction<boolean>) => {
       state.email_verification_required = payload;
     },
+    // Set forget password success flag
     setForgetPasswordSuccess: (state, { payload }: PayloadAction<boolean>) => {
       state.forgetPasswordSuccess = payload;
     },
+    // Set reset password success flag
     setResetPasswordSuccess: (state, { payload }: PayloadAction<boolean>) => {
       state.resetPasswordSuccess = payload;
     },
+    // Set general error message
     setGeneralError: (state, { payload }: PayloadAction<string | null>) => {
       state.generalError = payload;
     },
   },
   extraReducers: (builder) => {
+    // --------------------
+    // Google Login
+    // --------------------
     builder
-      // google login
       .addCase(googleLoginThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -62,7 +75,10 @@ const authSlice = createSlice({
         state.generalError = action.payload?.message || "Google login failed";
         state.errors = action.payload?.errors || null;
       })
-      // email password login
+
+      // --------------------
+      // Email/Password Login
+      // --------------------
       .addCase(emailPasswordLoginThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -81,7 +97,10 @@ const authSlice = createSlice({
           action.payload?.message || "either email or password is incorrect";
         state.errors = action.payload?.errors || null;
       })
-      // email password signup
+
+      // --------------------
+      // Email/Password Signup
+      // --------------------
       .addCase(emailPasswordSignupThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -99,7 +118,10 @@ const authSlice = createSlice({
         state.errors = action.payload?.errors || null;
         state.generalError = action.payload?.message || "Email signup failed";
       })
-      // logout
+
+      // --------------------
+      // Logout
+      // --------------------
       .addCase(logoutThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -117,7 +139,10 @@ const authSlice = createSlice({
         state.generalError = null;
         state.errors = action.payload?.errors || null;
       })
-      // forgot password
+
+      // --------------------
+      // Forgot Password
+      // --------------------
       .addCase(forgotPasswordThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -134,7 +159,10 @@ const authSlice = createSlice({
         state.forgetPasswordSuccess = false;
         state.generalError = payload?.message || "Forgot password failed";
       })
-      // reset password
+
+      // --------------------
+      // Reset Password
+      // --------------------
       .addCase(resetPasswordThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -151,7 +179,10 @@ const authSlice = createSlice({
         state.generalError = payload?.message || "Reset password failed";
         state.errors = payload?.errors || null;
       })
-      // user Profile
+
+      // --------------------
+      // Get User Profile
+      // --------------------
       .addCase(getUserProfileThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -175,6 +206,9 @@ const authSlice = createSlice({
   },
 });
 
+// --------------------
+// Exports
+// --------------------
 export const {
   logout,
   serVerifyEmailRequired,

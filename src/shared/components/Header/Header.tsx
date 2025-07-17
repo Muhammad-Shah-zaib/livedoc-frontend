@@ -4,6 +4,7 @@ import { useAppSelector } from "@/store/store";
 import { Grid3X3, List, Search, Moon } from "lucide-react";
 import { useState } from "react";
 import AvatarDropdown from "./AvatarDropDown";
+import NotificationPopover from "@/shared/components/NotificationPopover";
 
 function Header() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -66,6 +67,7 @@ function Header() {
           >
             <Moon className="h-5 w-5" />
           </Button>
+          <NotificationPopover />
           <AvatarDropdown user={user} getUserInitials={getUserInitials} />
         </div>
       </div>

@@ -34,7 +34,7 @@ export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
 
   if (!editor) return <div>Loading editor...</div>;
 
-  console.log(ydoc.guid);
+  ydoc.guid;
 
   return (
     <div className="rounded-xl border bg-white shadow-sm p-4 flex flex-col w-full max-w-7xl px-8 mx-auto">

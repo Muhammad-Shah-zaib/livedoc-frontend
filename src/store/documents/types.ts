@@ -9,6 +9,7 @@ export interface DocumentState {
   isAppInitialized: boolean;
   isGridView: boolean;
   searchQuery: string;
+  canNavigateToDetailFromConnect: boolean;
 }
 
 export interface Document {
@@ -21,6 +22,7 @@ export interface Document {
   created_at: string;
   updated_at: string;
   admin: number;
+  can_write_access: boolean;
 }
 
 // ERROR RESPOSNE

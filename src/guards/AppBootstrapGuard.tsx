@@ -1,3 +1,4 @@
+import useNotificationSocket from "@/hooks/useNotificationSocket";
 import AppBootstrap from "@/shared/pages/AppBootstrap";
 import { getUserProfileThunk } from "@/store/auth/authThunk";
 import { getDocumentsThunk } from "@/store/documents/documentThunk";
@@ -15,6 +16,8 @@ const AppBootStrapGuard = () => {
   const { initialDocumentFetch, isAppInitialized } = useAppSelector(
     (state) => state.documents
   );
+
+  useNotificationSocket();
 
   useEffect(() => {
     if (!isAuthenticated && !user) {

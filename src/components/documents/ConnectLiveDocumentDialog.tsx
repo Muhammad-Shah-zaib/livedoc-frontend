@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -16,10 +16,7 @@ import {
   getDocumentByShareTokenThunk,
   requestAccessThunk,
 } from "@/store/documents/documentThunk";
-import { useYjsLiveSocket } from "@/hooks/useLiveDocumentSocket";
-import { wait } from "@/utils/wait";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 interface ConnectLiveDocumentForm {
   shareToken: string;
@@ -28,10 +25,10 @@ interface ConnectLiveDocumentForm {
 export default function ConnectLiveDocumentDialog() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { canNavigateToDetailFromConnect, currentDocument } = useAppSelector(
+    (state) => state.documents
+  );
   const [open, setOpen] = useState(false);
-  const { currentDocument } = useAppSelector((state) => state.documents);
-  const [shareToken, setShareToken] = useState<string | null>(null); // 🔥 Hook trigger
-  const { ydoc } = useYjsLiveSocket(shareToken); // 🧠 this will connect when token is set
 
   const {
     register,
@@ -51,15 +48,13 @@ export default function ConnectLiveDocumentDialog() {
   async function handleConnect({ shareToken }: ConnectLiveDocumentForm) {
     if (shareToken) {
       await dispatch(getDocumentByShareTokenThunk({ share_token: shareToken }));
-      wait(200);
-      if (currentDocument) {
-        navigate(`/documents/${currentDocument.share_token}`);
-      } else {
-        toast.error("unable to connect. Try again.");
-      }
     }
   }
 
+  useEffect(() => {
+    if (canNavigateToDetailFromConnect)
+      navigate(`/documents/${currentDocument?.share_token}`);
+  }, [canNavigateToDetailFromConnect, currentDocument, navigate]);
   return (
     <Dialog
       open={open}

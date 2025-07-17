@@ -21,8 +21,8 @@ export const useYjsLiveSocket = (shareToken: string | null) => {
     if (!shareToken) return;
 
     const websocketProvider = new WebsocketProvider(
-      "ws://localhost:1234", // y-websocket server
-      shareToken, // room name (same across clients)
+      "ws://localhost:1234",
+      shareToken,
       ydoc
     );
 
