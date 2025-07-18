@@ -5,12 +5,20 @@ export interface IAuthState {
   loading: boolean;
   isAuthenticated: boolean;
   generalError: string | null;
+  email_verification_required: boolean;
+  errors: Record<string, string[]> | null;
+  forgetPasswordSuccess: boolean;
+  resetPasswordSuccess: boolean;
+  initialAuthChecked: boolean;
+  foundUser: IUser | null;
+  findingUser: boolean;
+  errorFindingUser: string | null;
 }
 
 export interface IUser {
   id: number;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   isOauthVerified: boolean;
   isActive: boolean;
@@ -26,6 +34,7 @@ export interface GoogleAuthResponse {
 
 export interface ErrorResponse {
   message: string;
+  errors?: Record<string, string[]> | null;
 }
 
 export interface EmailPasswordLoginPayload {
@@ -36,4 +45,51 @@ export interface EmailPasswordLoginPayload {
 export interface EmailPasswordLoginResponse {
   message: string;
   user: IUser;
+}
+
+export interface EmailPasswordSignupPayload {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+}
+
+export interface EmailPasswordSignupResponse {
+  message: string;
+  email_verification_required: boolean;
+  errors: Record<string, string[]> | null;
+}
+
+export interface LogoutResponse {
+  success: boolean;
+}
+
+export interface ForgetPassworPayload {
+  email: string;
+}
+export interface ForgetPasswordResponse {
+  message: string;
+}
+
+export interface ResetPasswordPayload {
+  // The uid and token will be sent in the route
+  uid: string;
+  token: string;
+  password: string;
+  confirm_password: string;
+}
+
+export interface ResetPasswordResponse {
+  message: string;
+}
+
+export type GetUserProfileResponse = IUser;
+
+export interface GetUserByEmailPayload {
+  email: string;
+}
+
+export interface GetUserByEmailResponse {
+  user: IUser;
+  detail: string;
 }

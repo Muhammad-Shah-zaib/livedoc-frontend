@@ -15,16 +15,18 @@ import { Separator } from "@/components/ui/separator";
 import { Moon, Eye, EyeOff, Loader2 } from "lucide-react";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { emailPasswordLoginThunk, googleLoginThunk } from "@/store/auth/authThunk";
+import {
+  emailPasswordLoginThunk,
+  googleLoginThunk,
+} from "@/store/auth/authThunk";
 import Spinner from "../components/spinner";
 import type { EmailPasswordLoginPayload } from "@/store/auth/types";
-
+import { NavLink } from "react-router-dom";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
   const generalError = useAppSelector((state) => state.auth.generalError);
   const isLoading = useAppSelector((state) => state.auth.loading);
-
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -41,7 +43,7 @@ export default function LoginPage() {
 
   // Placeholder for form submit
   const onSubmit: SubmitHandler<EmailPasswordLoginPayload> = (data) => {
-    dispatch(emailPasswordLoginThunk(data))
+    dispatch(emailPasswordLoginThunk(data));
   };
 
   return (
@@ -66,12 +68,8 @@ export default function LoginPage() {
 
         {/* Login Card */}
         <div className="max-w-md mx-auto">
-          
           <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden relative">
-          
-          {isLoading && (
-           <Spinner />
-          )}
+            {isLoading && <Spinner />}
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-2xl font-semibold text-slate-800 dark:text-slate-200">
                 Welcome back
@@ -198,7 +196,7 @@ export default function LoginPage() {
                   disabled={isLoading}
                   className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
                 >
-                  Forgot your password?
+                  <NavLink to="/forget-password">Forgot your password?</NavLink>
                 </Button>
               </div>
 
@@ -209,7 +207,7 @@ export default function LoginPage() {
                   disabled={isLoading}
                   className="p-0 h-auto font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                 >
-                  Sign up
+                  <NavLink to="/signup">Sign up</NavLink>
                 </Button>
               </div>
             </CardContent>

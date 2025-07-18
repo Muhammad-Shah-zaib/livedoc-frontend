@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -117,4 +118,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.ProseMirror {
+  white-space: pre-wrap;
 }

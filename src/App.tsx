@@ -1,8 +1,48 @@
-import Login from "./shared/pages/login";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Login from "./shared/pages/Login";
+import Signup from "./shared/pages/Signup";
+import VerifyEmail from "./shared/pages/VerifyEmail";
+import ForgotPassword from "./shared/pages/ForgotPassword";
+import ResetPassword from "./shared/pages/ResetPassword";
+import AppBootStrapGuard from "./guards/AppBootstrapGuard";
+import PublicRouteGuard from "./guards/PublicRouteGuard";
+import MasterLayout from "./shared/layouts/MasterLayout";
+import DocumentDetail from "./components/documents/DocumentDetail";
+import Dashboard from "./components/dashboard/Dashboard";
+import SecondaryLayout from "./shared/layouts/SecondaryLayout";
 
 function App() {
   return (
-    <Login />
+    <>
+      <Routes>
+        {/* NON PROTECTED ROUTES */}
+        {/* REDIRECTION */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* AUTH ROUTES */}
+        <Route path="/" element={<PublicRouteGuard />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/signup/verify-email" element={<VerifyEmail />} />
+          <Route path="/forget-password" element={<ForgotPassword />} />
+          <Route
+            path="/reset-password/:uid/:token"
+            element={<ResetPassword />}
+          />
+        </Route>
+
+        {/* PROTECTED ROUTES */}
+        <Route path="/" element={<AppBootStrapGuard />}>
+          <Route element={<MasterLayout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+          </Route>
+          <Route element={<SecondaryLayout />}>
+            <Route path="documents/:shareToken" element={<DocumentDetail />} />
+          </Route>
+        </Route>
+      </Routes>
+
+      {/* PROTEXTED ROUTES */}
+    </>
   );
 }
 
