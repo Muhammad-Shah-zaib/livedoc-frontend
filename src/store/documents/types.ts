@@ -53,6 +53,15 @@ export interface PostDocumentsPayload {
   name: string;
 }
 
+// delete document
+export interface DeleteDocuemntPayload {
+  id: number;
+}
+export interface DeleteDocumentResponse {
+  detail: string;
+  document: Document;
+}
+
 export interface PostDocumentsResponse {
   id: number;
   name: string | string[];
@@ -82,6 +91,14 @@ export interface RequestAccessResponse {
   detail: string;
 }
 
+// APPROVE ACCESS
+export interface RevokeApproveAccessPayload {
+  access_id: number;
+}
+export interface RevokeApproveAccessResponse extends RequestAccessResponse {
+  access: DocumentAccess;
+}
+
 // GET REQUEST BY SHARE TOKEN
 export interface GetDocumentByShareTokenResponse extends Document {}
 
@@ -100,3 +117,16 @@ export interface GetSingleDocumentAccessPayload {
 }
 
 export interface GetSingleDocumentAccessResponse extends DocumentAccess {}
+
+// GRANT ACCESS TO DOCUMENT
+export interface GrantAccessPayload {
+  user_id: number;
+  document_id: number;
+  can_edit?: boolean; // Optional, defaults to true if not provided
+}
+
+export interface GrantAccessResponse {
+  detail: string;
+  created: boolean;
+  access: DocumentAccess;
+}

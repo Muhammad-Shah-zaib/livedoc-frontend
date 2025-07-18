@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
@@ -22,6 +23,8 @@ import { useNavigate } from "react-router-dom";
 import { setCurrentDocument } from "@/store/documents/documentSlice";
 import type { Document } from "@/store/documents/types";
 import { useLiveToggle } from "@/hooks/useLiveToggle";
+import { deleteDocumentThunk } from "@/store/documents/documentThunk";
+import ShareTokenDialog from "./ShareTokenDialog";
 
 function DocumentsView() {
   const { filteredDocuments } = useAppSelector((state) => state.documents);
@@ -29,10 +32,17 @@ function DocumentsView() {
   const { loading } = useAppSelector((state) => state.documents);
   const navigate = useNavigate();
   const { toggleLive } = useLiveToggle();
+  const [shareDialogOpen, setShareDialogOpen] = React.useState<null | number>(
+    null
+  );
 
   const handleOpenDocumentDetail = (doc: Document) => {
     navigate(`/documents/${doc.share_token}`);
     dispatch(setCurrentDocument(doc));
+  };
+
+  const handleDelete = (id: number) => {
+    dispatch(deleteDocumentThunk({ id }));
   };
 
   return (
@@ -76,11 +86,14 @@ function DocumentsView() {
                     <Eye className="h-4 w-4 mr-2" />
                     Open
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShareDialogOpen(doc.id)}>
                     <Share2 className="h-4 w-4 mr-2" />
                     Share
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-red-600">
+                  <DropdownMenuItem
+                    className="text-red-600"
+                    onClick={() => handleDelete(doc.id)}
+                  >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete
                   </DropdownMenuItem>
@@ -114,7 +127,12 @@ function DocumentsView() {
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <Button size="sm" variant="ghost" className="h-8 px-3">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 px-3"
+                  onClick={() => setShareDialogOpen(doc.id)}
+                >
                   <Share2 className="h-3 w-3 mr-1" />
                   Share
                 </Button>
@@ -129,6 +147,11 @@ function DocumentsView() {
                 </Button>
               </div>
             </div>
+            <ShareTokenDialog
+              open={shareDialogOpen === doc.id}
+              onOpenChange={(open) => setShareDialogOpen(open ? doc.id : null)}
+              shareToken={doc.share_token}
+            />
           </CardContent>
         </Card>
       ))}

@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { IAuthState } from "./types";
+import type { IAuthState, IUser } from "./types";
 import {
   googleLoginThunk,
   emailPasswordLoginThunk,
@@ -8,6 +8,7 @@ import {
   forgotPasswordThunk,
   resetPasswordThunk,
   getUserProfileThunk,
+  getUserByEmailThunk,
 } from "./authThunk";
 
 // --------------------
@@ -23,6 +24,9 @@ const initialState: IAuthState = {
   forgetPasswordSuccess: false,
   resetPasswordSuccess: false,
   initialAuthChecked: false,
+  foundUser: null,
+  findingUser: false,
+  errorFindingUser: null,
 };
 
 // --------------------
@@ -32,10 +36,6 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // Logout reducer (logic to be implemented if needed)
-    logout: (state) => {
-      // implement logout logic later
-    },
     // Set email verification required flag
     serVerifyEmailRequired: (state, { payload }: PayloadAction<boolean>) => {
       state.email_verification_required = payload;
@@ -51,6 +51,12 @@ const authSlice = createSlice({
     // Set general error message
     setGeneralError: (state, { payload }: PayloadAction<string | null>) => {
       state.generalError = payload;
+    },
+    setFoundUser: (state, { payload }: PayloadAction<IUser | null>) => {
+      state.foundUser = payload;
+    },
+    setErrorFindingUser: (state, { payload }: PayloadAction<string | null>) => {
+      state.errorFindingUser = payload;
     },
   },
   extraReducers: (builder) => {
@@ -202,6 +208,33 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.initialAuthChecked = true;
         state.user = null;
+      })
+
+      // --------------------
+      // Get User By Email
+      // --------------------
+      .addCase(getUserByEmailThunk.pending, (state) => {
+        state.generalError = null;
+        state.errors = null;
+        state.foundUser = null;
+        state.findingUser = true;
+        state.errorFindingUser = null;
+      })
+      .addCase(getUserByEmailThunk.fulfilled, (state, { payload }) => {
+        state.findingUser = false;
+        state.loading = false;
+        state.foundUser = payload.user;
+        state.generalError = null;
+        state.errors = null;
+      })
+      .addCase(getUserByEmailThunk.rejected, (state, action) => {
+        state.findingUser = false;
+        state.loading = false;
+        state.errorFindingUser = "User not found";
+        state.foundUser = null;
+        state.generalError =
+          action.payload?.message || "Get user by email failed";
+        state.errors = action.payload?.errors || null;
       });
   },
 });
@@ -210,10 +243,11 @@ const authSlice = createSlice({
 // Exports
 // --------------------
 export const {
-  logout,
   serVerifyEmailRequired,
   setForgetPasswordSuccess,
   setResetPasswordSuccess,
   setGeneralError,
+  setErrorFindingUser,
+  setFoundUser,
 } = authSlice.actions;
 export default authSlice.reducer;

@@ -8,20 +8,19 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Users } from "lucide-react";
+import { Users, MoreVertical, Unplug } from "lucide-react";
 import DocumentAccessDialog from "../documents/DocumentAccessDialog";
 import React from "react";
 
 function DashboardActionBar() {
-  const { documents, searchQuery, documentAccess } = useAppSelector(
-    (state) => state.documents
-  );
+  const { documents, searchQuery } = useAppSelector((state) => state.documents);
 
   const filteredDocuments = documents.filter((doc) =>
     doc.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const [accessDialogOpen, setAccessDialogOpen] = React.useState(false);
+  const [manageDialogOpen, setManageDialogOpen] = React.useState(false);
+  const [connectDialogOpen, setConnectDialogOpen] = React.useState(false);
 
   return (
     <div className="flex items-center justify-between mb-8">
@@ -35,25 +34,33 @@ function DashboardActionBar() {
         </p>
       </div>
       <div className="flex gap-4">
+        <NewDocumentDialog />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              Manage Access
+            <Button variant="ghost" size="icon" className="h-10 w-10">
+              <MoreVertical className="w-5 h-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setAccessDialogOpen(true)}>
+            <DropdownMenuItem onClick={() => setConnectDialogOpen(true)}>
+              <Unplug className="w-4 h-4 mr-2" />
+              Connect to Live Document
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setManageDialogOpen(true)}>
               <Users className="w-4 h-4 mr-2" />
-              Show All Document Accesses
+              Manage Access
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <ConnectLiveDocumentDialog />
-        <NewDocumentDialog />
+
+        <ConnectLiveDocumentDialog
+          open={connectDialogOpen}
+          onOpenChange={setConnectDialogOpen}
+        />
+
         <DocumentAccessDialog
-          open={accessDialogOpen}
-          onOpenChange={setAccessDialogOpen}
+          open={manageDialogOpen}
+          onOpenChange={setManageDialogOpen}
         />
       </div>
     </div>

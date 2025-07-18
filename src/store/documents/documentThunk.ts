@@ -13,6 +13,12 @@ import {
   type GetAllDocumentAccessResponse,
   type GetSingleDocumentAccessPayload,
   type GetSingleDocumentAccessResponse,
+  type RevokeApproveAccessPayload,
+  type RevokeApproveAccessResponse,
+  type DeleteDocuemntPayload,
+  type DeleteDocumentResponse,
+  type GrantAccessPayload,
+  type GrantAccessResponse,
 } from "./types";
 import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
@@ -21,9 +27,13 @@ const GET_DOCUMENTS_ACTION = "documents/getDocuments";
 const POST_DOCUMENTS_ACTION = "documents/postDocument";
 const PATCH_DOCUMENT_ACTION = "documents/patchDocument";
 const REQUEST_ACCESS_ACTION = "documents/requestAccess";
+const APPROVE_ACCESS_ACTION = "documents/approveAccess";
+const REVOKE_ACCESS_ACTION = "documents/revokeAccess";
 const GET_DOCUMENT_BY_SHARE_TOKEN_ACTION = "documents/getDocumentByShareToken";
 const GET_ALL_DOCUMENT_ACCESS_ACTION = "documents/getAllDocumentAccess";
 const GET_SINGLE_DOCUMENT_ACCESS_ACTION = "documents/getSingleDocumentAccess";
+const DELETE_DOCUMENT_ACTION = "documents/deleteDocument";
+const GRANT_ACCESS_ACTION = "documents/grantAccess";
 
 export const getDocumentsThunk = createAsyncThunk<
   GetDocumentsResponse,
@@ -120,7 +130,7 @@ export const requestAccessThunk = createAsyncThunk<
 >(REQUEST_ACCESS_ACTION, async (payload, thunkAPI) => {
   try {
     const response = await axios.post<RequestAccessResponse>(
-      API_ROUTES.DOCUMENTS.REQUEST_ACCESS(payload.share_token),
+      API_ROUTES.DOCUMENT_ACCESS.REQUEST_ACCESS(payload.share_token),
       null,
       {
         withCredentials: true,
@@ -132,6 +142,64 @@ export const requestAccessThunk = createAsyncThunk<
     return response.data;
   } catch (error) {
     let message = "Request access failed";
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const approveAccessThunk = createAsyncThunk<
+  RevokeApproveAccessResponse,
+  RevokeApproveAccessPayload,
+  { rejectValue: ErrorResponse }
+>(APPROVE_ACCESS_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.patch(
+      API_ROUTES.DOCUMENT_ACCESS.APPROVE_ACCESS(payload.access_id),
+      null,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    let message = "Approve access failed";
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const revokeAccessThunk = createAsyncThunk<
+  RevokeApproveAccessResponse,
+  RevokeApproveAccessPayload,
+  { rejectValue: ErrorResponse }
+>(REVOKE_ACCESS_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.patch(
+      API_ROUTES.DOCUMENT_ACCESS.REVOKE_ACCESS(payload.access_id),
+      null,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    let message = "Revoke access failed";
 
     if (axios.isAxiosError(error)) {
       message = error.response?.data?.detail || message;
@@ -157,7 +225,6 @@ export const getDocumentByShareTokenThunk = createAsyncThunk<
         },
       }
     );
-
     return response.data;
   } catch (error) {
     let message = "Failed to fetch document by share token";
@@ -222,6 +289,59 @@ export const getSingleDocumentAccessThunk = createAsyncThunk<
     return response.data;
   } catch (error) {
     let message = "Failed to fetch single document access";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const deleteDocumentThunk = createAsyncThunk<
+  DeleteDocumentResponse,
+  DeleteDocuemntPayload,
+  { rejectValue: ErrorResponse }
+>(DELETE_DOCUMENT_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.delete<DeleteDocumentResponse>(
+      API_ROUTES.DOCUMENTS.PATCH_PUT_DETAIL(payload.id),
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response.data);
+
+    return response.data;
+  } catch (error) {
+    let message = "Failed to delete document";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const grantAccessThunk = createAsyncThunk<
+  GrantAccessResponse,
+  GrantAccessPayload,
+  { rejectValue: ErrorResponse }
+>(GRANT_ACCESS_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.post<GrantAccessResponse>(
+      API_ROUTES.DOCUMENT_ACCESS.GRANT_ACCESS,
+      payload,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to grant access";
     if (axios.isAxiosError(error)) {
       message = error.response?.data?.detail || message;
     }

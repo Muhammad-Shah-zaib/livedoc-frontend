@@ -15,6 +15,8 @@ import {
   type ResetPasswordPayload,
   type ResetPasswordResponse,
   type GetUserProfileResponse,
+  type GetUserByEmailPayload,
+  type GetUserByEmailResponse,
 } from "./types";
 
 const GOOGLE_LOGIN_ACTION = "auth/login/google";
@@ -24,6 +26,7 @@ const LOGOUT_ACTION = "auth/logout";
 const FORGET_PASSWORD_ACTION = "auth/forget-password";
 const RESET_PASSWORD_ACTION = "auth/reset-password";
 const GET_USER_PROFILE_ACTION = "auth/get-user-profile";
+const GET_USER_BY_EMAIL_ACTION = "auth/get-user-by-email";
 
 // Async thunk for goole login
 export const googleLoginThunk = createAsyncThunk<
@@ -205,6 +208,31 @@ export const getUserProfileThunk = createAsyncThunk<
       message = error.response?.data?.detail || message;
     }
 
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+// Async thunk for getting user by email
+export const getUserByEmailThunk = createAsyncThunk<
+  GetUserByEmailResponse,
+  GetUserByEmailPayload,
+  { rejectValue: ErrorResponse }
+>(GET_USER_BY_EMAIL_ACTION, async ({ email }, thunkAPI) => {
+  try {
+    const response = await axios.get<GetUserByEmailResponse>(
+      API_ROUTES.AUTH.GET_USER_BY_EMAIL,
+      {
+        params: { email },
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to get user by email";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.message || message;
+    }
     return thunkAPI.rejectWithValue({ message });
   }
 });

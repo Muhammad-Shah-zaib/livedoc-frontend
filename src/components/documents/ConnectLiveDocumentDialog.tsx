@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -22,13 +21,20 @@ interface ConnectLiveDocumentForm {
   shareToken: string;
 }
 
-export default function ConnectLiveDocumentDialog() {
+interface ConnectLiveDocumentDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export default function ConnectLiveDocumentDialog({
+  open,
+  onOpenChange,
+}: ConnectLiveDocumentDialogProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { canNavigateToDetailFromConnect, currentDocument } = useAppSelector(
     (state) => state.documents
   );
-  const [open, setOpen] = useState(false);
 
   const {
     register,
@@ -36,7 +42,7 @@ export default function ConnectLiveDocumentDialog() {
     reset,
     formState: { errors },
   } = useForm<ConnectLiveDocumentForm>({
-    mode: "onTouched",
+    mode: "onSubmit",
     defaultValues: { shareToken: "" },
   });
 
@@ -55,17 +61,13 @@ export default function ConnectLiveDocumentDialog() {
     if (canNavigateToDetailFromConnect)
       navigate(`/documents/${currentDocument?.share_token}`);
   }, [canNavigateToDetailFromConnect, currentDocument, navigate]);
+
+  useEffect(() => {
+    if (!open) reset();
+  }, [open, reset]);
+
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(v) => {
-        setOpen(v);
-        if (!v) reset();
-      }}
-    >
-      <DialogTrigger asChild>
-        <Button variant="outline">Connect to Live Document</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <form className="space-y-4" onSubmit={handleSubmit(handleConnect)}>
           <DialogHeader>

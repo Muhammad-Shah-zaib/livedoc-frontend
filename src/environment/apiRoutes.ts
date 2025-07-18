@@ -9,12 +9,11 @@ export const API_ROUTES = {
     FORGOT_PASSWORD: `${BASE_API_URL}/forgot-password/`,
     RESET_PASSWORD: `${BASE_API_URL}/reset-password`,
     GET_USER_PROFILE: `${BASE_API_URL}/user/get-profile/`,
+    GET_USER_BY_EMAIL: `${BASE_API_URL}/user/by-email`,
   },
   DOCUMENTS: {
     GET_POST: `${BASE_API_URL}/documents/`,
     PATCH_PUT_DETAIL: (id: number) => `${BASE_API_URL}/documents/${id}/`,
-    REQUEST_ACCESS: (share_token: string) =>
-      `${BASE_API_URL}/documents/${share_token}/request-access`,
     GET_DETAIL_BY_SHARE_TOKEN: (share_token: string) => {
       return `${BASE_API_URL}/documents/by-token/${share_token}/`;
     },
@@ -31,5 +30,12 @@ export const API_ROUTES = {
   DOCUMENT_ACCESS: {
     GET_POST: `${BASE_API_URL}/document_access/`,
     PATCH_PUT_DELETE: (id: number) => `${BASE_API_URL}/document_access/${id}/`,
+    REQUEST_ACCESS: (share_token: string) =>
+      `${BASE_API_URL}/documents/${share_token}/request-access`,
+    APPROVE_ACCESS: (id: number) =>
+      `${BASE_API_URL}/document_access/${id}/approve-access`,
+    REVOKE_ACCESS: (id: number) =>
+      `${BASE_API_URL}/document_access/${id}/revoke-access`,
+    GRANT_ACCESS: `${BASE_API_URL}/document_access/grant-access/`,
   },
 };

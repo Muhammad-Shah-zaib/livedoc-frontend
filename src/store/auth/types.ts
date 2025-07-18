@@ -10,6 +10,9 @@ export interface IAuthState {
   forgetPasswordSuccess: boolean;
   resetPasswordSuccess: boolean;
   initialAuthChecked: boolean;
+  foundUser: IUser | null;
+  findingUser: boolean;
+  errorFindingUser: string | null;
 }
 
 export interface IUser {
@@ -81,3 +84,12 @@ export interface ResetPasswordResponse {
 }
 
 export type GetUserProfileResponse = IUser;
+
+export interface GetUserByEmailPayload {
+  email: string;
+}
+
+export interface GetUserByEmailResponse {
+  user: IUser;
+  detail: string;
+}

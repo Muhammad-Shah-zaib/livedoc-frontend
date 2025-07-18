@@ -8,6 +8,10 @@ import {
   requestAccessThunk,
   getAllDocumentAccessThunk,
   getSingleDocumentAccessThunk,
+  approveAccessThunk,
+  revokeAccessThunk,
+  deleteDocumentThunk,
+  grantAccessThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
 
@@ -172,6 +176,60 @@ const documentSlice = createSlice({
       })
 
       // --------------------
+      // Approve Access
+      // --------------------
+      .addCase(approveAccessThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(approveAccessThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+        state.documentAccess = state.documentAccess.map((da) => {
+          if (da.id == payload.access.id) {
+            da = payload.access;
+          }
+          return da;
+        });
+        toast.success(payload.detail);
+      })
+      .addCase(approveAccessThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+        toast.error(payload?.message || "Approve access failed");
+      })
+
+      // --------------------
+      // Revoke Access
+      // --------------------
+      .addCase(revokeAccessThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(revokeAccessThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+        state.documentAccess = state.documentAccess.map((da) => {
+          if (da.id == payload.access.id) {
+            da = payload.access;
+          }
+          return da;
+        });
+        toast.success(payload.detail);
+      })
+      .addCase(revokeAccessThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+        toast.error(payload?.message || "Revoke access failed");
+      })
+
+      // --------------------
       // Get Document by Share Token
       // --------------------
       .addCase(getDocumentByShareTokenThunk.pending, (state) => {
@@ -245,6 +303,65 @@ const documentSlice = createSlice({
         state.error = payload?.erros || null;
         state.generalError =
           payload?.message || "Unable to fetch single document access";
+      })
+
+      // --------------------
+      // Delete Document
+      // --------------------
+      .addCase(deleteDocumentThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(deleteDocumentThunk.fulfilled, (state, { payload, meta }) => {
+        state.loading = false;
+        state.documents = state.documents.filter(
+          (doc) => doc.id !== meta.arg.id
+        );
+        state.filteredDocuments = state.filteredDocuments.filter(
+          (doc) => doc.id !== meta.arg.id
+        );
+        if (state.currentDocument && state.currentDocument.id === meta.arg.id) {
+          state.currentDocument = null;
+        }
+        state.error = null;
+        state.generalError = null;
+        toast.success(payload.detail);
+      })
+      .addCase(deleteDocumentThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload?.erros || null;
+        state.generalError = payload?.message || "Unable to delete Document";
+      })
+
+      // --------------------
+      // Grant Access
+      // --------------------
+      .addCase(grantAccessThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(grantAccessThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        // Add or update the access in documentAccess array
+        const index = state.documentAccess.findIndex(
+          (access) => access.id === payload.access.id
+        );
+        if (index !== -1) {
+          state.documentAccess[index] = payload.access;
+        } else {
+          state.documentAccess.push(payload.access);
+        }
+        state.error = null;
+        state.generalError = null;
+        toast.success(payload.detail);
+      })
+      .addCase(grantAccessThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload?.erros || null;
+        state.generalError = payload?.message || "Unable to grant access";
+        toast.error(payload?.message || "Grant access failed");
       });
   },
 });
