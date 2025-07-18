@@ -12,6 +12,7 @@ import {
   revokeAccessThunk,
   deleteDocumentThunk,
   grantAccessThunk,
+  patchDocumentButNotUpdateCurrentThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
 
@@ -160,6 +161,28 @@ const documentSlice = createSlice({
         state.error = payload?.erros || null;
         state.generalError = payload?.message || "Unable to update Document";
       })
+
+      // --------------------
+      // Patch Document No UDPATE CURRENT
+      // --------------------
+      .addCase(patchDocumentButNotUpdateCurrentThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(patchDocumentButNotUpdateCurrentThunk.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(
+        patchDocumentButNotUpdateCurrentThunk.rejected,
+        (state, { payload }) => {
+          state.loading = false;
+          state.error = payload?.erros || null;
+          state.generalError = payload?.message || "Unable to update Document";
+        }
+      )
 
       // --------------------
       // Request Access

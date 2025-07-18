@@ -11,6 +11,7 @@ import { debounce } from "lodash";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { useRef } from "react";
 import { setCurrentDocument } from "@/store/documents/documentSlice";
+import { patchDocumentThunk } from "@/store/documents/documentThunk";
 
 const useTipTapEditor = (ydoc: Y.Doc) => {
   const dispatch = useAppDispatch();
@@ -23,6 +24,12 @@ const useTipTapEditor = (ydoc: Y.Doc) => {
         dispatch(
           setCurrentDocument({
             ...currentDocument,
+            id: currentDocument.id,
+            content: html,
+          })
+        );
+        dispatch(
+          patchDocumentThunk({
             id: currentDocument.id,
             content: html,
           })

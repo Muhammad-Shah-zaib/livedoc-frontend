@@ -15,8 +15,6 @@ import {
 import useTipTapEditor from "@/hooks/useTipTapEditor";
 import * as Y from "yjs";
 import "./style.css";
-import { useEffect } from "react";
-import { useAppSelector } from "@/store/store";
 
 export interface TiptapEditorProps {
   ydoc: Y.Doc;
@@ -24,13 +22,6 @@ export interface TiptapEditorProps {
 
 export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
   const editor = useTipTapEditor(ydoc);
-  const { currentDocument } = useAppSelector((state) => state.documents);
-
-  useEffect(() => {
-    if (currentDocument && editor) {
-      editor.commands.setContent(currentDocument.content || "");
-    }
-  }, []);
 
   if (!editor) return <div>Loading editor...</div>;
 

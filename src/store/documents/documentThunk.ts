@@ -26,6 +26,8 @@ import { API_ROUTES } from "@/environment/apiRoutes";
 const GET_DOCUMENTS_ACTION = "documents/getDocuments";
 const POST_DOCUMENTS_ACTION = "documents/postDocument";
 const PATCH_DOCUMENT_ACTION = "documents/patchDocument";
+const PATCH_DOCUMENT_ACTION_NO_UPDATE_CURRENT =
+  "documents/patchDocumentNoUpdateCurrent";
 const REQUEST_ACCESS_ACTION = "documents/requestAccess";
 const APPROVE_ACCESS_ACTION = "documents/approveAccess";
 const REVOKE_ACCESS_ACTION = "documents/revokeAccess";
@@ -345,6 +347,35 @@ export const grantAccessThunk = createAsyncThunk<
     if (axios.isAxiosError(error)) {
       message = error.response?.data?.detail || message;
     }
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const patchDocumentButNotUpdateCurrentThunk = createAsyncThunk<
+  PatchDocumentResponse,
+  PatchDocumentPayload,
+  { rejectValue: ErrorResponse }
+>(PATCH_DOCUMENT_ACTION_NO_UPDATE_CURRENT, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.patch(
+      API_ROUTES.DOCUMENTS.PATCH_PUT_DETAIL(payload.id),
+      payload,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    let message = "Failed to update document";
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+
     return thunkAPI.rejectWithValue({ message });
   }
 });
