@@ -31,6 +31,7 @@ const initialState: DocumentState = {
   currentDocument: null,
   canNavigateToDetailFromConnect: false,
   documentAccess: [],
+  documentViewStyle: "grid",
 };
 
 // --------------------
@@ -61,6 +62,12 @@ const documentSlice = createSlice({
       { payload }: PayloadAction<boolean>
     ) => {
       state.canNavigateToDetailFromConnect = payload;
+    },
+    setDocumentViewStyle: (
+      state,
+      { payload }: PayloadAction<"grid" | "list">
+    ) => {
+      state.documentViewStyle = payload;
     },
   },
   extraReducers: (builder) => {
@@ -374,5 +381,6 @@ export const {
   setIsAppInitialized,
   setSerachQuery,
   setCurrentDocument,
+  setDocumentViewStyle,
 } = documentSlice.actions;
 export default documentSlice.reducer;

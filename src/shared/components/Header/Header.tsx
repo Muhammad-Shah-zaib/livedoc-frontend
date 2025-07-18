@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAppSelector } from "@/store/store";
-import { Grid3X3, List, Search, Moon } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { Grid3X3, List, Search, Moon, DiscAlbum } from "lucide-react";
 import { useState } from "react";
 import AvatarDropdown from "./AvatarDropDown";
 import NotificationPopover from "@/shared/components/NotificationPopover";
+import { setDocumentViewStyle } from "@/store/documents/documentSlice";
 
 function Header() {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState("");
+  const { documentViewStyle } = useAppSelector((state) => state.documents);
   const { user } = useAppSelector((state) => state.auth);
 
   const getUserInitials = () => {
@@ -32,17 +34,17 @@ function Header() {
           </div>
           <div className="hidden md:flex items-center space-x-1 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-lg p-1">
             <Button
-              variant={viewMode === "grid" ? "default" : "ghost"}
+              variant={documentViewStyle === "grid" ? "default" : "ghost"}
               size="sm"
-              onClick={() => setViewMode("grid")}
+              onClick={() => dispatch(setDocumentViewStyle("grid"))}
               className="h-8 px-3"
             >
               <Grid3X3 className="h-4 w-4" />
             </Button>
             <Button
-              variant={viewMode === "list" ? "default" : "ghost"}
+              variant={documentViewStyle === "list" ? "default" : "ghost"}
               size="sm"
-              onClick={() => setViewMode("list")}
+              onClick={() => dispatch(setDocumentViewStyle("list"))}
               className="h-8 px-3"
             >
               <List className="h-4 w-4" />

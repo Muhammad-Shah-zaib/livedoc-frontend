@@ -13,6 +13,7 @@ export interface DocumentState {
   searchQuery: string;
   canNavigateToDetailFromConnect: boolean;
   documentAccess: DocumentAccess[];
+  documentViewStyle: "grid" | "list";
 }
 
 export interface DocumentAccess {

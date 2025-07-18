@@ -19,9 +19,13 @@ import { grantAccessThunk } from "@/store/documents/documentThunk";
 
 interface DocumentInviteFormProps {
   onClose: () => void;
+  documentId: number | null;
 }
 
-const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({ onClose }) => {
+const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({
+  onClose,
+  documentId,
+}) => {
   const dispatch = useAppDispatch();
   const { errorFindingUser, findingUser, foundUser, user } = useAppSelector(
     (state) => state.auth
@@ -66,12 +70,13 @@ const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({ onClose }) => {
     };
   }, [email, debouncedEmailLookup]);
 
-  // Set default documentId to newest document when documents change
   useEffect(() => {
-    if (documents.length > 0) {
+    if (documentId !== null) {
+      setValue("documentId", documentId.toString());
+    } else if (documents.length > 0) {
       setValue("documentId", documents[0].id.toString());
     }
-  }, [documents, setValue]);
+  }, [documents, setValue, documentId]);
 
   const onInvite = (data: { email: string; documentId: string }) => {
     const selectedDoc = documents.find(
@@ -159,28 +164,46 @@ const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({ onClose }) => {
         <Label className="block mb-1 font-medium" htmlFor="invite-document">
           <FilePlus2 className="inline w-4 h-4 mr-1 text-slate-500" /> Document
         </Label>
-        <Select
-          value={watch("documentId")}
-          onValueChange={(val) =>
-            setValue("documentId", val, { shouldValidate: true })
-          }
-        >
-          <SelectTrigger id="invite-document" className="w-full">
-            <SelectValue placeholder="Select a document" />
-          </SelectTrigger>
-          <SelectContent className="lg:max-h-[300px] md:max-h-[200px] max-h-[150px]">
-            {documents.map((doc) => (
-              <SelectItem key={doc.id} value={doc.id.toString()}>
-                {doc.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {/* Hidden input for react-hook-form validation */}
-        <input
-          type="hidden"
-          {...register("documentId", { required: "Please select a document" })}
-        />
+        {documentId !== null ? (
+          <div className="px-3 py-2 border border-slate-300 rounded bg-slate-50">
+            {documents.find((doc) => doc.id === documentId)?.name || "Document"}
+            {/* Hidden input for react-hook-form validation */}
+            <input
+              type="hidden"
+              value={documentId}
+              {...register("documentId", {
+                required: "Please select a document",
+              })}
+            />
+          </div>
+        ) : (
+          <>
+            <Select
+              value={watch("documentId")}
+              onValueChange={(val) =>
+                setValue("documentId", val, { shouldValidate: true })
+              }
+            >
+              <SelectTrigger id="invite-document" className="w-full">
+                <SelectValue placeholder="Select a document" />
+              </SelectTrigger>
+              <SelectContent className="lg:max-h-[300px] md:max-h-[200px] max-h-[150px]">
+                {documents.map((doc) => (
+                  <SelectItem key={doc.id} value={doc.id.toString()}>
+                    {doc.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {/* Hidden input for react-hook-form validation */}
+            <input
+              type="hidden"
+              {...register("documentId", {
+                required: "Please select a document",
+              })}
+            />
+          </>
+        )}
         {errors.documentId && (
           <span className="text-xs text-red-500 mt-1 block">
             {errors.documentId.message}

@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
@@ -19,32 +18,22 @@ import {
   Trash2,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from "react-router-dom";
-import { setCurrentDocument } from "@/store/documents/documentSlice";
-import type { Document } from "@/store/documents/types";
-import { useLiveToggle } from "@/hooks/useLiveToggle";
-import { deleteDocumentThunk } from "@/store/documents/documentThunk";
 import ShareTokenDialog from "./ShareTokenDialog";
+import useDocumentActions from "@/hooks/useDocumentActions";
+import DocumentAccessDialog from "./DocumentAccessDialog";
 
 function DocumentsView() {
   const { filteredDocuments } = useAppSelector((state) => state.documents);
-  const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.documents);
-  const navigate = useNavigate();
-  const { toggleLive } = useLiveToggle();
-  const [shareDialogOpen, setShareDialogOpen] = React.useState<null | number>(
-    null
-  );
-
-  const handleOpenDocumentDetail = (doc: Document) => {
-    navigate(`/documents/${doc.share_token}`);
-    dispatch(setCurrentDocument(doc));
-  };
-
-  const handleDelete = (id: number) => {
-    dispatch(deleteDocumentThunk({ id }));
-  };
-
+  const {
+    handleOpenDocumentDetail,
+    handleDelete,
+    toggleLive,
+    loading,
+    shareDialogOpen,
+    setShareDialogOpen,
+    accessDialogOpen,
+    setAccessDialogOpen,
+  } = useDocumentActions();
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {filteredDocuments.map((doc) => (
@@ -89,6 +78,10 @@ function DocumentsView() {
                   <DropdownMenuItem onClick={() => setShareDialogOpen(doc.id)}>
                     <Share2 className="h-4 w-4 mr-2" />
                     Share
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setAccessDialogOpen(doc.id)}>
+                    <Users className="h-4 w-4 mr-2" />
+                    Access
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-red-600"
@@ -151,6 +144,11 @@ function DocumentsView() {
               open={shareDialogOpen === doc.id}
               onOpenChange={(open) => setShareDialogOpen(open ? doc.id : null)}
               shareToken={doc.share_token}
+            />
+            <DocumentAccessDialog
+              open={accessDialogOpen === doc.id}
+              onOpenChange={(open) => setAccessDialogOpen(open ? doc.id : null)}
+              documentId={doc.id}
             />
           </CardContent>
         </Card>
