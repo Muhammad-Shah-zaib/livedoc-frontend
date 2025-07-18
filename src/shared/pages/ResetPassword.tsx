@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Moon, Sun, Eye, EyeOff, Lock, CheckCircle } from "lucide-react";
+import { Moon, Eye, EyeOff, Lock, CheckCircle } from "lucide-react";
 import { NavLink, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { resetPasswordThunk } from "@/store/auth/authThunk";

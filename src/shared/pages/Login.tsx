@@ -21,7 +21,7 @@ import {
 } from "@/store/auth/authThunk";
 import Spinner from "../components/spinner";
 import type { EmailPasswordLoginPayload } from "@/store/auth/types";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();

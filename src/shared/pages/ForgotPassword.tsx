@@ -15,7 +15,6 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 import { forgotPasswordThunk } from "@/store/auth/authThunk";
 import { useForm } from "react-hook-form";
 import type { ForgetPassworPayload } from "@/store/auth/types";
-import { setForgetPasswordSuccess } from "@/store/auth/authSlice";
 
 export default function ForgotPasswordPage() {
   const [isDark, setIsDark] = useState(false);
@@ -45,11 +44,6 @@ export default function ForgotPasswordPage() {
       reset();
     } finally {
     }
-  };
-
-  const handleBackToLogin = () => {
-    reset();
-    dispatch(setForgetPasswordSuccess(false));
   };
 
   if (isSuccess) {
