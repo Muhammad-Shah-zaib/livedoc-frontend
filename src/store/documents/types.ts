@@ -14,6 +14,7 @@ export interface DocumentState {
   canNavigateToDetailFromConnect: boolean;
   documentAccess: DocumentAccess[];
   documentViewStyle: "grid" | "list";
+  canConnectToDocument: boolean;
 }
 
 export interface DocumentAccess {
@@ -130,4 +131,13 @@ export interface GrantAccessResponse {
   detail: string;
   created: boolean;
   access: DocumentAccess;
+}
+
+export interface LiveDocumentAccessPayload {
+  share_token: string;
+}
+
+export interface LiveDocumentAccessResponse {
+  detail: string;
+  status: "CAN_CONNECT" | "CAN_NOT_CONNECT";
 }

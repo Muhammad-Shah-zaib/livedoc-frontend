@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import {
+  checkLiveDocumentAccessThunk,
   getDocumentByShareTokenThunk,
   requestAccessThunk,
 } from "@/store/documents/documentThunk";
@@ -32,9 +33,11 @@ export default function ConnectLiveDocumentDialog({
 }: ConnectLiveDocumentDialogProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { canNavigateToDetailFromConnect, currentDocument } = useAppSelector(
-    (state) => state.documents
-  );
+  const {
+    canNavigateToDetailFromConnect,
+    currentDocument,
+    canConnectToDocument,
+  } = useAppSelector((state) => state.documents);
 
   const {
     register,
@@ -54,13 +57,19 @@ export default function ConnectLiveDocumentDialog({
   async function handleConnect({ shareToken }: ConnectLiveDocumentForm) {
     if (shareToken) {
       await dispatch(getDocumentByShareTokenThunk({ share_token: shareToken }));
+      await dispatch(checkLiveDocumentAccessThunk({ share_token: shareToken }));
     }
   }
 
   useEffect(() => {
-    if (canNavigateToDetailFromConnect)
+    if (canNavigateToDetailFromConnect && canConnectToDocument)
       navigate(`/documents/${currentDocument?.share_token}`);
-  }, [canNavigateToDetailFromConnect, currentDocument, navigate]);
+  }, [
+    canConnectToDocument,
+    canNavigateToDetailFromConnect,
+    currentDocument,
+    navigate,
+  ]);
 
   useEffect(() => {
     if (!open) reset();

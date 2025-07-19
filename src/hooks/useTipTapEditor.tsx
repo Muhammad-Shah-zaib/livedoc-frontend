@@ -7,15 +7,19 @@ import TextAlign from "@tiptap/extension-text-align";
 import CharacterCount from "@tiptap/extension-character-count";
 import * as Y from "yjs";
 import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import { debounce } from "lodash";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { useRef } from "react";
 import { setCurrentDocument } from "@/store/documents/documentSlice";
 import { patchDocumentThunk } from "@/store/documents/documentThunk";
 
-const useTipTapEditor = (ydoc: Y.Doc) => {
+const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+const useTipTapEditor = (ydoc: Y.Doc, provider: any) => {
   const dispatch = useAppDispatch();
   const { currentDocument } = useAppSelector((state) => state.documents);
+  const { user } = useAppSelector((state) => state.auth);
 
   const debouncedUpdateRef = useRef(
     debounce((editor) => {
@@ -59,6 +63,17 @@ const useTipTapEditor = (ydoc: Y.Doc) => {
         document: ydoc,
         field: "default",
       }),
+      ...(provider
+        ? [
+            CollaborationCursor.configure({
+              provider,
+              user: {
+                name: `${user?.first_name} ${user?.last_name}`,
+                color: randomColor,
+              },
+            }),
+          ]
+        : []),
     ],
     autofocus: true,
     onUpdate: ({ editor }) => {

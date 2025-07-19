@@ -1,4 +1,4 @@
-import { useYjsLiveSocket } from "@/hooks/useLiveDocumentSocket";
+import { useYjsLiveSocket } from "@/hooks/useYjsLiveSocket";
 import { TiptapEditor } from "@/shared/components/Header/TipTapEditor/TIpTapEditor";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setCanNavigateToDetailFromConnect } from "@/store/documents/documentSlice";
@@ -25,7 +25,7 @@ export default function DocumentDetail() {
     }
   }, [user, currentDocument]);
 
-  const { ydoc } = useYjsLiveSocket(currentDocument.share_token);
+  const { ydoc, provider } = useYjsLiveSocket(currentDocument.share_token);
   const { handleSave } = useSaveDocument(currentDocument);
 
   return (
@@ -43,7 +43,7 @@ export default function DocumentDetail() {
           </Button>
         </div>
       </div>
-      <TiptapEditor ydoc={ydoc} />
+      <TiptapEditor ydoc={ydoc} provider={provider} />
       <DocumentAccessDialog
         open={accessDialogOpen}
         onOpenChange={setAccessDialogOpen}

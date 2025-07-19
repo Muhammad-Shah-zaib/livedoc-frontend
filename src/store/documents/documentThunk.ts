@@ -19,6 +19,8 @@ import {
   type DeleteDocumentResponse,
   type GrantAccessPayload,
   type GrantAccessResponse,
+  type LiveDocumentAccessPayload,
+  type LiveDocumentAccessResponse,
 } from "./types";
 import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
@@ -34,6 +36,7 @@ const GET_ALL_DOCUMENT_ACCESS_ACTION = "documents/getAllDocumentAccess";
 const GET_SINGLE_DOCUMENT_ACCESS_ACTION = "documents/getSingleDocumentAccess";
 const DELETE_DOCUMENT_ACTION = "documents/deleteDocument";
 const GRANT_ACCESS_ACTION = "documents/grantAccess";
+const CHECK_LIVE_DOCUMENT_ACCESS_ACTION = "documents/checkLiveDocumentAccess";
 
 export const getDocumentsThunk = createAsyncThunk<
   GetDocumentsResponse,
@@ -343,6 +346,32 @@ export const grantAccessThunk = createAsyncThunk<
   } catch (error) {
     let message = "Failed to grant access";
     if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const checkLiveDocumentAccessThunk = createAsyncThunk<
+  LiveDocumentAccessResponse,
+  LiveDocumentAccessPayload,
+  { rejectValue: ErrorResponse }
+>(CHECK_LIVE_DOCUMENT_ACCESS_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.get<LiveDocumentAccessResponse>(
+      API_ROUTES.DOCUMENTS.CHECK_LIVE_ACCESS(payload.share_token),
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to check live document access";
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.data);
       message = error.response?.data?.detail || message;
     }
     return thunkAPI.rejectWithValue({ message });

@@ -12,6 +12,7 @@ import {
   revokeAccessThunk,
   deleteDocumentThunk,
   grantAccessThunk,
+  checkLiveDocumentAccessThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
 
@@ -32,6 +33,7 @@ const initialState: DocumentState = {
   canNavigateToDetailFromConnect: false,
   documentAccess: [],
   documentViewStyle: "grid",
+  canConnectToDocument: false,
 };
 
 // --------------------
@@ -369,6 +371,30 @@ const documentSlice = createSlice({
         state.error = payload?.erros || null;
         state.generalError = payload?.message || "Unable to grant access";
         toast.error(payload?.message || "Grant access failed");
+      })
+
+      // --------------------
+      // Check Live Document Access
+      // --------------------
+      .addCase(checkLiveDocumentAccessThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+        state.canConnectToDocument = false;
+      })
+      .addCase(checkLiveDocumentAccessThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+        state.canConnectToDocument = payload.status === "CAN_CONNECT";
+      })
+      .addCase(checkLiveDocumentAccessThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError =
+          payload?.message || "Unable to check live document access";
+        state.canConnectToDocument = false;
+        toast.error(state.generalError);
       });
   },
 });

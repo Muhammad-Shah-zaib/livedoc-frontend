@@ -18,14 +18,15 @@ import "./style.css";
 
 export interface TiptapEditorProps {
   ydoc: Y.Doc;
+  provider: any;
 }
 
-export const TiptapEditor = ({ ydoc }: TiptapEditorProps) => {
-  const editor = useTipTapEditor(ydoc);
+export const TiptapEditor = ({ ydoc, provider }: TiptapEditorProps) => {
+  const editor = useTipTapEditor(ydoc, provider);
 
-  if (!editor) return <div>Loading editor...</div>;
-
-  ydoc.guid;
+  if (!editor || !provider) {
+    return <div className="animate-pulse bg-gray-200 h-96 w-full rounded-md" />;
+  }
 
   return (
     <div className="rounded-xl border bg-white shadow-sm p-4 flex flex-col w-full max-w-7xl px-8 mx-auto">

@@ -21,7 +21,7 @@ export const useYjsLiveSocket = (shareToken: string | null) => {
     if (!shareToken) return;
 
     const websocketProvider = new WebsocketProvider(
-      "ws://localhost:1234",
+      `ws://localhost:8000/ws/yjs-server/`,
       shareToken,
       ydoc
     );
