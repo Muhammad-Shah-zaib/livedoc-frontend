@@ -10,6 +10,7 @@ import MasterLayout from "./shared/layouts/MasterLayout";
 import DocumentDetail from "./components/documents/DocumentDetail";
 import Dashboard from "./components/dashboard/Dashboard";
 import SecondaryLayout from "./shared/layouts/SecondaryLayout";
+import TipTapEditorTest from "./shared/components/Header/TipTapEditor/TipTapEditorTest";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         {/* NON PROTECTED ROUTES */}
         {/* REDIRECTION */}
+        <Route path="/tiptap-test" element={<TipTapEditorTest />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
         {/* AUTH ROUTES */}
         <Route path="/" element={<PublicRouteGuard />}>

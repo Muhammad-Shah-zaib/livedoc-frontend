@@ -13,18 +13,12 @@ import {
   Quote,
 } from "lucide-react";
 import useTipTapEditor from "@/hooks/useTipTapEditor";
-import * as Y from "yjs";
 import "./style.css";
 
-export interface TiptapEditorProps {
-  ydoc: Y.Doc;
-  provider: any;
-}
+export const TiptapEditor = () => {
+  const editor = useTipTapEditor();
 
-export const TiptapEditor = ({ ydoc, provider }: TiptapEditorProps) => {
-  const editor = useTipTapEditor(ydoc, provider);
-
-  if (!editor || !provider) {
+  if (!editor) {
     return <div className="animate-pulse bg-gray-200 h-96 w-full rounded-md" />;
   }
 
@@ -124,11 +118,7 @@ export const TiptapEditor = ({ ydoc, provider }: TiptapEditorProps) => {
         }}
         className="rounded-md p-3 w-full max-w-none prose prose-sm overflow-auto min-h-[300px] max-h-[500px]"
       >
-        <EditorContent
-          key={ydoc.guid}
-          editor={editor}
-          className="tiptap-editor"
-        />
+        <EditorContent editor={editor} className="tiptap-editor" />
       </div>
     </div>
   );

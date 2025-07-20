@@ -29,6 +29,7 @@
     "@tanstack/react-table": "^8.21.3",
     "@tiptap/extension-character-count": "^3.0.6",
     "@tiptap/extension-collaboration": "^3.0.6",
+    "@tiptap/extension-collaboration-caret": "^3.0.7",
     "@tiptap/extension-collaboration-cursor": "^2.26.1",
     "@tiptap/extension-floating-menu": "^3.0.6",
     "@tiptap/extension-highlight": "^3.0.6",

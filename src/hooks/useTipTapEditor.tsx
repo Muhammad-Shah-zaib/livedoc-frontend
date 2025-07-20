@@ -1,84 +1,63 @@
 import { useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
-import Highlight from "@tiptap/extension-highlight";
 import Placeholder from "@tiptap/extension-placeholder";
-import TextAlign from "@tiptap/extension-text-align";
-import CharacterCount from "@tiptap/extension-character-count";
 import * as Y from "yjs";
 import Collaboration from "@tiptap/extension-collaboration";
-import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
-import { debounce } from "lodash";
-import { useAppDispatch, useAppSelector } from "@/store/store";
+import { useAppSelector } from "@/store/store";
 import { useRef } from "react";
-import { setCurrentDocument } from "@/store/documents/documentSlice";
-import { patchDocumentThunk } from "@/store/documents/documentThunk";
+import CollaborationCaret from "@tiptap/extension-collaboration-caret";
+import StarterKit from "@tiptap/starter-kit";
+import { WebsocketProvider } from "y-websocket";
+import "../shared/components/Header/TipTapEditor/style.css";
 
-const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+const WS_URL = "ws://localhost:8000/ws/yjs-server/";
 
-const useTipTapEditor = (ydoc: Y.Doc, provider: any) => {
-  const dispatch = useAppDispatch();
+const useTipTapEditor = () => {
   const { currentDocument } = useAppSelector((state) => state.documents);
   const { user } = useAppSelector((state) => state.auth);
+  if (!currentDocument) return;
+  const ydoc = new Y.Doc();
+  // const dispatch = useAppDispatch();
 
-  const debouncedUpdateRef = useRef(
-    debounce((editor) => {
-      const html = editor.getHTML();
-      if (currentDocument) {
-        dispatch(
-          setCurrentDocument({
-            ...currentDocument,
-            id: currentDocument.id,
-            content: html,
-          })
-        );
-        dispatch(
-          patchDocumentThunk({
-            id: currentDocument.id,
-            content: html,
-          })
-        );
-      }
-    }, 300)
+  const provider = new WebsocketProvider(
+    WS_URL,
+    currentDocument.share_token,
+    ydoc
   );
 
+  const userColors = [
+    "#1E88E5", // Blue
+    "#43A047", // Green
+    "#F4511E", // Deep Orange
+    "#6D4C41", // Brown
+    "#8E24AA", // Purple
+    "#FDD835", // Yellow
+    "#00ACC1", // Cyan
+    "#E53935", // Red
+    "#5E35B1", // Indigo
+    "#FF7043", // Orange
+  ];
+
+  const userColor = useRef(
+    userColors[Math.floor(Math.random() * userColors.length)]
+  ).current;
+
   const editor = useEditor({
-    editable: currentDocument?.can_write_access,
     extensions: [
-      StarterKit.configure({
-        heading: {
-          levels: [1, 2, 3],
+      Collaboration.configure({ document: ydoc }),
+      CollaborationCaret.configure({
+        provider: provider,
+        user: {
+          name: user?.first_name || "user",
+          color: userColor,
         },
       }),
-      Underline,
-      Highlight,
-      CharacterCount,
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
+      StarterKit.configure({
+        undoRedo: false,
       }),
       Placeholder.configure({
-        placeholder: "Start writing something awesome...",
+        placeholder: "Write something...",
       }),
-      Collaboration.configure({
-        document: ydoc,
-        field: "default",
-      }),
-      ...(provider
-        ? [
-            CollaborationCursor.configure({
-              provider,
-              user: {
-                name: `${user?.first_name} ${user?.last_name}`,
-                color: randomColor,
-              },
-            }),
-          ]
-        : []),
     ],
-    autofocus: true,
-    onUpdate: ({ editor }) => {
-      debouncedUpdateRef.current(editor);
-    },
   });
 
   return editor;

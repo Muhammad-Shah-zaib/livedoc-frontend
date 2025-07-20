@@ -1464,6 +1464,11 @@
   resolved "https://registry.yarnpkg.com/@tiptap/extension-code/-/extension-code-3.0.6.tgz#39d23ca9b993c751c94e9d5b0702ec389f50c574"
   integrity sha512-7310bV2UU2Kt/9W4TYarlYU9muM9M9Vv7Gd0hVpID7cAztiTG4pUaTsNt2IFCuhnIaslmcuGtv70eldkylgEdw==
 
+"@tiptap/extension-collaboration-caret@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-collaboration-caret/-/extension-collaboration-caret-3.0.7.tgz#3580178e02c874847c6ec7fb6c06ed89446003a5"
+  integrity sha512-TvaASTgrdZrbbZLOoe0lQHD/w6qV5KUJuXDkdxWmfptcuZhmkb5vY7ppeDLtUqs0EfXHBGMexwqg7J8bSxeP5A==
+
 "@tiptap/extension-collaboration-cursor@^2.26.1":
   version "2.26.1"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-collaboration-cursor/-/extension-collaboration-cursor-2.26.1.tgz#1549ebbbc9eb28e84cd5f6bb1baba454cb173d58"
