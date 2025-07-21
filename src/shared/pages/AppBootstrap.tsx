@@ -50,11 +50,7 @@ export default function AppBootstrap() {
 
   return (
     <div
-      className={`min-h-screen transition-all duration-300 ${
-        isDark
-          ? "dark bg-slate-950"
-          : "bg-gradient-to-br from-slate-50 to-blue-50"
-      }`}
+      className={`min-h-screen transition-all duration-300 bg-whire dark:bg-slate-950`}
     >
       <div className="container mx-auto px-4 py-8">
         {/* Header with theme toggle */}

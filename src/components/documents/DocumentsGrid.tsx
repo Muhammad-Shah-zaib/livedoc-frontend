@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAppSelector } from "@/store/store";
 import { Switch } from "@/components/ui/switch";
+import { useState } from "react";
 
 import {
   Clock,
@@ -21,12 +22,12 @@ import { Label } from "@/components/ui/label";
 import ShareTokenDialog from "./ShareTokenDialog";
 import useDocumentActions from "@/hooks/useDocumentActions";
 import DocumentAccessDialog from "./DocumentAccessDialog";
+import DeleteDocumentDialog from "./DeleteDocumentDialog";
 
 function DocumentsView() {
   const { filteredDocuments } = useAppSelector((state) => state.documents);
   const {
     handleOpenDocumentDetail,
-    handleDelete,
     toggleLive,
     loading,
     shareDialogOpen,
@@ -34,6 +35,8 @@ function DocumentsView() {
     accessDialogOpen,
     setAccessDialogOpen,
   } = useDocumentActions();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<null | number>(null);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {filteredDocuments.map((doc) => (
@@ -85,7 +88,7 @@ function DocumentsView() {
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-red-600"
-                    onClick={() => handleDelete(doc.id)}
+                    onClick={() => setDeleteDialogOpen(doc.id)}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete
@@ -149,6 +152,11 @@ function DocumentsView() {
               open={accessDialogOpen === doc.id}
               onOpenChange={(open) => setAccessDialogOpen(open ? doc.id : null)}
               documentId={doc.id}
+            />
+            <DeleteDocumentDialog
+              document={doc}
+              open={deleteDialogOpen === doc.id}
+              onOpenChange={(open) => setDeleteDialogOpen(open ? doc.id : null)}
             />
           </CardContent>
         </Card>

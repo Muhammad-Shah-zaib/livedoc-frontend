@@ -15,6 +15,7 @@ export interface DocumentState {
   documentAccess: DocumentAccess[];
   documentViewStyle: "grid" | "list";
   canConnectToDocument: boolean;
+  deleteSuccessful: boolean;
 }
 
 export interface DocumentAccess {

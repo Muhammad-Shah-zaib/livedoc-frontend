@@ -34,6 +34,7 @@ const initialState: DocumentState = {
   documentAccess: [],
   documentViewStyle: "grid",
   canConnectToDocument: false,
+  deleteSuccessful: false,
 };
 
 // --------------------
@@ -70,6 +71,9 @@ const documentSlice = createSlice({
       { payload }: PayloadAction<"grid" | "list">
     ) => {
       state.documentViewStyle = payload;
+    },
+    setDeleteSuccessful: (state, { payload }: PayloadAction<boolean>) => {
+      state.deleteSuccessful = payload;
     },
   },
   extraReducers: (builder) => {
@@ -336,6 +340,8 @@ const documentSlice = createSlice({
         state.error = null;
         state.generalError = null;
         toast.success(payload.detail);
+
+        state.deleteSuccessful = true;
       })
       .addCase(deleteDocumentThunk.rejected, (state, { payload }) => {
         state.loading = false;
@@ -408,5 +414,6 @@ export const {
   setSerachQuery,
   setCurrentDocument,
   setDocumentViewStyle,
+  setDeleteSuccessful,
 } = documentSlice.actions;
 export default documentSlice.reducer;

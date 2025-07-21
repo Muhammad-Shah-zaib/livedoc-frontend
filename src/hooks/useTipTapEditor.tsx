@@ -3,11 +3,10 @@ import Placeholder from "@tiptap/extension-placeholder";
 import * as Y from "yjs";
 import Collaboration from "@tiptap/extension-collaboration";
 import { useAppSelector } from "@/store/store";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import CollaborationCaret from "@tiptap/extension-collaboration-caret";
 import StarterKit from "@tiptap/starter-kit";
 import { WebsocketProvider } from "y-websocket";
-import "../shared/components/Header/TipTapEditor/style.css";
 
 const WS_URL = "ws://localhost:8000/ws/yjs-server/";
 
@@ -15,14 +14,19 @@ const useTipTapEditor = () => {
   const { currentDocument } = useAppSelector((state) => state.documents);
   const { user } = useAppSelector((state) => state.auth);
   if (!currentDocument) return;
-  const ydoc = new Y.Doc();
-  // const dispatch = useAppDispatch();
 
-  const provider = new WebsocketProvider(
-    WS_URL,
-    currentDocument.share_token,
-    ydoc
-  );
+  const { ydoc, provider } = useMemo(() => {
+    if (!currentDocument) return { ydoc: null, provider: null };
+
+    const ydoc = new Y.Doc();
+    const provider = new WebsocketProvider(
+      WS_URL,
+      currentDocument.share_token,
+      ydoc
+    );
+
+    return { ydoc, provider };
+  }, [currentDocument.share_token]);
 
   const userColors = [
     "#1E88E5", // Blue
@@ -47,7 +51,7 @@ const useTipTapEditor = () => {
       CollaborationCaret.configure({
         provider: provider,
         user: {
-          name: user?.first_name || "user",
+          name: `${user?.first_name} ${user?.last_name}`,
           color: userColor,
         },
       }),

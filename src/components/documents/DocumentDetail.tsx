@@ -1,10 +1,11 @@
-import { TiptapEditor } from "@/shared/components/Header/TipTapEditor/TIpTapEditor";
+import { TiptapEditor } from "@/shared/components/TipTapEditor/TIpTapEditor";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setCanNavigateToDetailFromConnect } from "@/store/documents/documentSlice";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { useSaveDocument } from "@/hooks/useSaveDocument";
 import DocumentAccessDialog from "./DocumentAccessDialog";
+import useTipTapEditor from "@/hooks/useTipTapEditor";
 
 export default function DocumentDetail() {
   const { currentDocument } = useAppSelector((state) => state.documents);
@@ -13,11 +14,15 @@ export default function DocumentDetail() {
   const [accessDialogOpen, setAccessDialogOpen] = useState(false);
   const dispatch = useAppDispatch();
 
-  dispatch(setCanNavigateToDetailFromConnect(false));
-
   if (!currentDocument) {
     return <div>Document not found</div>;
   }
+
+  const editor = useTipTapEditor();
+  useEffect(() => {
+    dispatch(setCanNavigateToDetailFromConnect(false));
+  }, [dispatch]);
+
   useEffect(() => {
     if (user?.id == currentDocument?.admin) {
       setCanSave(true);
@@ -43,7 +48,7 @@ export default function DocumentDetail() {
         </div>
       </div>
       {/* <TiptapEditor ydoc={ydoc} provider={provider} /> */}
-      <TiptapEditor />
+      <TiptapEditor editor={editor} />
       <DocumentAccessDialog
         open={accessDialogOpen}
         onOpenChange={setAccessDialogOpen}

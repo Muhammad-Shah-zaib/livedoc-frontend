@@ -32,7 +32,7 @@ const DocumentAccessDialog: React.FC<DocumentAccessDialogProps> = ({
   }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full min-w-[1000px] overflow-hidden flex flex-col">
+      <DialogContent className="w-full min-w-[350px] md:min-w-[600px] lg:min-w-[1000px] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle>Manage Document Access</DialogTitle>
         </DialogHeader>

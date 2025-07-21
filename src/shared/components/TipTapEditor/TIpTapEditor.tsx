@@ -12,12 +12,12 @@ import {
   Heading2,
   Quote,
 } from "lucide-react";
-import useTipTapEditor from "@/hooks/useTipTapEditor";
 import "./style.css";
 
-export const TiptapEditor = () => {
-  const editor = useTipTapEditor();
-
+export interface ITipTapEditorProps {
+  editor: any;
+}
+export const TiptapEditor = ({ editor }: ITipTapEditorProps) => {
   if (!editor) {
     return <div className="animate-pulse bg-gray-200 h-96 w-full rounded-md" />;
   }

@@ -7,7 +7,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { setCurrentDocument } from "@/store/documents/documentSlice";
+import {
+  setCurrentDocument,
+  setDeleteSuccessful,
+} from "@/store/documents/documentSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 
 import { Switch } from "@/components/ui/switch";
@@ -26,14 +29,24 @@ import {
   Moon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import DeleteDocumentDialog from "@/components/documents/DeleteDocumentDialog";
+import { useState } from "react";
 
 function DocumentDetailHeader() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { currentDocument } = useAppSelector((state) => state.documents);
+  const { currentDocument, deleteSuccessful } = useAppSelector(
+    (state) => state.documents
+  );
   const { toggleLive, loading } = useLiveToggle();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
+  if (deleteSuccessful) {
+    setDeleteDialogOpen(false);
+    dispatch(setDeleteSuccessful(false));
+    navigate("/dashboard");
+  }
   if (!currentDocument) {
     return <div>Loading...</div>;
   }
@@ -43,6 +56,10 @@ function DocumentDetailHeader() {
   const handleGoBack = () => {
     navigate(-1);
   };
+
+  function handleDelete(id: number): void {
+    setDeleteDialogOpen(true);
+  }
 
   return (
     <div className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50">
@@ -139,7 +156,10 @@ function DocumentDetailHeader() {
                   Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600">
+                <DropdownMenuItem
+                  className="text-red-600"
+                  onClick={() => handleDelete(currentDocument.id)}
+                >
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete
                 </DropdownMenuItem>
@@ -152,6 +172,14 @@ function DocumentDetailHeader() {
           </div>
         </div>
       </div>
+      {/* Delete Confirmation Dialog */}
+      {currentDocument && (
+        <DeleteDocumentDialog
+          document={currentDocument}
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+        />
+      )}
     </div>
   );
 }

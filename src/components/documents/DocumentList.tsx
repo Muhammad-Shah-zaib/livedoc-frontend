@@ -20,17 +20,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import DeleteDocumentDialog from "./DeleteDocumentDialog";
+import { useState } from "react";
 
 function DocumentList() {
   const { filteredDocuments } = useAppSelector((state) => state.documents);
   const {
     handleOpenDocumentDetail,
-    handleDelete,
     shareDialogOpen,
     setShareDialogOpen,
     toggleLive,
     loading,
   } = useDocumentActions();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<null | number>(null);
+
   return (
     <div className="space-y-4">
       {filteredDocuments.map((doc) => (
@@ -118,7 +121,7 @@ function DocumentList() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-red-600"
-                      onClick={() => handleDelete(doc.id)}
+                      onClick={() => setDeleteDialogOpen(doc.id)}
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Delete
@@ -132,6 +135,11 @@ function DocumentList() {
             open={shareDialogOpen === doc.id}
             onOpenChange={(open) => setShareDialogOpen(open ? doc.id : null)}
             shareToken={doc.share_token}
+          />
+          <DeleteDocumentDialog
+            document={doc}
+            open={deleteDialogOpen === doc.id}
+            onOpenChange={(open) => setDeleteDialogOpen(open ? doc.id : null)}
           />
         </Card>
       ))}

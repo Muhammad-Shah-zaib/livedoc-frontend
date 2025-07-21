@@ -10,15 +10,33 @@ import MasterLayout from "./shared/layouts/MasterLayout";
 import DocumentDetail from "./components/documents/DocumentDetail";
 import Dashboard from "./components/dashboard/Dashboard";
 import SecondaryLayout from "./shared/layouts/SecondaryLayout";
-import TipTapEditorTest from "./shared/components/Header/TipTapEditor/TipTapEditorTest";
+import AboutPage from "./shared/pages/AboutUs";
+import { useAppSelector } from "./store/store";
+import { useEffect } from "react";
 
 function App() {
+  const { mode } = useAppSelector((state) => state.theme);
+
+  // get bodu element and apply the dark or no dark class
+  const body = document.querySelector("body");
+  useEffect(() => {
+    if (body) {
+      switch (mode) {
+        case "light":
+          body.classList.remove("dark");
+          break;
+        case "dark":
+          body.classList.add("dark");
+          break;
+      }
+    }
+  }, [mode]);
   return (
     <>
       <Routes>
         {/* NON PROTECTED ROUTES */}
         {/* REDIRECTION */}
-        <Route path="/tiptap-test" element={<TipTapEditorTest />} />
+        <Route path="/about-us" element={<AboutPage />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
         {/* AUTH ROUTES */}
         <Route path="/" element={<PublicRouteGuard />}>

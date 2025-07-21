@@ -11,6 +11,7 @@ import { Moon, Sun, Mail, CheckCircle, RefreshCw } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { serVerifyEmailRequired } from "@/store/auth/authSlice";
+import PageHeader from "../components/PageHeader";
 
 export default function VerifyEmail() {
   const [isDark, setIsDark] = useState(false);
@@ -51,26 +52,7 @@ export default function VerifyEmail() {
     >
       <div className="container mx-auto px-4 py-8">
         {/* Header with theme toggle */}
-        <div className="flex justify-between items-center mb-12">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
-            <span className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              DocFlow
-            </span>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsDark(!isDark)}
-            className="rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-          >
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
+        <PageHeader isDark={isDark} setIsDark={setIsDark} />
 
         {/* Verification Card */}
         <div className="max-w-md mx-auto">

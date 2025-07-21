@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Moon, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import {
@@ -25,6 +25,7 @@ import type { SubmitHandler } from "react-hook-form";
 import type { EmailPasswordSignupPayload } from "@/store/auth/types";
 import Spinner from "../components/spinner";
 import { NavLink, useNavigate } from "react-router-dom";
+import PageHeader from "../components/PageHeader";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -67,25 +68,11 @@ export default function Signup() {
 
   return (
     <div
-      className={`min-h-screen transition-all duration-300 dark:bg-slate-950 bg-gradient-to-br from-slate-50 to-blue-50`}
+      className={`min-h-screen transition-all duration-300 bg-white dark:bg-slate-800`}
     >
       <div className="container mx-auto px-4 py-8">
         {/* Header with theme toggle */}
-        <div className="flex justify-between items-center mb-12">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
-            <span className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              DocFlow
-            </span>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-          >
-            <Moon className="h-5 w-5" />
-          </Button>
-        </div>
+        <PageHeader />
 
         {/* Signup Form */}
         <div className="max-w-md mx-auto">
@@ -314,6 +301,17 @@ export default function Signup() {
                   className="p-0 h-auto font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                 >
                   <NavLink to={"/login"}>Sign in</NavLink>
+                </Button>
+              </div>
+              {/* Explore About Us Link */}
+              <div className="text-center mt-2">
+                <Button
+                  variant="link"
+                  className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+                  onClick={() => navigate("/about-us")}
+                  disabled={loading}
+                >
+                  Explore About Us
                 </Button>
               </div>
             </CardContent>

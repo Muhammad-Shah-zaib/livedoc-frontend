@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 import { resetPasswordThunk } from "@/store/auth/authThunk";
 import { useForm } from "react-hook-form";
 import type { ResetPasswordPayload } from "@/store/auth/types";
+import PageHeader from "../components/PageHeader";
 
 export default function ResetPassword() {
   const { uid, token } = useParams();
@@ -38,6 +39,7 @@ export default function ResetPassword() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   const password = watch("password", "");
   const confirm_password = watch("confirm_password", "");
@@ -56,21 +58,7 @@ export default function ResetPassword() {
       >
         <div className="container mx-auto px-4 py-8">
           {/* Header with theme toggle */}
-          <div className="flex justify-between items-center mb-12">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
-              <span className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-                DocFlow
-              </span>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-            >
-              <Moon className="h-5 w-5" />
-            </Button>
-          </div>
+          <PageHeader isDark={isDark} setIsDark={setIsDark} />
 
           {/* Success Card */}
           <div className="max-w-md mx-auto">
@@ -105,21 +93,7 @@ export default function ResetPassword() {
     >
       <div className="container mx-auto px-4 py-8">
         {/* Header with theme toggle */}
-        <div className="flex justify-between items-center mb-12">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
-            <span className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              DocFlow
-            </span>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-          >
-            <Moon className="h-5 w-5" />
-          </Button>
-        </div>
+        <PageHeader isDark={isDark} setIsDark={setIsDark} />
 
         {/* Reset Password Form */}
         <div className="max-w-md mx-auto">
