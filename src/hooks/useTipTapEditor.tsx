@@ -17,7 +17,6 @@ import Headings from "@tiptap/extension-heading";
 import CodeBlock from "@tiptap/extension-code-block";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
 
 import { all, createLowlight } from "lowlight";
 import Emoji, { gitHubEmojis } from "@tiptap/extension-emoji";

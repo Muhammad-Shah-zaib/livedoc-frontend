@@ -1,77 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Users,
-  Share2,
-  Zap,
-  Shield,
-  Globe,
-  MessageCircle,
-  FileText,
-  Clock,
-  Sparkles,
-  ArrowRight,
-  CheckCircle,
-  Lock,
-  Smartphone,
-} from "lucide-react";
+import { ArrowRight, CheckCircle, Lock, Sparkles } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import { NavLink } from "react-router-dom";
+import { ContactUsDialog } from "../components/ContactUsDialogue";
+import { features } from "@/Data/features";
+import { stats } from "@/Data/stats";
 
 export default function AboutPage() {
-  const features = [
-    {
-      icon: Users,
-      title: "Real-Time Collaboration",
-      description:
-        "Work together seamlessly with your team. See changes instantly as they happen, with live cursors and real-time editing.",
-      color: "from-blue-500 to-cyan-500",
-    },
-    {
-      icon: Share2,
-      title: "Smart Share Tokens",
-      description:
-        "Invite collaborators with secure, customizable share tokens. Control permissions and access levels with ease.",
-      color: "from-purple-500 to-pink-500",
-    },
-    {
-      icon: MessageCircle,
-      title: "Contextual Comments",
-      description:
-        "Add comments directly to any part of your document. Discuss ideas and provide feedback in context.",
-      color: "from-green-500 to-emerald-500",
-    },
-    {
-      icon: Zap,
-      title: "Lightning Fast",
-      description:
-        "Experience blazing-fast performance with instant sync across all devices. No more waiting for changes to appear.",
-      color: "from-yellow-500 to-orange-500",
-    },
-    {
-      icon: Shield,
-      title: "Enterprise Security",
-      description:
-        "Your data is protected with end-to-end encryption and enterprise-grade security measures.",
-      color: "from-red-500 to-rose-500",
-    },
-    {
-      icon: Smartphone,
-      title: "Cross-Platform",
-      description:
-        "Access your documents anywhere, anytime. Full functionality across desktop, tablet, and mobile devices.",
-      color: "from-indigo-500 to-blue-500",
-    },
-  ];
-
-  const stats = [
-    { number: "10M+", label: "Documents Created", icon: FileText },
-    { number: "500K+", label: "Active Users", icon: Users },
-    { number: "99.9%", label: "Uptime", icon: Clock },
-    { number: "150+", label: "Countries", icon: Globe },
-  ];
-
   return (
     <div
       className={`min-h-screen transition-all duration-300 bg-white dark:bg-slate-950`}
@@ -262,25 +199,25 @@ export default function AboutPage() {
           <CardContent className="p-12 text-center">
             <Lock className="h-16 w-16 mx-auto mb-6 opacity-80" />
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Security You Can Trust
+              Designed with Privacy in Mind
             </h2>
             <p className="text-xl opacity-90 max-w-3xl mx-auto mb-8">
-              Your documents are protected with enterprise-grade security.
-              End-to-end encryption, secure sharing, and compliance with
-              industry standards ensure your data stays safe.
+              Your documents are protected with authenticated access and secure
+              data handling. We follow modern security best practices to ensure
+              your content is safe — even in this early version.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="flex items-center justify-center space-x-2">
                 <CheckCircle className="h-5 w-5 text-green-400" />
-                <span>End-to-End Encryption</span>
+                <span>Private by Default</span>
               </div>
               <div className="flex items-center justify-center space-x-2">
                 <CheckCircle className="h-5 w-5 text-green-400" />
-                <span>GDPR Compliant</span>
+                <span>Secure Sharing Links</span>
               </div>
               <div className="flex items-center justify-center space-x-2">
                 <CheckCircle className="h-5 w-5 text-green-400" />
-                <span>SOC 2 Certified</span>
+                <span>End-to-End Principles</span>
               </div>
             </div>
           </CardContent>
@@ -303,13 +240,7 @@ export default function AboutPage() {
               <NavLink to={"/"}>Get Started</NavLink>
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="text-lg px-12 py-4 h-auto border-2 hover:bg-slate-50 dark:hover:bg-slate-800 bg-transparent"
-            >
-              Contact Us
-            </Button>
+            <ContactUsDialog />
           </div>
         </div>
       </div>
