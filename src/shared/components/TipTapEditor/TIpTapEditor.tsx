@@ -23,7 +23,7 @@ export const TiptapEditor = ({ editor }: ITipTapEditorProps) => {
   }
 
   return (
-    <div className="rounded-xl border bg-white shadow-sm p-4 flex flex-col w-full max-w-7xl px-8 mx-auto">
+    <div className="rounded-xl border bg-white dark:bg-slate-900 shadow-sm p-4 flex flex-col w-full max-w-7xl px-8 mx-auto">
       {/* Toolbar */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2 w-full">
         <div className="flex flex-wrap items-center gap-2">
@@ -116,7 +116,7 @@ export const TiptapEditor = ({ editor }: ITipTapEditorProps) => {
         onClick={() => {
           editor.commands.focus();
         }}
-        className="rounded-md p-3 w-full max-w-none prose prose-sm overflow-auto min-h-[300px] max-h-[500px]"
+        className="rounded-md p-3 w-full max-w-none bg-white dark:bg-slate-900 prose prose-sm dark:prose-invert text-white! overflow-auto min-h-[300px] max-h-[500px]"
       >
         <EditorContent editor={editor} className="tiptap-editor" />
       </div>

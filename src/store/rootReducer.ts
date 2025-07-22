@@ -3,6 +3,7 @@ import authReducer from "./auth/authSlice";
 import documentsReducer from "./documents/documentSlice";
 import notificationReducer from "./notification/notificationSlice";
 import themeReducer from "./theme/themeSlice";
+import settingsReducer from "./settings/settingsSlice";
 import { RESET_STORE } from "./store";
 
 const appReducer = combineReducers({
@@ -10,6 +11,7 @@ const appReducer = combineReducers({
   documents: documentsReducer,
   notification: notificationReducer,
   theme: themeReducer,
+  settings: settingsReducer,
 });
 
 export const rootReducer = (state: any, action: any) => {

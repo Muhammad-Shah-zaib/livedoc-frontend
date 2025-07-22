@@ -7,14 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Moon, Sun, Mail, CheckCircle, RefreshCw } from "lucide-react";
+import { Mail, CheckCircle, RefreshCw } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { serVerifyEmailRequired } from "@/store/auth/authSlice";
 import PageHeader from "../components/PageHeader";
 
 export default function VerifyEmail() {
-  const [isDark, setIsDark] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [emailResent, setEmailResent] = useState(false);
 
@@ -44,15 +43,11 @@ export default function VerifyEmail() {
 
   return (
     <div
-      className={`min-h-screen transition-all duration-300 ${
-        isDark
-          ? "dark bg-slate-950"
-          : "bg-gradient-to-br from-slate-50 to-blue-50"
-      }`}
+      className={`min-h-screen transition-all duration-300 bg-white dark:bg-slate-950`}
     >
       <div className="container mx-auto px-4 py-8">
         {/* Header with theme toggle */}
-        <PageHeader isDark={isDark} setIsDark={setIsDark} />
+        <PageHeader />
 
         {/* Verification Card */}
         <div className="max-w-md mx-auto">

@@ -11,10 +11,12 @@ import DocumentDetail from "./components/documents/DocumentDetail";
 import Dashboard from "./components/dashboard/Dashboard";
 import SecondaryLayout from "./shared/layouts/SecondaryLayout";
 import AboutPage from "./shared/pages/AboutUs";
-import { useAppSelector } from "./store/store";
+import { useAppDispatch, useAppSelector } from "./store/store";
 import { useEffect } from "react";
+import { applyThemeInital } from "./store/theme/themeSlice";
 
 function App() {
+  const dispatch = useAppDispatch();
   const { mode } = useAppSelector((state) => state.theme);
 
   // get bodu element and apply the dark or no dark class
@@ -31,6 +33,10 @@ function App() {
       }
     }
   }, [mode]);
+  useEffect(() => {
+    dispatch(applyThemeInital());
+  }, []);
+
   return (
     <>
       <Routes>

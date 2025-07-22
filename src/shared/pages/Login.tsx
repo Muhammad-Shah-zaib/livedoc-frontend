@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Moon, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import {
@@ -29,7 +29,6 @@ export default function LoginPage() {
   const generalError = useAppSelector((state) => state.auth.generalError);
   const isLoading = useAppSelector((state) => state.auth.loading);
   const [showPassword, setShowPassword] = useState(false);
-  const [isDark, setIsDark] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -50,7 +49,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen transition-all duration-300 bg-white dark:bg-slate-800">
+    <div className="min-h-screen transition-all duration-300 bg-white dark:bg-slate-950">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <PageHeader />

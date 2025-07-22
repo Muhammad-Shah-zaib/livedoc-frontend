@@ -93,3 +93,14 @@ export interface GetUserByEmailResponse {
   user: IUser;
   detail: string;
 }
+
+export interface UpdateUserProfileRequest {
+  first_name: string;
+  last_name: string;
+}
+
+export interface UpdateUserProfileResponse {
+  message: string;
+  user: IUser;
+  errors: Record<string, string[]> | null;
+}

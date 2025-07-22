@@ -1,8 +1,5 @@
 import type { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { Moon, Sun } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/store/store";
-import { toggleTheme } from "@/store/theme/themeSlice";
+import ToggleThemeButton from "@/shared/components/ToggleThemeButton";
 
 interface PageHeaderProps {
   rightActions?: ReactNode;
@@ -15,11 +12,6 @@ export default function PageHeader({
   sticky = false,
   className = "",
 }: PageHeaderProps) {
-  const dispatch = useAppDispatch();
-  const { mode } = useAppSelector((state) => state.theme);
-  const handleToggleTheme = () => {
-    dispatch(toggleTheme());
-  };
   return (
     <div
       className={
@@ -36,18 +28,7 @@ export default function PageHeader({
           </span>
         </div>
         <div className="flex items-center space-x-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => handleToggleTheme()}
-            className="rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-          >
-            {mode === "dark" ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
+          <ToggleThemeButton />
           {rightActions}
         </div>
       </div>

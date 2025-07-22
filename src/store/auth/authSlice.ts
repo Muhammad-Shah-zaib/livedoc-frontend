@@ -9,6 +9,7 @@ import {
   resetPasswordThunk,
   getUserProfileThunk,
   getUserByEmailThunk,
+  updateUserPorifleThunk,
 } from "./authThunk";
 
 // --------------------
@@ -235,6 +236,26 @@ const authSlice = createSlice({
         state.generalError =
           action.payload?.message || "Get user by email failed";
         state.errors = action.payload?.errors || null;
+      })
+      // --------------------
+      // Update User Profile
+      // --------------------
+      .addCase(updateUserPorifleThunk.pending, (state) => {
+        state.loading = true;
+        state.generalError = null;
+        state.errors = null;
+      })
+      .addCase(updateUserPorifleThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.generalError = null;
+        state.errors = null;
+        state.user = payload.user;
+      })
+      .addCase(updateUserPorifleThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.generalError = payload?.message || "Update user profile failed";
+        state.errors = payload?.errors || null;
+        state.user = null;
       });
   },
 });

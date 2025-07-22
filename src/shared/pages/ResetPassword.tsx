@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Moon, Eye, EyeOff, Lock, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, Lock, CheckCircle } from "lucide-react";
 import { NavLink, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { resetPasswordThunk } from "@/store/auth/authThunk";
@@ -39,7 +39,6 @@ export default function ResetPassword() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [isDark, setIsDark] = useState(false);
 
   const password = watch("password", "");
   const confirm_password = watch("confirm_password", "");
@@ -58,7 +57,7 @@ export default function ResetPassword() {
       >
         <div className="container mx-auto px-4 py-8">
           {/* Header with theme toggle */}
-          <PageHeader isDark={isDark} setIsDark={setIsDark} />
+          <PageHeader />
 
           {/* Success Card */}
           <div className="max-w-md mx-auto">
@@ -93,7 +92,7 @@ export default function ResetPassword() {
     >
       <div className="container mx-auto px-4 py-8">
         {/* Header with theme toggle */}
-        <PageHeader isDark={isDark} setIsDark={setIsDark} />
+        <PageHeader />
 
         {/* Reset Password Form */}
         <div className="max-w-md mx-auto">

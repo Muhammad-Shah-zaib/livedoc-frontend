@@ -68,7 +68,7 @@ export default function Signup() {
 
   return (
     <div
-      className={`min-h-screen transition-all duration-300 bg-white dark:bg-slate-800`}
+      className={`min-h-screen transition-all duration-300 bg-white dark:bg-slate-950`}
     >
       <div className="container mx-auto px-4 py-8">
         {/* Header with theme toggle */}

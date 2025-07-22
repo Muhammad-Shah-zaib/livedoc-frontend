@@ -6,6 +6,7 @@ import { useState } from "react";
 import AvatarDropdown from "./AvatarDropDown";
 import NotificationPopover from "@/shared/components/NotificationPopover";
 import { setDocumentViewStyle } from "@/store/documents/documentSlice";
+import ToggleThemeButton from "@/shared/components/ToggleThemeButton";
 
 function Header() {
   const dispatch = useAppDispatch();
@@ -62,13 +63,7 @@ function Header() {
               className="pl-10 w-64 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm border-slate-200 dark:border-slate-700"
             />
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-          >
-            <Moon className="h-5 w-5" />
-          </Button>
+          <ToggleThemeButton />
           <NotificationPopover />
           <AvatarDropdown user={user} getUserInitials={getUserInitials} />
         </div>

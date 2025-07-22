@@ -1,22 +1,24 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
-import {
-  type EmailPasswordLoginResponse,
-  type EmailPasswordLoginPayload,
-  type ErrorResponse,
-  type GoogleAuthResponse,
-  type GoogleLoginPayload,
-  type EmailPasswordSignupPayload,
-  type EmailPasswordSignupResponse,
-  type LogoutResponse,
-  type ForgetPassworPayload,
-  type ForgetPasswordResponse,
-  type ResetPasswordPayload,
-  type ResetPasswordResponse,
-  type GetUserProfileResponse,
-  type GetUserByEmailPayload,
-  type GetUserByEmailResponse,
+import type {
+  EmailPasswordLoginResponse,
+  EmailPasswordLoginPayload,
+  ErrorResponse,
+  GoogleAuthResponse,
+  GoogleLoginPayload,
+  EmailPasswordSignupPayload,
+  EmailPasswordSignupResponse,
+  LogoutResponse,
+  ForgetPassworPayload,
+  ForgetPasswordResponse,
+  ResetPasswordPayload,
+  ResetPasswordResponse,
+  GetUserProfileResponse,
+  GetUserByEmailPayload,
+  GetUserByEmailResponse,
+  UpdateUserProfileRequest,
+  UpdateUserProfileResponse,
 } from "./types";
 
 const GOOGLE_LOGIN_ACTION = "auth/login/google";
@@ -27,6 +29,7 @@ const FORGET_PASSWORD_ACTION = "auth/forget-password";
 const RESET_PASSWORD_ACTION = "auth/reset-password";
 const GET_USER_PROFILE_ACTION = "auth/get-user-profile";
 const GET_USER_BY_EMAIL_ACTION = "auth/get-user-by-email";
+const UPDATE_USER_PROFILE_ACTION = "auth/update-user-profile";
 
 // Async thunk for goole login
 export const googleLoginThunk = createAsyncThunk<
@@ -234,5 +237,33 @@ export const getUserByEmailThunk = createAsyncThunk<
       message = error.response?.data?.message || message;
     }
     return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const updateUserPorifleThunk = createAsyncThunk<
+  UpdateUserProfileResponse,
+  UpdateUserProfileRequest,
+  { rejectValue: ErrorResponse }
+>(UPDATE_USER_PROFILE_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.patch<UpdateUserProfileResponse>(
+      API_ROUTES.AUTH.UPDATE_USER_PROFILE,
+      payload,
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to update user profile";
+    let errors: Record<string, string[]> | null = null;
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.message || message;
+      errors = error.response?.data?.errors || null;
+    }
+
+    return thunkAPI.rejectWithValue({ message, errors });
   }
 });

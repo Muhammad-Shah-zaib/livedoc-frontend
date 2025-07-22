@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setIsAppInitialized } from "@/store/documents/documentSlice";
+import PageHeader from "@/shared/components/PageHeader";
 
 export default function AppBootstrap() {
   // states from redux store
@@ -15,10 +14,8 @@ export default function AppBootstrap() {
       initialDocumentFetch: state.documents.initialDocumentFetch,
     })
   );
-
   const dispatch = useAppDispatch();
 
-  const [isDark, setIsDark] = useState(false);
   const [loadingText, setLoadingText] = useState("Checking authentication...");
   const [progress, setProgress] = useState(0);
 
@@ -54,26 +51,7 @@ export default function AppBootstrap() {
     >
       <div className="container mx-auto px-4 py-8">
         {/* Header with theme toggle */}
-        <div className="flex justify-between items-center mb-12">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg animate-pulse"></div>
-            <span className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              DocFlow
-            </span>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsDark(!isDark)}
-            className="rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-          >
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
+        <PageHeader />
 
         {/* Loading Card */}
         <div className="max-w-md mx-auto">

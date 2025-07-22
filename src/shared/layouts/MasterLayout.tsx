@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header/Header";
+import SettingsDrawer from "../components/settings/SettingsDrawer";
 
 const MasterLayout = () => {
   return (
@@ -13,6 +14,7 @@ const MasterLayout = () => {
         <div className="max-w-7xl w-full">
           <Outlet />
         </div>
+        <SettingsDrawer />
       </div>
     </div>
   );

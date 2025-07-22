@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { postDocumentThunk } from "@/store/documents/documentThunk";
 import type { PostDocumentsPayload } from "@/store/documents/types";
+import { Plus } from "lucide-react";
 
 export default function NewDocumentDialog() {
   const dispatch = useAppDispatch();
@@ -53,7 +54,8 @@ export default function NewDocumentDialog() {
     >
       <DialogTrigger asChild>
         <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200">
-          New Document
+          <Plus className="w-4 h-4" />
+          <span className="hidden sm:inline">Add Document</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

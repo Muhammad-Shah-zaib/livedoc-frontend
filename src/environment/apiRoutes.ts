@@ -10,6 +10,7 @@ export const API_ROUTES = {
     RESET_PASSWORD: `${BASE_API_URL}/reset-password`,
     GET_USER_PROFILE: `${BASE_API_URL}/user/get-profile/`,
     GET_USER_BY_EMAIL: `${BASE_API_URL}/user/by-email`,
+    UPDATE_USER_PROFILE: `${BASE_API_URL}/user/update-profile/`,
   },
   DOCUMENTS: {
     GET_POST: `${BASE_API_URL}/documents/`,
