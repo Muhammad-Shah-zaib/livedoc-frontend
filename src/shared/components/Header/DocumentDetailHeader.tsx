@@ -6,7 +6,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { setDeleteSuccessful } from "@/store/documents/documentSlice";
+import {
+  setAccessDocumentDetail,
+  setActiveTabInDocumentAccess,
+  setDeleteSuccessful,
+} from "@/store/documents/documentSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 
 import { Switch } from "@/components/ui/switch";
@@ -14,7 +18,6 @@ import { useLiveToggle } from "@/hooks/useLiveToggle";
 import {
   ArrowLeft,
   Share2,
-  Link2,
   Users,
   Eye,
   Edit3,
@@ -108,11 +111,12 @@ function DocumentDetailHeader() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem>
-                  <Link2 className="h-4 w-4 mr-2" />
-                  Copy link
-                </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    dispatch(setActiveTabInDocumentAccess("invite"));
+                    dispatch(setAccessDocumentDetail(true));
+                  }}
+                >
                   <Users className="h-4 w-4 mr-2" />
                   Invite collaborators
                 </DropdownMenuItem>

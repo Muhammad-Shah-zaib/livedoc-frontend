@@ -82,7 +82,7 @@ function SettingsUpdateProfileForm() {
         type="submit"
         size="sm"
         disabled={loading}
-        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white flex items-center justify-center gap-2"
+        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white flex items-center justify-center gap-2 py-5"
       >
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
         Save Changes

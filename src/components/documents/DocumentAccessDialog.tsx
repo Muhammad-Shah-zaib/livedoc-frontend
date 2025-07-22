@@ -10,6 +10,9 @@ import { DataTable } from "@/components/ui/DataTable";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import DocumentInviteForm from "./DocumentInviteForm";
 import { useDocumentAccessTable } from "../../hooks/useDocumentAccessTable";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { setActiveTabInDocumentAccess } from "@/store/documents/documentSlice";
+import type { AvailableTabsInDocumentAccess } from "@/store/documents/types";
 
 interface DocumentAccessDialogProps {
   open: boolean;
@@ -24,7 +27,10 @@ const DocumentAccessDialog: React.FC<DocumentAccessDialogProps> = ({
 }) => {
   // Use custom hook for table logic and data
   const { documentAccess, columns } = useDocumentAccessTable();
-
+  const dispatch = useAppDispatch();
+  const activeTab = useAppSelector(
+    (state) => state.documents.activeTabInDocumentAccess
+  );
   let data = documentAccess;
 
   if (documentId) {
@@ -36,7 +42,15 @@ const DocumentAccessDialog: React.FC<DocumentAccessDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Manage Document Access</DialogTitle>
         </DialogHeader>
-        <Tabs defaultValue="requests" className="flex flex-col flex-1">
+        <Tabs
+          value={activeTab}
+          onValueChange={(val) =>
+            dispatch(
+              setActiveTabInDocumentAccess(val as AvailableTabsInDocumentAccess)
+            )
+          }
+          className="flex flex-col flex-1"
+        >
           <TabsList className="mb-4 self-start">
             <TabsTrigger value="requests">
               <Users className="w-4 h-4 mr-1" /> Requests

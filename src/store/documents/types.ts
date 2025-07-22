@@ -16,7 +16,11 @@ export interface DocumentState {
   documentViewStyle: "grid" | "list";
   canConnectToDocument: boolean;
   deleteSuccessful: boolean;
+  accessDocumentDetail: boolean;
+  activeTabInDocumentAccess: AvailableTabsInDocumentAccess;
 }
+
+export type AvailableTabsInDocumentAccess = "requests" | "invite";
 
 export interface DocumentAccess {
   id: number;

@@ -8,13 +8,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@radix-ui/react-separator";
 import { Switch } from "@/components/ui/switch";
 import {
-  Settings,
   User,
   Palette,
   Sun,
@@ -22,9 +19,6 @@ import {
   Trash2,
   AlertTriangle,
   LogOut,
-  ArrowDown,
-  ArrowUp,
-  ChevronDown,
   ChevronUp,
 } from "lucide-react";
 import { useAppSelector, useAppDispatch } from "@/store/store";

@@ -1,5 +1,9 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { DocumentState } from "./types";
+import type {
+  AvailableTabsInDocumentAccess,
+  Document,
+  DocumentState,
+} from "./types";
 import {
   getDocumentByShareTokenThunk,
   getDocumentsThunk,
@@ -35,6 +39,8 @@ const initialState: DocumentState = {
   documentViewStyle: "grid",
   canConnectToDocument: false,
   deleteSuccessful: false,
+  accessDocumentDetail: false,
+  activeTabInDocumentAccess: "requests",
 };
 
 // --------------------
@@ -74,6 +80,33 @@ const documentSlice = createSlice({
     },
     setDeleteSuccessful: (state, { payload }: PayloadAction<boolean>) => {
       state.deleteSuccessful = payload;
+    },
+    setAccessDocumentDetail: (state, { payload }: PayloadAction<boolean>) => {
+      state.accessDocumentDetail = payload;
+    },
+    toggleAccessDocumentDetail: (state) => {
+      state.accessDocumentDetail = !state.accessDocumentDetail;
+    },
+    setActiveTabInDocumentAccess: (
+      state,
+      { payload }: PayloadAction<AvailableTabsInDocumentAccess>
+    ) => {
+      state.activeTabInDocumentAccess = payload;
+    },
+    setDocumentDetail: (state, { payload }: PayloadAction<Document>) => {
+      const index = state.documents.findIndex((doc) => doc.id === payload.id);
+      if (index !== -1) {
+        state.documents[index] = {
+          ...state.documents[index],
+          ...payload, // merge existing and new data
+        };
+      }
+      if (state.currentDocument && state.currentDocument.id === payload.id) {
+        state.currentDocument = {
+          ...state.currentDocument,
+          ...payload, // merge existing and new data
+        };
+      }
     },
   },
   extraReducers: (builder) => {
@@ -415,5 +448,9 @@ export const {
   setCurrentDocument,
   setDocumentViewStyle,
   setDeleteSuccessful,
+  setAccessDocumentDetail,
+  toggleAccessDocumentDetail,
+  setActiveTabInDocumentAccess,
+  setDocumentDetail,
 } = documentSlice.actions;
 export default documentSlice.reducer;

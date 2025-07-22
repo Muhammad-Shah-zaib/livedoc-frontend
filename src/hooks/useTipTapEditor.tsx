@@ -1,4 +1,4 @@
-import { useEditor } from "@tiptap/react";
+import { markInputRule, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import * as Y from "yjs";
 import Collaboration from "@tiptap/extension-collaboration";
@@ -16,6 +16,9 @@ import BlackQuote from "@tiptap/extension-blockquote";
 import Headings from "@tiptap/extension-heading";
 import CodeBlock from "@tiptap/extension-code-block";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+
 import { all, createLowlight } from "lowlight";
 import Emoji, { gitHubEmojis } from "@tiptap/extension-emoji";
 
@@ -92,6 +95,25 @@ const useTipTapEditor = () => {
         },
       };
     },
+
+    addInputRules() {
+      return [
+        markInputRule({
+          // ✅ Matches `inline code` and only wraps the inner content
+          // It does NOT leave the backticks
+          find: /`([^`\n]+)`$/,
+          type: this.type,
+        }),
+      ];
+    },
+    addPasteRules() {
+      return [
+        markInputRule({
+          find: /`([^`\n]+)`$/,
+          type: this.type,
+        }),
+      ];
+    },
   });
 
   const CustomBlockQuote = BlackQuote.extend({
@@ -127,7 +149,8 @@ const useTipTapEditor = () => {
   });
 
   const editor = useEditor({
-    injectCSS: false,
+    editable: currentDocument.can_write_access,
+    injectCSS: true,
     content: currentDocument.content || "",
     editorProps: {
       attributes: {
@@ -146,6 +169,10 @@ const useTipTapEditor = () => {
       }),
       StarterKit.configure({
         undoRedo: false,
+        codeBlock: false,
+        blockquote: false,
+        heading: false,
+        code: false,
       }),
       Placeholder.configure({
         placeholder: "Write something...",
@@ -156,6 +183,8 @@ const useTipTapEditor = () => {
       CodeBlock,
       CustomEmoji,
       CustomCodeBlockLowLight,
+      Document,
+      Headings,
     ],
     onUpdate: ({ editor }) => {
       const xml = editor.getHTML();
@@ -166,14 +195,30 @@ const useTipTapEditor = () => {
   });
 
   useEffect(() => {
-    if (!editor || !currentDocument?.content) return;
-
-    // Prevent overriding content if Yjs already has data
-    const yContent = ydoc?.getXmlFragment("content");
-    if (yContent && yContent.length === 0) {
-      editor.commands.setContent(currentDocument.content);
+    if (editor && typeof currentDocument?.can_write_access === "boolean") {
+      editor.setEditable(currentDocument.can_write_access);
     }
-  }, [editor, currentDocument, ydoc]);
+  }, [currentDocument?.can_write_access, editor]);
+
+  useEffect(() => {
+    if (!editor || !currentDocument?.content || !provider) return;
+
+    const onSynced = (isSynced: boolean) => {
+      if (isSynced) {
+        const yContent = ydoc.getXmlFragment("content");
+        if (yContent && yContent.length === 0) {
+          editor.commands.clearContent();
+          editor.commands.setContent(currentDocument.content || "");
+        }
+      }
+    };
+
+    provider.on("sync", onSynced);
+
+    return () => {
+      provider.off("sync", onSynced);
+    };
+  }, [editor, currentDocument, provider, ydoc]);
 
   return editor;
 };

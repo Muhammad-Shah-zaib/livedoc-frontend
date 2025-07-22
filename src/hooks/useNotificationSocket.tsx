@@ -7,6 +7,7 @@ import {
 } from "@/store/notification/notificationSlice";
 import type { Notification } from "@/store/notification/types";
 import { toast } from "sonner";
+import { setDocumentDetail } from "@/store/documents/documentSlice";
 
 const RECONNECT_INTERVAL_MS = 5000;
 
@@ -53,6 +54,22 @@ const useNotificationSocket = () => {
   const handleMessage = (event: MessageEvent) => {
     try {
       const data = JSON.parse(event.data);
+      if (data.approved_access && data.doc_id) {
+        dispatch(
+          setDocumentDetail({
+            id: data.doc_id,
+            can_write_access: true,
+          } as any)
+        );
+      }
+      if (data.revoked_access && data.doc_id) {
+        dispatch(
+          setDocumentDetail({
+            id: data.doc_id,
+            can_write_access: false,
+          } as any)
+        );
+      }
       if (data.type === "notification" && data.payload) {
         const payload: Notification = data.payload;
         dispatch(addNotification(payload));
