@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type {
   AvailableTabsInDocumentAccess,
   Document,
+  DocumentAccess,
   DocumentState,
 } from "./types";
 import {
@@ -19,6 +20,7 @@ import {
   checkLiveDocumentAccessThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
+import type { set } from "lodash";
 
 // --------------------
 // Initial State
@@ -41,6 +43,7 @@ const initialState: DocumentState = {
   deleteSuccessful: false,
   accessDocumentDetail: false,
   activeTabInDocumentAccess: "requests",
+  editorViewOnlyMode: false,
 };
 
 // --------------------
@@ -51,6 +54,9 @@ const documentSlice = createSlice({
   name: "documents",
   reducers: {
     // Set app initialization state
+    setEditorViewOnlyMode: (state, { payload }: PayloadAction<boolean>) => {
+      state.editorViewOnlyMode = payload;
+    },
     setIsAppInitialized: (state, { payload }: PayloadAction<boolean>) => {
       state.isAppInitialized = payload;
     },
@@ -106,6 +112,17 @@ const documentSlice = createSlice({
           ...state.currentDocument,
           ...payload, // merge existing and new data
         };
+      }
+    },
+    addOrUpdateDocumentAccess: (
+      state,
+      { payload }: PayloadAction<DocumentAccess>
+    ) => {
+      const index = state.documentAccess.findIndex((a) => a.id === payload.id);
+      if (index !== -1) {
+        state.documentAccess[index] = payload; // Update existing access
+      } else {
+        state.documentAccess.push(payload); // Add new access
       }
     },
   },
@@ -452,5 +469,7 @@ export const {
   toggleAccessDocumentDetail,
   setActiveTabInDocumentAccess,
   setDocumentDetail,
+  addOrUpdateDocumentAccess,
+  setEditorViewOnlyMode,
 } = documentSlice.actions;
 export default documentSlice.reducer;

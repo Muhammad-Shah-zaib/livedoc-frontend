@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { useSaveDocument } from "@/hooks/useSaveDocument";
 import DocumentAccessDialog from "./DocumentAccessDialog";
-import useTipTapEditor from "@/hooks/useTipTapEditor";
+
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -54,7 +54,6 @@ export default function DocumentDetail() {
     return <div>Document not found</div>;
   }
 
-  const editor = useTipTapEditor();
   useEffect(() => {
     dispatch(setCanNavigateToDetailFromConnect(false));
   }, [dispatch]);
@@ -70,10 +69,10 @@ export default function DocumentDetail() {
 
   return (
     <div>
-      <div className="flex justify-between px-4">
-        <h1 className=" text-lg md:text-xl lg:text-3xl -xl:text-4xl font-bold mb-4">
+      <div className="flex justify-between items-center px-4">
+        <h1 className="flex items-center text-lg md:text-xl lg:text-3xl -xl:text-4xl font-bold">
           <div
-            className="text-lg md:text-xl lg:text-3xl -xl:text-4xl font-bold mb-4"
+            className=" flex items-center text-lg md:text-xl lg:text-3xl -xl:text-4xl font-bold"
             onDoubleClick={() => {
               if (currentDocument.admin === user?.id) {
                 setIsEditing(true);
@@ -129,8 +128,7 @@ export default function DocumentDetail() {
           </DropdownMenu>
         </div>
       </div>
-      {/* <TiptapEditor ydoc={ydoc} provider={provider} /> */}
-      <TiptapEditor editor={editor} />
+      <TiptapEditor />
 
       <ShareTokenDialog
         open={open}

@@ -18,6 +18,7 @@ export interface DocumentState {
   deleteSuccessful: boolean;
   accessDocumentDetail: boolean;
   activeTabInDocumentAccess: AvailableTabsInDocumentAccess;
+  editorViewOnlyMode: boolean;
 }
 
 export type AvailableTabsInDocumentAccess = "requests" | "invite";

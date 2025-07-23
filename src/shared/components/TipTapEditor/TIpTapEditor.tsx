@@ -13,11 +13,17 @@ import {
   Quote,
 } from "lucide-react";
 import "./style.css";
+import useTipTapEditor from "@/hooks/useTipTapEditor";
+import { useCollaboratorSocket } from "@/hooks/useCollaboratorSocket";
 
-export interface ITipTapEditorProps {
-  editor: any;
-}
-export const TiptapEditor = ({ editor }: ITipTapEditorProps) => {
+export const TiptapEditor = () => {
+  const { editor, saveDoc } = useTipTapEditor() as {
+    editor: any;
+    saveDoc: () => void;
+  };
+
+  useCollaboratorSocket();
+
   if (!editor) {
     return <div className="animate-pulse bg-gray-200 h-96 w-full rounded-md" />;
   }
@@ -118,7 +124,22 @@ export const TiptapEditor = ({ editor }: ITipTapEditorProps) => {
         }}
         className="rounded-md p-3 w-full max-w-none bg-white dark:bg-slate-900 prose prose-sm dark:prose-invert text-white! overflow-auto min-h-[300px] max-h-[500px]"
       >
-        <EditorContent editor={editor} className="tiptap-editor" />
+        <EditorContent
+          editor={editor}
+          className="tiptap-editor"
+          onKeyDown={(e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+              e.preventDefault();
+              saveDoc();
+            }
+
+            if (e.key === "Tab") {
+              e.preventDefault();
+              editor?.commands.insertContent("    "); // 4 spaces
+              return;
+            }
+          }}
+        />
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ import { all, createLowlight } from "lowlight";
 import Emoji, { gitHubEmojis } from "@tiptap/extension-emoji";
 
 import suggestion from "../shared/components/TipTapEditor/suggestions";
+import { toast } from "sonner";
 
 const WS_URL = "ws://localhost:8000/ws/yjs-server/";
 
@@ -30,7 +31,9 @@ const useTipTapEditor = () => {
 
   CodeBlock;
   const dispatch = useAppDispatch();
-  const { currentDocument } = useAppSelector((state) => state.documents);
+  const { currentDocument, editorViewOnlyMode } = useAppSelector(
+    (state) => state.documents
+  );
   const { user } = useAppSelector((state) => state.auth);
   if (!currentDocument) return;
 
@@ -194,10 +197,12 @@ const useTipTapEditor = () => {
   });
 
   useEffect(() => {
-    if (editor && typeof currentDocument?.can_write_access === "boolean") {
-      editor.setEditable(currentDocument.can_write_access);
-    }
-  }, [currentDocument?.can_write_access, editor]);
+    if (!editor || !currentDocument) return;
+
+    const shouldBeEditable =
+      currentDocument.can_write_access && !editorViewOnlyMode;
+    editor.setEditable(shouldBeEditable);
+  }, [editor, currentDocument?.can_write_access, editorViewOnlyMode]);
 
   useEffect(() => {
     if (!editor || !currentDocument?.content || !provider) return;
@@ -219,7 +224,47 @@ const useTipTapEditor = () => {
     };
   }, [editor, currentDocument, provider, ydoc]);
 
-  return editor;
+  const lastSavedTime = useRef(0);
+  const saveDoc = () => {
+    const now = Date.now();
+    const THROTTLE_LIMIT = 3000; // 3 seconds
+
+    const timeLeft = lastSavedTime.current + THROTTLE_LIMIT - now;
+
+    if (timeLeft > 0) {
+      toast.warning(
+        `You're saving too frequently. Please wait ${(timeLeft / 1000).toFixed(
+          1
+        )}s.`
+      );
+      return;
+    }
+
+    lastSavedTime.current = now;
+
+    if (!editor || !currentDocument) return;
+
+    const content = editor.getHTML();
+
+    dispatch(
+      setCurrentDocument({
+        ...currentDocument,
+        content,
+        id: currentDocument.id,
+      })
+    );
+
+    dispatch(
+      patchDocumentThunk({
+        id: currentDocument.id,
+        content,
+      })
+    );
+
+    toast.success("Document saved!");
+  };
+
+  return { editor, saveDoc };
 };
 
 export default useTipTapEditor;
