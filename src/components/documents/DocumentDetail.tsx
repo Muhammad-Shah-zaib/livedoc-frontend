@@ -72,7 +72,7 @@ export default function DocumentDetail() {
       <div className="flex justify-between items-center px-4">
         <h1 className="flex items-center text-lg md:text-xl lg:text-3xl -xl:text-4xl font-bold">
           <div
-            className=" flex items-center text-lg md:text-xl lg:text-3xl -xl:text-4xl font-bold"
+            className="max-w-[200px] sm:max-w-[500px] lg:max-w-[800px] truncate whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer"
             onDoubleClick={() => {
               if (currentDocument.admin === user?.id) {
                 setIsEditing(true);

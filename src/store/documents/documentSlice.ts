@@ -20,7 +20,6 @@ import {
   checkLiveDocumentAccessThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
-import type { set } from "lodash";
 
 // --------------------
 // Initial State
@@ -70,6 +69,41 @@ const documentSlice = createSlice({
       { payload }: PayloadAction<DocumentState["currentDocument"]>
     ) => {
       state.currentDocument = payload;
+    },
+    setCurrentDocumentWritePermission: (
+      state,
+      { payload }: PayloadAction<boolean>
+    ) => {
+      if (state.currentDocument)
+        state.currentDocument.can_write_access = payload;
+    },
+    findAndSetDocumentWriteAccess: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        documentId: number;
+        canWriteAccess: boolean;
+      }>
+    ) => {
+      const { documentId, canWriteAccess } = payload;
+      const docIndex = state.documents.findIndex(
+        (doc) => doc.id === documentId
+      );
+      if (docIndex !== -1) {
+        state.documents[docIndex].can_write_access = canWriteAccess;
+      }
+      // Also update currentDocument if it matches
+      if (state.currentDocument && state.currentDocument.id === documentId) {
+        state.currentDocument.can_write_access = canWriteAccess;
+      }
+    },
+    setCurrentDocumentLiveMembers: (
+      state,
+      { payload }: PayloadAction<number>
+    ) => {
+      if (state.currentDocument)
+        state.currentDocument.live_members_count = payload;
     },
     // Set navigation flag for connect dialog
     setCanNavigateToDetailFromConnect: (
@@ -471,5 +505,8 @@ export const {
   setDocumentDetail,
   addOrUpdateDocumentAccess,
   setEditorViewOnlyMode,
+  setCurrentDocumentWritePermission,
+  setCurrentDocumentLiveMembers,
+  findAndSetDocumentWriteAccess,
 } = documentSlice.actions;
 export default documentSlice.reducer;

@@ -21,7 +21,6 @@ import {
   Users,
   Eye,
   Edit3,
-  MoreHorizontal,
   Circle,
   Radio,
   Loader2,
@@ -82,9 +81,9 @@ function DocumentDetailHeader() {
 
   return (
     <div className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-zinc-950 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-6 py-4">
+      <div className="container mx-auto px-1 sm:px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center sm:space-x-4">
             <Button
               variant="ghost"
               size="icon"
@@ -159,22 +158,10 @@ function DocumentDetailHeader() {
           </div>
 
           <div className="flex md:hidden items-center">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-1 sm:space-x-3">
               {/* Mobile menu (three dots) */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full">
-                    <MoreHorizontal className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem asChild>
-                    <div className="w-full flex items-center">
-                      <ToggleThemeButton /> Theme
-                    </div>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+
+              <ToggleThemeButton />
 
               {/* LIVE / OFFLINE indicator */}
               <div className="flex items-center space-x-2 font-mono text-sm">

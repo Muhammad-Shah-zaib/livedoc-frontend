@@ -1,13 +1,14 @@
 import { SOCKET_ROUTES } from "@/environment/socketRoutes";
-import { setCurrentDocument } from "@/store/documents/documentSlice";
+import { setCurrentDocumentLiveMembers } from "@/store/documents/documentSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { NotebookPen } from "lucide-react";
+import { NotebookPen, UserMinus, UserPlus } from "lucide-react";
 import { useEffect, useRef } from "react";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import { toast } from "sonner";
 
 export function useCollaboratorSocket() {
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user!);
   const currentDoc = useAppSelector(
     (state) => state.documents.currentDocument!
   );
@@ -49,14 +50,50 @@ export function useCollaboratorSocket() {
 
         switch (data.type) {
           case "live_members":
-            dispatch(
-              setCurrentDocument({
-                ...currentDoc,
-                id: currentDoc.id,
-                live_members_count: data.count,
-              } as any)
-            );
+            setTimeout(() => {
+              dispatch(
+                setCurrentDocumentLiveMembers(Number.parseInt(data.count))
+              );
+            }, 250);
+
             break;
+
+          case "user_joined":
+            if (user.id != data.user.id) {
+              toast.custom(
+                () => (
+                  <div className="flex items-center gap-2">
+                    <UserPlus className="text-green-600 w-5 h-5" />
+                    <span>{`${data.user.first_name} ${data.user.last_name} joined the document.`}</span>
+                  </div>
+                ),
+                {
+                  position: "bottom-right",
+                  duration: 3000,
+                  closeButton: true,
+                }
+              );
+            }
+            break;
+
+          case "user_left":
+            if (user.id != data.user.id) {
+              toast.custom(
+                () => (
+                  <div className="flex items-center gap-2">
+                    <UserMinus className="text-red-600 w-5 h-5" />
+                    <span>{`${data.user.first_name} ${data.user.last_name} left the document.`}</span>
+                  </div>
+                ),
+                {
+                  position: "bottom-right",
+                  duration: 3000,
+                  closeButton: true,
+                }
+              );
+            }
+            break;
+
           case "new_comment":
             break;
           case "update_comment":
