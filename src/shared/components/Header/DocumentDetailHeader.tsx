@@ -14,7 +14,6 @@ import {
 } from "@/store/documents/documentSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 
-import { Switch } from "@/components/ui/switch";
 import { useLiveToggle } from "@/hooks/useLiveToggle";
 import {
   ArrowLeft,
@@ -67,7 +66,7 @@ function DocumentDetailHeader() {
 
   const handleToggleLive = () => {
     console.log(currentDocument.admin);
-    console.log(user?.id);
+    console.log(user);
     if (currentDocument.admin === user?.id) {
       toggleLive(currentDocument.id, !currentDocument.is_live);
     } else {
@@ -99,17 +98,33 @@ function DocumentDetailHeader() {
 
           <div className="hidden md:flex items-center space-x-3">
             <div className="flex items-center space-x-2 font-mono text-sm">
-              <Switch
-                checked={currentDocument.is_live}
-                onCheckedChange={() => handleToggleLive()}
-                id={`switch-${currentDocument.id}`}
+              <Button
+                variant="ghost"
+                size="icon"
+                className={
+                  currentDocument.is_live
+                    ? "bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                }
+                onClick={handleToggleLive}
                 disabled={loading}
-              />
+                aria-label={
+                  currentDocument.is_live ? "Set Offline" : "Set Live"
+                }
+              >
+                {loading ? (
+                  <Loader2 className="animate-spin h-5 w-5" />
+                ) : currentDocument.is_live ? (
+                  <Radio className="h-5 w-5" />
+                ) : (
+                  <Circle className="h-5 w-5" />
+                )}
+              </Button>
               <span
                 className={
                   currentDocument.is_live
-                    ? "text-green-600 dark:text-green-300 font-bold"
-                    : "text-slate-500 dark:text-slate-400 font-bold"
+                    ? "text-green-600 dark:text-green-300 font-bold sm:inline hidden"
+                    : "text-slate-500 dark:text-slate-400 font-bold sm:inline hidden"
                 }
               >
                 {currentDocument.is_live ? "LIVE" : "OFFLINE"}

@@ -19,7 +19,10 @@ import { MoreVertical, SaveIcon, Share2, User2 } from "lucide-react";
 import ShareTokenDialog from "./ShareTokenDialog";
 import { Loader } from "lucide-react";
 import { Input } from "../ui/input";
-import { patchDocumentThunk } from "@/store/documents/documentThunk";
+import {
+  patchDocumentThunk,
+  requestAccessThunk,
+} from "@/store/documents/documentThunk";
 
 export default function DocumentDetail() {
   const { currentDocument, loading, accessDocumentDetail } = useAppSelector(
@@ -114,12 +117,27 @@ export default function DocumentDetail() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => dispatch(setAccessDocumentDetail(true))}
-              >
-                <User2 className="w-4 h-4" />
-                Manage Access
-              </DropdownMenuItem>
+              {user!.id === currentDocument.admin ? (
+                <DropdownMenuItem
+                  onClick={() => dispatch(setAccessDocumentDetail(true))}
+                >
+                  <User2 className="w-4 h-4" />
+                  Manage Access
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() =>
+                    dispatch(
+                      requestAccessThunk({
+                        share_token: currentDocument.share_token,
+                      })
+                    )
+                  }
+                >
+                  <User2 className="w-4 h-4" />
+                  Request Access
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem onClick={() => setOpen(true)}>
                 <Share2 className="w-4 h-4" />
                 Share Document

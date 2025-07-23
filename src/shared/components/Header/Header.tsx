@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { Grid3X3, List, Search, Moon, DiscAlbum } from "lucide-react";
+import { Grid3X3, List, Search } from "lucide-react";
 import { useState } from "react";
 import AvatarDropdown from "./AvatarDropDown";
 import NotificationPopover from "@/shared/components/NotificationPopover";
