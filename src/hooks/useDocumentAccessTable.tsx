@@ -3,12 +3,12 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 import {
   approveAccessThunk,
   revokeAccessThunk,
-  deleteDocumentThunk,
   deleteDocumentAccessThunk,
 } from "@/store/documents/documentThunk";
 import type { ColumnDef } from "@tanstack/react-table";
 import { User2, CheckCircle, XCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DelteDocumentAccessDialogue } from "@/components/documents/DelteDocumentAccessDialogue";
 
 /**
  * Custom hook to encapsulate document access table logic.
@@ -29,6 +29,10 @@ export function useDocumentAccessTable() {
 
   const handleRevokeAccess = (access_id: number) => {
     dispatch(revokeAccessThunk({ access_id }));
+  };
+
+  const handleDeleteDocumentAccess = (access_id: number) => {
+    dispatch(deleteDocumentAccessThunk({ access_id }));
   };
 
   // --- DataTable columns definition ---
@@ -136,20 +140,13 @@ export function useDocumentAccessTable() {
                 </Button>
               )}
 
-              {
-                <Button
-                  size="sm"
-                  variant="outline"
-                  title="delete"
-                  onClick={() =>
-                    dispatch(
-                      deleteDocumentAccessThunk({ access_id: row.original.id })
-                    )
-                  }
-                >
-                  <Trash2 className="w-4 h-4 text-red-600" />
+              <DelteDocumentAccessDialogue
+                onConfirm={() => handleDeleteDocumentAccess(row.original.id)}
+              >
+                <Button size="sm" variant="outline" title="Delete">
+                  <Trash2 className="w-4 h-4 text-red-500" />
                 </Button>
-              }
+              </DelteDocumentAccessDialogue>
             </div>
           );
         },
@@ -161,5 +158,5 @@ export function useDocumentAccessTable() {
   );
 
   // --- Return values for use in the component ---
-  return { documentAccess, columns };
+  return { documentAccess, columns, handleDeleteDocumentAccess };
 }

@@ -10,9 +10,7 @@ import { Trash2, Loader2 } from "lucide-react";
 import Spinner from "@/shared/components/spinner";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { deleteDocumentThunk } from "@/store/documents/documentThunk";
-import { useNavigate } from "react-router-dom";
 import type { Document } from "@/store/documents/types";
-import { useEffect } from "react";
 
 interface DeleteDocumentDialogProps {
   document: Document;
@@ -26,10 +24,7 @@ export default function DeleteDocumentDialog({
   onOpenChange,
 }: DeleteDocumentDialogProps) {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { loading, deleteSuccessful } = useAppSelector(
-    (state) => state.documents
-  );
+  const { loading } = useAppSelector((state) => state.documents);
   const handleDelete = () => {
     try {
       dispatch(deleteDocumentThunk({ id: document.id }));
