@@ -57,14 +57,39 @@ function Header() {
   };
 
   return (
-    <div className="flex items-center justify-between mb-8 w-full">
-      <div className="flex items-center space-x-4">
+    <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between mb-8">
+      <div className="flex items-center justify-between md:justify-start md:space-x-4">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
           <span className="text-xl font-semibold text-slate-800 dark:text-slate-200">
             DocFlow
           </span>
         </div>
+
+        {/* Mobile View Toggle and Theme */}
+        <div className="flex items-center space-x-2 md:hidden">
+          <div className="flex items-center space-x-1 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-lg p-1">
+            <Button
+              variant={documentViewStyle === "grid" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => dispatch(setDocumentViewStyle("grid"))}
+              className="h-7 px-2"
+            >
+              <Grid3X3 className="h-3 w-3" />
+            </Button>
+            <Button
+              variant={documentViewStyle === "list" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => dispatch(setDocumentViewStyle("list"))}
+              className="h-7 px-2"
+            >
+              <List className="h-3 w-3" />
+            </Button>
+          </div>
+          <ToggleThemeButton />
+        </div>
+
+        {/* Desktop View Toggle */}
         <div className="hidden md:flex items-center space-x-1 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-lg p-1">
           <Button
             variant={documentViewStyle === "grid" ? "default" : "ghost"}
@@ -85,19 +110,29 @@ function Header() {
         </div>
       </div>
 
-      <div className="flex items-center space-x-4">
-        <div className="relative">
+      {/* Search and Actions Row */}
+      <div className="flex items-center justify-between space-x-3">
+        {/* Search Bar */}
+        <div className="relative flex-1 max-w-xs md:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
-            placeholder="Search documents..."
+            placeholder="Search..."
             value={inputValue}
             onChange={handleSearchQuery}
-            className="pl-10 w-64 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm border-slate-200 dark:border-slate-700"
+            className="pl-10 pr-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm border-slate-200 dark:border-slate-700 text-sm"
           />
         </div>
-        <ToggleThemeButton />
-        <NotificationPopover />
-        <AvatarDropdown user={user} getUserInitials={getUserInitials} />
+
+        {/* Action Buttons */}
+        <div className="flex items-center space-x-2">
+          {/* Notifications Popover */}
+          <NotificationPopover />
+
+          <ToggleThemeButton />
+
+          {/* Avatar */}
+          <AvatarDropdown user={user} getUserInitials={getUserInitials} />
+        </div>
       </div>
     </div>
   );
