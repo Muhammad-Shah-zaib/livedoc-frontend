@@ -20,6 +20,7 @@ import type {
   UpdateUserProfileRequest,
   UpdateUserProfileResponse,
 } from "./types";
+import { wait } from "@/utils/wait";
 
 const GOOGLE_LOGIN_ACTION = "auth/login/google";
 const EMAIL_PASSWORD_LOGIN_ACTION = "auth/login";
@@ -230,8 +231,12 @@ export const getUserByEmailThunk = createAsyncThunk<
         headers: { "Content-Type": "application/json" },
       }
     );
+
+    await wait(300);
     return response.data;
   } catch (error) {
+    await wait(300);
+
     let message = "Failed to get user by email";
     if (axios.isAxiosError(error)) {
       message = error.response?.data?.message || message;

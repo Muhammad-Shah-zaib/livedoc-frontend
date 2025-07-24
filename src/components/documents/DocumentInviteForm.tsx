@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Mail, FilePlus2 } from "lucide-react";
+import { Mail, FilePlus2, Loader2 } from "lucide-react";
 import {
   Select,
   SelectTrigger,
@@ -27,9 +27,8 @@ const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({
   documentId,
 }) => {
   const dispatch = useAppDispatch();
-  const { errorFindingUser, findingUser, foundUser, user } = useAppSelector(
-    (state) => state.auth
-  );
+  const { errorFindingUser, findingUser, foundUser, user, loading } =
+    useAppSelector((state) => state.auth);
   const { documents } = useAppSelector((state) => state.documents);
   const {
     register,
@@ -125,6 +124,14 @@ const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({
               {foundUser.first_name} {foundUser.last_name}
             </Badge>
           )}
+          {findingUser && (
+            <Badge variant="secondary" className="shrink-0 select-none">
+              <span className="animate-pulse flex gap-2 items-center  text-xs font-mono font-semibold">
+                <Loader2 className="w-2 h-2 animate-spin" />
+                Searching
+              </span>
+            </Badge>
+          )}
           <input
             id="invite-email"
             type="email"
@@ -211,7 +218,9 @@ const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({
         )}
       </div>
       <div className="flex justify-end gap-2">
-        <Button type="submit">Send Invite</Button>
+        <Button type="submit" disabled={loading || !foundUser}>
+          Send Invite
+        </Button>
         <Button type="button" variant="outline" onClick={onClose}>
           Close
         </Button>

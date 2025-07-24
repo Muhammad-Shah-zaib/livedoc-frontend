@@ -147,3 +147,11 @@ export interface LiveDocumentAccessResponse {
   detail: string;
   status: "CAN_CONNECT" | "CAN_NOT_CONNECT";
 }
+
+// DELTE DOCUMENT ACCEESS
+export interface DeleteDocumentAccessPayload {
+  access_id: number;
+}
+export interface DeleteDocumentAccessResponse {
+  message: string;
+}

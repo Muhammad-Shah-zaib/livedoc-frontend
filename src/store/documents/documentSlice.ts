@@ -18,6 +18,7 @@ import {
   deleteDocumentThunk,
   grantAccessThunk,
   checkLiveDocumentAccessThunk,
+  deleteDocumentAccessThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
 
@@ -485,6 +486,31 @@ const documentSlice = createSlice({
           payload?.message || "Unable to check live document access";
         state.canConnectToDocument = false;
         toast.error(state.generalError);
+      })
+      // --------------------
+      // DELTE Document Access
+      // --------------------
+      .addCase(deleteDocumentAccessThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(deleteDocumentAccessThunk.fulfilled, (state, { meta }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+
+        // remove the access from documentAccess array
+        state.documentAccess = state.documentAccess.filter(
+          (access) => access.id !== meta.arg.access_id
+        );
+        toast.success(`Access request deleted successfully`);
+      })
+      .addCase(deleteDocumentAccessThunk.rejected, (state) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = "Unable to delete access request";
+        toast.success(`Access request deleted successfully`);
       });
   },
 });

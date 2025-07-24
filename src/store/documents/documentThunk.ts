@@ -21,9 +21,12 @@ import {
   type GrantAccessResponse,
   type LiveDocumentAccessPayload,
   type LiveDocumentAccessResponse,
+  type DeleteDocumentAccessPayload,
+  type DeleteDocumentAccessResponse,
 } from "./types";
 import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
+import { wait } from "@/utils/wait";
 
 const GET_DOCUMENTS_ACTION = "documents/getDocuments";
 const POST_DOCUMENTS_ACTION = "documents/postDocument";
@@ -34,6 +37,7 @@ const REVOKE_ACCESS_ACTION = "documents/revokeAccess";
 const GET_DOCUMENT_BY_SHARE_TOKEN_ACTION = "documents/getDocumentByShareToken";
 const GET_ALL_DOCUMENT_ACCESS_ACTION = "documents/getAllDocumentAccess";
 const GET_SINGLE_DOCUMENT_ACCESS_ACTION = "documents/getSingleDocumentAccess";
+const DELTE_DOCUMENT_ACCESS_ACTION = "documents/deleteDocumentAccess";
 const DELETE_DOCUMENT_ACTION = "documents/deleteDocument";
 const GRANT_ACCESS_ACTION = "documents/grantAccess";
 const CHECK_LIVE_DOCUMENT_ACCESS_ACTION = "documents/checkLiveDocumentAccess";
@@ -107,7 +111,7 @@ export const patchDocumentThunk = createAsyncThunk<
 >(PATCH_DOCUMENT_ACTION, async (payload) => {
   try {
     const response = await axios.patch(
-      API_ROUTES.DOCUMENTS.PATCH_PUT_DETAIL(payload.id),
+      API_ROUTES.DOCUMENTS.PATCH_PUT_DELETE(payload.id),
       payload,
       {
         withCredentials: true,
@@ -306,7 +310,7 @@ export const deleteDocumentThunk = createAsyncThunk<
 >(DELETE_DOCUMENT_ACTION, async (payload, thunkAPI) => {
   try {
     const response = await axios.delete<DeleteDocumentResponse>(
-      API_ROUTES.DOCUMENTS.PATCH_PUT_DETAIL(payload.id),
+      API_ROUTES.DOCUMENTS.PATCH_PUT_DELETE(payload.id),
       {
         withCredentials: true,
         headers: {
@@ -314,7 +318,6 @@ export const deleteDocumentThunk = createAsyncThunk<
         },
       }
     );
-    console.log(response.data);
 
     return response.data;
   } catch (error) {
@@ -372,6 +375,32 @@ export const checkLiveDocumentAccessThunk = createAsyncThunk<
     let message = "Failed to check live document access";
     if (axios.isAxiosError(error)) {
       console.log(error.response?.data);
+      message = error.response?.data?.detail || message;
+    }
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const deleteDocumentAccessThunk = createAsyncThunk<
+  DeleteDocumentAccessResponse,
+  DeleteDocumentAccessPayload,
+  { rejectValue: ErrorResponse }
+>(DELTE_DOCUMENT_ACCESS_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.delete<DeleteDocumentAccessResponse>(
+      API_ROUTES.DOCUMENT_ACCESS.PATCH_PUT_DELETE(payload.access_id),
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    let message = "Failed to delete document access";
+    if (axios.isAxiosError(error)) {
       message = error.response?.data?.detail || message;
     }
     return thunkAPI.rejectWithValue({ message });

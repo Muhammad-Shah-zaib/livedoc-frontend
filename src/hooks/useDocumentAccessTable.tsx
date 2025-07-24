@@ -3,9 +3,11 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 import {
   approveAccessThunk,
   revokeAccessThunk,
+  deleteDocumentThunk,
+  deleteDocumentAccessThunk,
 } from "@/store/documents/documentThunk";
 import type { ColumnDef } from "@tanstack/react-table";
-import { User2, CheckCircle, XCircle } from "lucide-react";
+import { User2, CheckCircle, XCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -114,7 +116,7 @@ export function useDocumentAccessTable() {
           const isApproved = row.original.access_approved;
           return (
             <div className="flex gap-2">
-              {!isApproved && (
+              {!isApproved ? (
                 <Button
                   size="sm"
                   variant="outline"
@@ -123,8 +125,7 @@ export function useDocumentAccessTable() {
                 >
                   <CheckCircle className="w-4 h-4 text-green-600" />
                 </Button>
-              )}
-              {isApproved && (
+              ) : (
                 <Button
                   size="sm"
                   variant="destructive"
@@ -134,6 +135,21 @@ export function useDocumentAccessTable() {
                   <XCircle className="w-4 h-4" />
                 </Button>
               )}
+
+              {
+                <Button
+                  size="sm"
+                  variant="outline"
+                  title="delete"
+                  onClick={() =>
+                    dispatch(
+                      deleteDocumentAccessThunk({ access_id: row.original.id })
+                    )
+                  }
+                >
+                  <Trash2 className="w-4 h-4 text-red-600" />
+                </Button>
+              }
             </div>
           );
         },

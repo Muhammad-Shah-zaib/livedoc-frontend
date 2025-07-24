@@ -223,14 +223,12 @@ const authSlice = createSlice({
       })
       .addCase(getUserByEmailThunk.fulfilled, (state, { payload }) => {
         state.findingUser = false;
-        state.loading = false;
         state.foundUser = payload.user;
         state.generalError = null;
         state.errors = null;
       })
       .addCase(getUserByEmailThunk.rejected, (state, action) => {
         state.findingUser = false;
-        state.loading = false;
         state.errorFindingUser = "User not found";
         state.foundUser = null;
         state.generalError =
