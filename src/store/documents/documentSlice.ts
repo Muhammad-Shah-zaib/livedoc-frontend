@@ -44,6 +44,7 @@ const initialState: DocumentState = {
   accessDocumentDetail: false,
   activeTabInDocumentAccess: "requests",
   editorViewOnlyMode: false,
+  isSearching: false,
 };
 
 // --------------------
@@ -53,6 +54,10 @@ const documentSlice = createSlice({
   initialState,
   name: "documents",
   reducers: {
+    // set is searching state
+    setIsSearching: (state, { payload }: PayloadAction<boolean>) => {
+      state.isSearching = payload;
+    },
     // Set app initialization state
     setEditorViewOnlyMode: (state, { payload }: PayloadAction<boolean>) => {
       state.editorViewOnlyMode = payload;
@@ -63,6 +68,17 @@ const documentSlice = createSlice({
     // Set search query for filtering documents
     setSerachQuery: (state, { payload }: PayloadAction<string>) => {
       state.searchQuery = payload;
+      // Filter documents based on search query
+      if (payload.trim() === "") {
+        state.filteredDocuments = state.documents;
+      } else {
+        const query = payload.toLowerCase();
+        state.filteredDocuments = state.documents.filter((doc) =>
+          doc.name.toLowerCase().includes(query)
+        );
+      }
+      state.canNavigateToDetailFromConnect = false;
+      state.isSearching = false;
     },
     // Set the current document
     setCurrentDocument: (
@@ -539,5 +555,6 @@ export const {
   setCurrentDocumentWritePermission,
   setCurrentDocumentLiveMembers,
   findAndSetDocumentWriteAccess,
+  setIsSearching,
 } = documentSlice.actions;
 export default documentSlice.reducer;

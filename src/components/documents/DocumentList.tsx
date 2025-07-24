@@ -22,6 +22,7 @@ import {
 } from "../ui/dropdown-menu";
 import DeleteDocumentDialog from "./DeleteDocumentDialog";
 import { useState } from "react";
+import NoDocumentFound from "./NoDocumentFound";
 
 function DocumentList() {
   const { filteredDocuments } = useAppSelector((state) => state.documents);
@@ -34,6 +35,9 @@ function DocumentList() {
   } = useDocumentActions();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<null | number>(null);
 
+  if (filteredDocuments.length === 0) {
+    return <NoDocumentFound />;
+  }
   return (
     <div className="space-y-4">
       {filteredDocuments.map((doc) => (

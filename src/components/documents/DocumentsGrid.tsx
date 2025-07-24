@@ -23,6 +23,7 @@ import ShareTokenDialog from "./ShareTokenDialog";
 import useDocumentActions from "@/hooks/useDocumentActions";
 import DocumentAccessDialog from "./DocumentAccessDialog";
 import DeleteDocumentDialog from "./DeleteDocumentDialog";
+import NoDocumentFound from "./NoDocumentFound";
 
 function DocumentsView() {
   const { filteredDocuments } = useAppSelector((state) => state.documents);
@@ -36,6 +37,10 @@ function DocumentsView() {
     setAccessDialogOpen,
   } = useDocumentActions();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<null | number>(null);
+
+  if (filteredDocuments.length === 0) {
+    return <NoDocumentFound />;
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

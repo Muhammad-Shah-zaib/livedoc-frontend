@@ -26,7 +26,6 @@ import {
 } from "./types";
 import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
-import { wait } from "@/utils/wait";
 
 const GET_DOCUMENTS_ACTION = "documents/getDocuments";
 const POST_DOCUMENTS_ACTION = "documents/postDocument";

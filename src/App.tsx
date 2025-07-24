@@ -14,6 +14,7 @@ import AboutPage from "./shared/pages/AboutUs";
 import { useAppDispatch, useAppSelector } from "./store/store";
 import { useEffect } from "react";
 import { applyThemeInital } from "./store/theme/themeSlice";
+import { Toaster } from "sonner";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -67,7 +68,7 @@ function App() {
         </Route>
       </Routes>
 
-      {/* PROTEXTED ROUTES */}
+      <Toaster theme={mode} />
     </>
   );
 }

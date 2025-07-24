@@ -8,9 +8,10 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Users, MoreVertical, Unplug } from "lucide-react";
+import { Users, MoreVertical, Unplug, FileText } from "lucide-react";
 import DocumentAccessDialog from "../documents/DocumentAccessDialog";
 import React from "react";
+import { Badge } from "../ui/badge";
 
 function DashboardActionBar() {
   const { documents, searchQuery } = useAppSelector((state) => state.documents);
@@ -28,10 +29,19 @@ function DashboardActionBar() {
         <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
           Your Documents
         </h1>
-        <p className="text-slate-600 dark:text-slate-400">
-          {filteredDocuments.length} document
-          {filteredDocuments.length !== 1 ? "s" : ""} found
-        </p>
+        <div className="flex items-center gap-2">
+          <Badge variant={"secondary"}>
+            <FileText className="w-1 h-1" />
+            {filteredDocuments.length} document
+            {filteredDocuments.length !== 1 ? "s" : ""} found
+          </Badge>
+          {filteredDocuments.length === 0 && (
+            <div className="flex text-xs items-center space-x-1 text-slate-500 dark:text-slate-400">
+              <span>•</span>
+              <span>Ready to create your first one?</span>
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex gap-4">
         <NewDocumentDialog />

@@ -19,6 +19,7 @@ export interface DocumentState {
   accessDocumentDetail: boolean;
   activeTabInDocumentAccess: AvailableTabsInDocumentAccess;
   editorViewOnlyMode: boolean;
+  isSearching: boolean;
 }
 
 export type AvailableTabsInDocumentAccess = "requests" | "invite";
