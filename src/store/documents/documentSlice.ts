@@ -256,11 +256,26 @@ const documentSlice = createSlice({
       .addCase(patchDocumentThunk.fulfilled, (state, { payload }) => {
         state.loading = false;
         // Update the document in both documents and filteredDocuments
-        const index = state.documents.findIndex((doc) => doc.id === payload.id);
-        if (index !== -1) {
-          state.documents[index] = payload;
-          state.filteredDocuments[index] = payload;
-        }
+        state.documents = state.documents.map((doc) => {
+          if (doc.id === payload.id) {
+            return {
+              ...doc,
+              ...payload, // merge existing and new data
+            };
+          }
+          return doc;
+        });
+
+        // Update the filteredDocuments
+        state.filteredDocuments = state.filteredDocuments.map((doc) => {
+          if (doc.id === payload.id) {
+            return {
+              ...doc,
+              ...payload, // merge existing and new data
+            };
+          }
+          return doc;
+        });
         if (state.currentDocument && state.currentDocument.id == payload.id) {
           state.currentDocument = payload;
         }

@@ -38,7 +38,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import svg from "/emptyNotification.svg"; // Adjust the path as necessary
 import NotificationBell from "../icons/NotificationBell";
 
 const NotificationPopover = () => {
