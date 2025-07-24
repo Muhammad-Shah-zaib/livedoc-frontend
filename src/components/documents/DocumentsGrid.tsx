@@ -98,11 +98,6 @@ function DocumentsView() {
             </div>
           </CardHeader>
           <CardContent className="pt-0">
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">
-              {doc.content.length > 40
-                ? doc.content.slice(0, 40) + "..."
-                : doc.content}
-            </p>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2 font-mono text-sm ">
                 <Switch

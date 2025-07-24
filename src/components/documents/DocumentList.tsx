@@ -54,7 +54,7 @@ function DocumentList() {
                   <div className="flex items-center space-x-4 text-sm text-slate-500 dark:text-slate-400">
                     <div className="flex items-center space-x-1">
                       <Clock className="h-3 w-3" />
-                      <span>{doc.updated_at}</span>
+                      <span>{doc.updated_at.split("T")[0]}</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <Users className="h-3 w-3" />

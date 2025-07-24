@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import {
   addOrUpdateDocumentAccess,
   findAndSetDocumentWriteAccess,
+  setDocumentDetail,
 } from "@/store/documents/documentSlice";
 
 const RECONNECT_INTERVAL_MS = 5000;
@@ -57,6 +58,17 @@ const useNotificationSocket = () => {
   const handleMessage = (event: MessageEvent) => {
     try {
       const data = JSON.parse(event.data);
+      if (data.type === "LIVE_MEMBER_COUNT") {
+        console.log(data);
+        dispatch(
+          setDocumentDetail({
+            id: data.doc_id,
+            live_members_count: data.count,
+          } as any)
+        );
+
+        return;
+      }
       if (data.approved_access && data.doc_id) {
         dispatch(
           findAndSetDocumentWriteAccess({

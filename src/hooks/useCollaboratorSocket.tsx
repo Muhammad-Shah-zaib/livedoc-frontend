@@ -1,5 +1,8 @@
 import { SOCKET_ROUTES } from "@/environment/socketRoutes";
-import { setCurrentDocumentLiveMembers } from "@/store/documents/documentSlice";
+import {
+  setCurrentDocumentLiveMembers,
+  setDocumentDetail,
+} from "@/store/documents/documentSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { NotebookPen, UserMinus, UserPlus } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -53,6 +56,12 @@ export function useCollaboratorSocket() {
             setTimeout(() => {
               dispatch(
                 setCurrentDocumentLiveMembers(Number.parseInt(data.count))
+              );
+              dispatch(
+                setDocumentDetail({
+                  id: data.doc_id,
+                  live_members_count: Number.parseInt(data.count),
+                } as any)
               );
             }, 250);
 

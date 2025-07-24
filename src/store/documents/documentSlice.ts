@@ -135,13 +135,18 @@ const documentSlice = createSlice({
       state.activeTabInDocumentAccess = payload;
     },
     setDocumentDetail: (state, { payload }: PayloadAction<Document>) => {
-      const index = state.documents.findIndex((doc) => doc.id === payload.id);
-      if (index !== -1) {
-        state.documents[index] = {
-          ...state.documents[index],
-          ...payload, // merge existing and new data
-        };
-      }
+      state.documents = state.documents.map((doc) => {
+        if (doc.id === payload.id) {
+          doc.live_members_count = payload.live_members_count;
+        }
+        return doc;
+      });
+      state.filteredDocuments = state.filteredDocuments.map((doc) => {
+        if (doc.id === payload.id) {
+          doc.live_members_count = payload.live_members_count;
+        }
+        return doc;
+      });
       if (state.currentDocument && state.currentDocument.id === payload.id) {
         state.currentDocument = {
           ...state.currentDocument,
