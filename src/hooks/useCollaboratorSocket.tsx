@@ -63,7 +63,7 @@ export function useCollaboratorSocket() {
                   live_members_count: Number.parseInt(data.count),
                 } as any)
               );
-            }, 500);
+            }, 0);
 
             break;
 
