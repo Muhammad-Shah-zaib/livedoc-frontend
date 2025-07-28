@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { Button } from "../ui/button";
-import { setSerachQuery } from "@/store/documents/documentSlice";
+import { setSearchQuery } from "@/store/documents/documentSlice";
 import NewDocumentDialog from "./NewDocumentDialog";
 import EmptyStateAddDocument from "@/shared/icons/EmptyStateAddDocument";
 
@@ -31,7 +31,7 @@ function NoDocumentFound() {
           {searchQuery && (
             <Button
               variant="outline"
-              onClick={() => dispatch(setSerachQuery(""))}
+              onClick={() => dispatch(setSearchQuery(""))}
               className="px-8 py-3 h-auto bg-transparent hover:bg-slate-50 dark:hover:bg-slate-800"
             >
               Clear Search

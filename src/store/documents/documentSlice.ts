@@ -69,7 +69,7 @@ const documentSlice = createSlice({
       state.isAppInitialized = payload;
     },
     // Set search query for filtering documents
-    setSerachQuery: (state, { payload }: PayloadAction<string>) => {
+    setSearchQuery: (state, { payload }: PayloadAction<string>) => {
       state.searchQuery = payload;
       // Filter documents based on search query
       if (payload.trim() === "") {
@@ -607,7 +607,7 @@ const documentSlice = createSlice({
 export const {
   setCanNavigateToDetailFromConnect,
   setIsAppInitialized,
-  setSerachQuery,
+  setSearchQuery,
   setCurrentDocument,
   setDocumentViewStyle,
   setDeleteSuccessful,

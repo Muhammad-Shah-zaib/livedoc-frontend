@@ -4,7 +4,7 @@ import AvatarDropdown from "./AvatarDropDown";
 import NotificationPopover from "@/shared/components/NotificationPopover";
 import {
   setDocumentViewStyle,
-  setSerachQuery,
+  setSearchQuery,
   setIsSearching,
 } from "@/store/documents/documentSlice";
 import ToggleThemeButton from "@/shared/components/ToggleThemeButton";
@@ -12,10 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
+import AnimatedCatSvg from "../AnimatedCatSvg";
 
 function Header() {
   const dispatch = useAppDispatch();
-  const { documentViewStyle, searchQuery } = useAppSelector(
+  const { documentViewStyle, searchQuery, isSearching } = useAppSelector(
     (state) => state.documents
   );
   const { user } = useAppSelector((state) => state.auth);
@@ -26,7 +27,7 @@ function Header() {
   const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
-        dispatch(setSerachQuery(value));
+        dispatch(setSearchQuery(value));
       }, 300),
     [dispatch]
   );
@@ -115,6 +116,12 @@ function Header() {
         {/* Search Bar */}
         <div className="relative flex-1 max-w-xs md:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <div className="absolute left-1 z-50 top-1/2 -translate-y-1/2 hidden sm:block">
+            <div className="w-8 h-8">
+              <AnimatedCatSvg isSearching={isSearching} />
+            </div>
+          </div>
+
           <Input
             placeholder="Search..."
             value={inputValue}
