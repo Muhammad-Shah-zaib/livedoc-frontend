@@ -9,10 +9,12 @@ import { getNotificationsThunk } from "@/store/notification/notificationThunk";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 const AppBootStrapGuard = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const hasBootstrapped = useRef(false);
 
   const { isAuthenticated, user, initialAuthChecked } = useAppSelector(
     (state) => state.auth
@@ -24,18 +26,26 @@ const AppBootStrapGuard = () => {
   useNotificationSocket();
 
   useEffect(() => {
-    if (!isAuthenticated && !user) {
-      navigate("/login");
-    }
+    if (hasBootstrapped.current) return;
+
     if (!initialAuthChecked) {
       dispatch(getUserProfileThunk());
     }
-    if (initialAuthChecked && isAuthenticated && !initialDocumentFetch) {
-      dispatch(getDocumentsThunk());
-      dispatch(getNotificationsThunk());
-      dispatch(getAllDocumentAccessThunk());
+
+    if (initialAuthChecked) {
+      if (!isAuthenticated && !user) {
+        navigate("/login", { replace: true });
+      }
+
+      if (isAuthenticated && !initialDocumentFetch) {
+        dispatch(getDocumentsThunk());
+        dispatch(getNotificationsThunk());
+        dispatch(getAllDocumentAccessThunk());
+      }
+
+      hasBootstrapped.current = true;
     }
-  }, [initialAuthChecked, dispatch]);
+  }, [initialAuthChecked, isAuthenticated, user]);
 
   if (!isAppInitialized) {
     return (

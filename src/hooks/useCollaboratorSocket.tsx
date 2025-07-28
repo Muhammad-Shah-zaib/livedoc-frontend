@@ -1,5 +1,6 @@
 import { SOCKET_ROUTES } from "@/environment/socketRoutes";
 import {
+  setCanInitializeEditor,
   setCurrentDocumentLiveMembers,
   setDocumentDetail,
 } from "@/store/documents/documentSlice";
@@ -16,21 +17,29 @@ export function useCollaboratorSocket() {
     (state) => state.documents.currentDocument!
   );
   const socketRef = useRef<ReconnectingWebSocket | null>(null);
+  const hasMounted = useRef(false);
+  const hasShownToast = useRef(false);
 
   useEffect(() => {
+    if (hasMounted.current) {
+      // If the component has already mounted, we don't need to reinitialize the socket
+      return;
+    }
+    hasMounted.current = true;
     const socketUrl = SOCKET_ROUTES.DOCUMENTS.LIVE(currentDoc.share_token);
 
     const socket = new ReconnectingWebSocket(socketUrl, [], {
       // Optional options, can remove if unnecessary
-      maxRetries: 20,
+      maxRetries: 5,
       // reconnectInterval is deprecated, use `minReconnectionDelay` and `maxReconnectionDelay`
-      minReconnectionDelay: 2000,
-      maxReconnectionDelay: 5000,
+      minReconnectionDelay: 10000,
+      maxReconnectionDelay: 10000,
     });
 
     socketRef.current = socket;
 
     socket.addEventListener("open", () => {
+      dispatch(setCanInitializeEditor(true));
       toast.success(
         <>
           You're live on the doc <br />
@@ -47,6 +56,11 @@ export function useCollaboratorSocket() {
       );
     });
 
+    socket.addEventListener("close", () => {
+      dispatch(setCanInitializeEditor(false));
+      hasShownToast.current = false;
+      hasMounted.current = false;
+    });
     socket.addEventListener("message", (event) => {
       try {
         const data = JSON.parse(event.data);

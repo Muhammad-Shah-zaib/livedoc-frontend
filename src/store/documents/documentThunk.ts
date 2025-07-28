@@ -40,6 +40,7 @@ const DELTE_DOCUMENT_ACCESS_ACTION = "documents/deleteDocumentAccess";
 const DELETE_DOCUMENT_ACTION = "documents/deleteDocument";
 const GRANT_ACCESS_ACTION = "documents/grantAccess";
 const CHECK_LIVE_DOCUMENT_ACCESS_ACTION = "documents/checkLiveDocumentAccess";
+const TOGLLE_LIVE_DOCUMENT_ACTION = "documents/toggleLiveDocument";
 
 export const getDocumentsThunk = createAsyncThunk<
   GetDocumentsResponse,
@@ -403,5 +404,30 @@ export const deleteDocumentAccessThunk = createAsyncThunk<
       message = error.response?.data?.detail || message;
     }
     return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const ToggleLiveDocumentThunk = createAsyncThunk<
+  PatchDocumentResponse,
+  PatchDocumentPayload,
+  { rejectValue: ErrorResponse }
+>(TOGLLE_LIVE_DOCUMENT_ACTION, async (payload) => {
+  try {
+    const response = await axios.patch(
+      API_ROUTES.DOCUMENTS.PATCH_PUT_DELETE(payload.id),
+      payload,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    let message = "Failed to update document";
+
+    return { message };
   }
 });

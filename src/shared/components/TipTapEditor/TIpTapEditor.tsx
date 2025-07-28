@@ -14,15 +14,12 @@ import {
 } from "lucide-react";
 import "./style.css";
 import useTipTapEditor from "@/hooks/useTipTapEditor";
-import { useCollaboratorSocket } from "@/hooks/useCollaboratorSocket";
 
 export const TiptapEditor = () => {
   const { editor, saveDoc } = useTipTapEditor() as {
     editor: any;
     saveDoc: () => void;
   };
-
-  useCollaboratorSocket();
 
   if (!editor) {
     return <div className="animate-pulse bg-gray-200 h-96 w-full rounded-md" />;

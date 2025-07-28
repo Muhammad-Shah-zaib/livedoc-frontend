@@ -20,6 +20,8 @@ export interface DocumentState {
   activeTabInDocumentAccess: AvailableTabsInDocumentAccess;
   editorViewOnlyMode: boolean;
   isSearching: boolean;
+  liveToggleLoading: boolean;
+  canInitializeEditor: boolean;
 }
 
 export type AvailableTabsInDocumentAccess = "requests" | "invite";

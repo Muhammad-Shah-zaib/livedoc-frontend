@@ -14,12 +14,14 @@ import { Label } from "@/components/ui/label";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { postDocumentThunk } from "@/store/documents/documentThunk";
 import type { PostDocumentsPayload } from "@/store/documents/types";
-import { Plus } from "lucide-react";
+import { Plus, Loader } from "lucide-react";
 
 export default function NewDocumentDialog() {
   const dispatch = useAppDispatch();
 
-  const fieldErrors = useAppSelector((state) => state.documents.error);
+  const { error: fieldErrors, loading } = useAppSelector(
+    (state) => state.documents
+  );
   const [open, setOpen] = useState(false);
   const {
     register,
@@ -96,10 +98,18 @@ export default function NewDocumentDialog() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleCancel}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              disabled={loading}
+            >
               Cancel
             </Button>
-            <Button type="submit">Create</Button>
+            <Button type="submit" disabled={loading}>
+              {loading && <Loader className="animate-spin" />}
+              Create
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

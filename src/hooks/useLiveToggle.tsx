@@ -1,16 +1,16 @@
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { patchDocumentThunk } from "@/store/documents/documentThunk";
+import { ToggleLiveDocumentThunk } from "@/store/documents/documentThunk";
 import { toast } from "sonner";
 
 export function useLiveToggle() {
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.documents);
+  const { liveToggleLoading } = useAppSelector((state) => state.documents);
 
   const toggleLive = async (id: number, is_live: boolean) => {
     const toastId = toast.loading("Updating live status...");
     try {
       await dispatch(
-        patchDocumentThunk({
+        ToggleLiveDocumentThunk({
           id,
           is_live,
         })
@@ -24,5 +24,5 @@ export function useLiveToggle() {
     }
   };
 
-  return { toggleLive, loading };
+  return { toggleLive, loading: liveToggleLoading };
 }

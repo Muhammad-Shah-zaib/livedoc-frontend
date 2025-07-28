@@ -112,7 +112,7 @@ const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({
           <Mail className="inline w-4 h-4 mr-1 text-slate-500" /> Email
         </Label>
         <div
-          className="flex items-center gap-2 bg-white border border-slate-300 rounded px-2 py-1 focus-within:ring-1 focus-within:ring-gray-300 transition-colors cursor-text"
+          className="flex items-center gap-2 bg-white border border-slate-300 rounded px-2 py-1 focus-within:ring-1 focus-within:ring-gray-300 transition-colors cursor-text dark:bg-zinc-900"
           tabIndex={-1}
           onClick={() => {
             const input = document.getElementById("invite-email");
@@ -172,7 +172,7 @@ const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({
           <FilePlus2 className="inline w-4 h-4 mr-1 text-slate-500" /> Document
         </Label>
         {documentId !== null ? (
-          <div className="px-3 py-2 border border-slate-300 rounded bg-slate-50">
+          <div className="px-3 py-2 border border-slate-300 rounded bg-slate-50 dark:bg-zinc-900 cursor-not-allowed">
             {documents.find((doc) => doc.id === documentId)?.name || "Document"}
             {/* Hidden input for react-hook-form validation */}
             <input

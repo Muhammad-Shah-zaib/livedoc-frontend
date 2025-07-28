@@ -4,10 +4,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2 } from "lucide-react";
-import Spinner from "@/shared/components/spinner";
+import { Trash2, Loader2, X } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { deleteDocumentThunk } from "@/store/documents/documentThunk";
 import type { Document } from "@/store/documents/types";
@@ -34,8 +34,8 @@ export default function DeleteDocumentDialog({
   return (
     <Dialog open={open} onOpenChange={(v) => !loading && onOpenChange(v)}>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-red-600">
+        <DialogHeader className="relative">
+          <DialogTitle className="flex items-center gap-2 text-red-400">
             <Trash2 className="h-5 w-5" />
             Delete Document #{document.id}
           </DialogTitle>
@@ -68,15 +68,11 @@ export default function DeleteDocumentDialog({
           >
             {loading ? (
               <span className="flex items-center gap-2">
-                <Loader2 className="animate-spin h-4 w-4" /> Deleting...
+                <Loader2 className="animate-spin text-red-200 h-4 w-4" />{" "}
+                Deleting...
               </span>
             ) : (
               "Delete"
-            )}
-            {loading && (
-              <span className="absolute inset-0 flex items-center justify-center">
-                <Spinner spinnerColorClass="text-red-600" opacity={0.1} />
-              </span>
             )}
           </Button>
         </DialogFooter>

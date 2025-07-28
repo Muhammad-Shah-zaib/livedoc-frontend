@@ -36,8 +36,12 @@ function DocumentDetailHeader() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { currentDocument, deleteSuccessful, editorViewOnlyMode } =
-    useAppSelector((state) => state.documents);
+  const {
+    currentDocument,
+    deleteSuccessful,
+    editorViewOnlyMode,
+    canInitializeEditor,
+  } = useAppSelector((state) => state.documents);
   const { toggleLive, loading } = useLiveToggle();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
@@ -92,7 +96,11 @@ function DocumentDetailHeader() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <span className="text-xs font-mono font-black p-2 px-3 rounded-full shadow-md bg-gradient-to-r from-blue-500 text-white to-purple-500">
-              {currentDocument.live_members_count} members live
+              {canInitializeEditor &&
+                (currentDocument.is_live
+                  ? `${currentDocument.live_members_count} members live`
+                  : "Offline")}
+              {!canInitializeEditor && "Initializing..."}
             </span>
           </div>
 

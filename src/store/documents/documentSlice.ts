@@ -19,6 +19,7 @@ import {
   grantAccessThunk,
   checkLiveDocumentAccessThunk,
   deleteDocumentAccessThunk,
+  ToggleLiveDocumentThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
 
@@ -45,6 +46,8 @@ const initialState: DocumentState = {
   activeTabInDocumentAccess: "requests",
   editorViewOnlyMode: false,
   isSearching: false,
+  liveToggleLoading: false,
+  canInitializeEditor: false,
 };
 
 // --------------------
@@ -87,6 +90,10 @@ const documentSlice = createSlice({
     ) => {
       state.currentDocument = payload;
     },
+    setCanInitializeEditor: (state, { payload }: PayloadAction<boolean>) => {
+      state.canInitializeEditor = payload;
+    },
+
     setCurrentDocumentWritePermission: (
       state,
       { payload }: PayloadAction<boolean>
@@ -284,6 +291,49 @@ const documentSlice = createSlice({
       })
       .addCase(patchDocumentThunk.rejected, (state, { payload }) => {
         state.loading = false;
+        state.error = payload?.erros || null;
+        state.generalError = payload?.message || "Unable to update Document";
+      })
+
+      // --------------------
+      // Toggle Live
+      // --------------------
+      .addCase(ToggleLiveDocumentThunk.pending, (state) => {
+        state.liveToggleLoading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(ToggleLiveDocumentThunk.fulfilled, (state, { payload }) => {
+        state.liveToggleLoading = false;
+        // Update the document in both documents and filteredDocuments
+        state.documents = state.documents.map((doc) => {
+          if (doc.id === payload.id) {
+            return {
+              ...doc,
+              ...payload, // merge existing and new data
+            };
+          }
+          return doc;
+        });
+
+        // Update the filteredDocuments
+        state.filteredDocuments = state.filteredDocuments.map((doc) => {
+          if (doc.id === payload.id) {
+            return {
+              ...doc,
+              ...payload, // merge existing and new data
+            };
+          }
+          return doc;
+        });
+        if (state.currentDocument && state.currentDocument.id == payload.id) {
+          state.currentDocument = payload;
+        }
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(ToggleLiveDocumentThunk.rejected, (state, { payload }) => {
+        state.liveToggleLoading = false;
         state.error = payload?.erros || null;
         state.generalError = payload?.message || "Unable to update Document";
       })
@@ -571,5 +621,6 @@ export const {
   setCurrentDocumentLiveMembers,
   findAndSetDocumentWriteAccess,
   setIsSearching,
+  setCanInitializeEditor,
 } = documentSlice.actions;
 export default documentSlice.reducer;

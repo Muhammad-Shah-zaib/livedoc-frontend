@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { useSaveDocument } from "@/hooks/useSaveDocument";
 import DocumentAccessDialog from "./DocumentAccessDialog";
+import { useCollaboratorSocket } from "@/hooks/useCollaboratorSocket";
 
 import {
   DropdownMenu,
@@ -17,17 +18,20 @@ import {
 } from "../ui/dropdown-menu";
 import { MoreVertical, SaveIcon, Share2, User2 } from "lucide-react";
 import ShareTokenDialog from "./ShareTokenDialog";
-import { Loader } from "lucide-react";
 import { Input } from "../ui/input";
 import {
   patchDocumentThunk,
   requestAccessThunk,
 } from "@/store/documents/documentThunk";
+import EditorSkeleton from "@/shared/components/EditorSkeleton";
 
 export default function DocumentDetail() {
-  const { currentDocument, loading, accessDocumentDetail } = useAppSelector(
-    (state) => state.documents
-  );
+  const {
+    currentDocument,
+    loading,
+    accessDocumentDetail,
+    canInitializeEditor,
+  } = useAppSelector((state) => state.documents);
   const { user } = useAppSelector((state) => state.auth);
   const [canSave, setCanSave] = useState(false);
   const dispatch = useAppDispatch();
@@ -37,6 +41,7 @@ export default function DocumentDetail() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(currentDocument.name);
 
+  useCollaboratorSocket();
   useEffect(() => {
     setEditedTitle(currentDocument.name);
   }, [currentDocument.name]);
@@ -72,81 +77,79 @@ export default function DocumentDetail() {
 
   return (
     <div>
-      <div className="flex justify-between items-center px-4">
-        <h1 className="flex items-center text-lg md:text-xl lg:text-3xl -xl:text-4xl font-bold">
-          <div
-            className="max-w-[200px] sm:max-w-[500px] lg:max-w-[800px] truncate whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer"
-            onDoubleClick={() => {
-              if (currentDocument.admin === user?.id) {
-                setIsEditing(true);
-              }
-            }}
-          >
-            {isEditing ? (
-              <Input
-                className="text-lg md:text-xl lg:text-3xl font-bold border border-gray-300 rounded px-2"
-                value={editedTitle}
-                onChange={(e) => setEditedTitle(e.target.value)}
-                onBlur={handleTitleSave}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleTitleSave();
-                  }
-                }}
-                autoFocus
-              />
-            ) : (
-              currentDocument.name
-            )}
-          </div>
-        </h1>
-        <div className="flex gap-2 items-center">
-          {canSave && (
-            <Button disabled={loading} variant="ghost" onClick={handleSave}>
-              {loading ? (
-                <Loader className="w-4 h-4 text-slate-600 animate-spin mr-2" />
+      {canInitializeEditor && (
+        <div className="flex justify-between items-center px-4">
+          <h1 className="flex items-center text-lg md:text-xl lg:text-3xl -xl:text-4xl font-bold">
+            <div
+              className="max-w-[200px] sm:max-w-[500px] lg:max-w-[800px] truncate whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer"
+              onDoubleClick={() => {
+                if (currentDocument.admin === user?.id) {
+                  setIsEditing(true);
+                }
+              }}
+            >
+              {isEditing ? (
+                <Input
+                  className="text-lg md:text-xl lg:text-3xl font-bold border border-gray-300 rounded px-2"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  onBlur={handleTitleSave}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleTitleSave();
+                    }
+                  }}
+                  autoFocus
+                />
               ) : (
+                currentDocument.name
+              )}
+            </div>
+          </h1>
+          <div className="flex gap-2 items-center">
+            {canSave && (
+              <Button disabled={loading} variant="ghost" onClick={handleSave}>
                 <SaveIcon className="w-4 h-4 text0slate-600" />
-              )}
-            </Button>
-          )}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-10 w-10">
-                <MoreVertical className="w-5 h-5" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {user!.id === currentDocument.admin ? (
-                <DropdownMenuItem
-                  onClick={() => dispatch(setAccessDocumentDetail(true))}
-                >
-                  <User2 className="w-4 h-4" />
-                  Manage Access
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10">
+                  <MoreVertical className="w-5 h-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {user!.id === currentDocument.admin ? (
+                  <DropdownMenuItem
+                    onClick={() => dispatch(setAccessDocumentDetail(true))}
+                  >
+                    <User2 className="w-4 h-4" />
+                    Manage Access
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      dispatch(
+                        requestAccessThunk({
+                          share_token: currentDocument.share_token,
+                        })
+                      )
+                    }
+                  >
+                    <User2 className="w-4 h-4" />
+                    Request Access
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem onClick={() => setOpen(true)}>
+                  <Share2 className="w-4 h-4" />
+                  Share Document
                 </DropdownMenuItem>
-              ) : (
-                <DropdownMenuItem
-                  onClick={() =>
-                    dispatch(
-                      requestAccessThunk({
-                        share_token: currentDocument.share_token,
-                      })
-                    )
-                  }
-                >
-                  <User2 className="w-4 h-4" />
-                  Request Access
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem onClick={() => setOpen(true)}>
-                <Share2 className="w-4 h-4" />
-                Share Document
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
-      </div>
-      <TiptapEditor />
+      )}
+      {canInitializeEditor ? <TiptapEditor /> : <EditorSkeleton />}
 
       <ShareTokenDialog
         open={open}
