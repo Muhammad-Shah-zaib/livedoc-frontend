@@ -77,7 +77,7 @@ export function useCollaboratorSocket() {
                   live_members_count: Number.parseInt(data.count),
                 } as any)
               );
-            }, 0);
+            }, 500);
 
             break;
 

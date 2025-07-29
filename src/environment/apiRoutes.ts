@@ -12,6 +12,7 @@ export const API_ROUTES = {
     GET_USER_BY_EMAIL: `${BASE_API_URL}/user/by-email`,
     UPDATE_USER_PROFILE: `${BASE_API_URL}/user/update-profile/`,
     GET_ALL_USERS: `${BASE_API_URL}/user/all/`,
+    GET_USERS_BY_EMAIL_LIST: `${BASE_API_URL}/user/by-emails/`,
   },
   DOCUMENTS: {
     GET_POST: `${BASE_API_URL}/documents/`,
