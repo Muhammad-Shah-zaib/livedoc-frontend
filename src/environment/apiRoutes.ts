@@ -11,6 +11,7 @@ export const API_ROUTES = {
     GET_USER_PROFILE: `${BASE_API_URL}/user/get-profile/`,
     GET_USER_BY_EMAIL: `${BASE_API_URL}/user/by-email`,
     UPDATE_USER_PROFILE: `${BASE_API_URL}/user/update-profile/`,
+    GET_ALL_USERS: `${BASE_API_URL}/user/all/`,
   },
   DOCUMENTS: {
     GET_POST: `${BASE_API_URL}/documents/`,
@@ -40,5 +41,8 @@ export const API_ROUTES = {
     REVOKE_ACCESS: (id: number) =>
       `${BASE_API_URL}/document_access/${id}/revoke-access`,
     GRANT_ACCESS: `${BASE_API_URL}/document_access/grant-access/`,
+  },
+  LIVEBLOCKS: {
+    AUTH: `http://localhost:3001/api/liveblocks-auth/`,
   },
 };

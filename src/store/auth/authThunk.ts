@@ -19,6 +19,9 @@ import type {
   GetUserByEmailResponse,
   UpdateUserProfileRequest,
   UpdateUserProfileResponse,
+  GetAllUsersResponse,
+  LiveblocksAuthResponse,
+  LiveblocksAuthPayload,
 } from "./types";
 import { wait } from "@/utils/wait";
 
@@ -31,6 +34,8 @@ const RESET_PASSWORD_ACTION = "auth/reset-password";
 const GET_USER_PROFILE_ACTION = "auth/get-user-profile";
 const GET_USER_BY_EMAIL_ACTION = "auth/get-user-by-email";
 const UPDATE_USER_PROFILE_ACTION = "auth/update-user-profile";
+
+const GET_ALL_USERS_ACTION = "auth/get-all-users";
 
 // Async thunk for goole login
 export const googleLoginThunk = createAsyncThunk<
@@ -270,5 +275,54 @@ export const updateUserPorifleThunk = createAsyncThunk<
     }
 
     return thunkAPI.rejectWithValue({ message, errors });
+  }
+});
+
+// Get all users
+export const getAllUsersThunk = createAsyncThunk<
+  GetAllUsersResponse,
+  void,
+  { rejectValue: ErrorResponse }
+>(GET_ALL_USERS_ACTION, async (_, thunkAPI) => {
+  try {
+    const response = await axios.get<GetAllUsersResponse>(
+      API_ROUTES.AUTH.GET_ALL_USERS,
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to get all users";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.message || message;
+    }
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+// get liveblock token thunk
+export const getLiveblocksTokenThunk = createAsyncThunk<
+  LiveblocksAuthResponse,
+  LiveblocksAuthPayload,
+  { rejectValue: ErrorResponse }
+>("liveblocks/getToken", async (payload, thunkAPI) => {
+  try {
+    const response = await axios.post<LiveblocksAuthResponse>(
+      API_ROUTES.LIVEBLOCKS.AUTH,
+      payload,
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to authenticate with Liveblocks";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.error || error.message || message;
+    }
+    return thunkAPI.rejectWithValue({ message });
   }
 });

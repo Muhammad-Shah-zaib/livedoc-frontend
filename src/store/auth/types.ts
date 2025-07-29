@@ -13,6 +13,12 @@ export interface IAuthState {
   foundUser: IUser | null;
   findingUser: boolean;
   errorFindingUser: string | null;
+  registeredUsers: IUser[] | null;
+  loadingRegisteredUsers: boolean;
+  errorRegisteredUsers: string | null;
+  liveblocksToken: string | null;
+  loadingLiveblocksToken: boolean;
+  errorLiveblocksToken: string | null;
 }
 
 export interface IUser {
@@ -103,4 +109,17 @@ export interface UpdateUserProfileResponse {
   message: string;
   user: IUser;
   errors: Record<string, string[]> | null;
+}
+
+export interface GetAllUsersResponse {
+  users: IUser[];
+  detail: string;
+}
+
+export interface LiveblocksAuthPayload {
+  roomId: string;
+}
+
+export interface LiveblocksAuthResponse {
+  token: string;
 }

@@ -24,6 +24,9 @@ import {
   requestAccessThunk,
 } from "@/store/documents/documentThunk";
 import EditorSkeleton from "@/shared/components/EditorSkeleton";
+import { ClientSideSuspense, RoomProvider } from "@liveblocks/react";
+import { Providers } from "@/shared/components/Providers";
+import { Navigate } from "react-router-dom";
 
 export default function DocumentDetail() {
   const {
@@ -36,7 +39,9 @@ export default function DocumentDetail() {
   const [canSave, setCanSave] = useState(false);
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  if (!currentDocument) return <div>Loading...</div>;
+  if (!currentDocument) {
+    return <Navigate to={"/dashboard"} replace />;
+  }
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(currentDocument.name);
@@ -149,7 +154,17 @@ export default function DocumentDetail() {
           </div>
         </div>
       )}
-      {canInitializeEditor ? <TiptapEditor /> : <EditorSkeleton />}
+      {canInitializeEditor ? (
+        <Providers>
+          <RoomProvider id={currentDocument.share_token}>
+            <ClientSideSuspense fallback={<EditorSkeleton />}>
+              <TiptapEditor />
+            </ClientSideSuspense>
+          </RoomProvider>
+        </Providers>
+      ) : (
+        <EditorSkeleton />
+      )}
 
       <ShareTokenDialog
         open={open}

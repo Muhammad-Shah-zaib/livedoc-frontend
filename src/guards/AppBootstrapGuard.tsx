@@ -1,6 +1,6 @@
 import useNotificationSocket from "@/hooks/useNotificationSocket";
 import AppBootstrap from "@/shared/pages/AppBootstrap";
-import { getUserProfileThunk } from "@/store/auth/authThunk";
+import { getAllUsersThunk, getUserProfileThunk } from "@/store/auth/authThunk";
 import {
   getAllDocumentAccessThunk,
   getDocumentsThunk,
@@ -41,6 +41,7 @@ const AppBootStrapGuard = () => {
         dispatch(getDocumentsThunk());
         dispatch(getNotificationsThunk());
         dispatch(getAllDocumentAccessThunk());
+        dispatch(getAllUsersThunk());
       }
 
       hasBootstrapped.current = true;

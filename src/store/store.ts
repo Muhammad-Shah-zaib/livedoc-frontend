@@ -1,12 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { rootReducer } from "./rootReducer";
+import persistedReducer from "./rootReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { persistStore } from "redux-persist";
 
 export const RESET_STORE = "auth/logout/fulfilled";
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
 });
+
+export const persistor = persistStore(store);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

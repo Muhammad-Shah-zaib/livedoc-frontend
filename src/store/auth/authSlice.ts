@@ -10,6 +10,8 @@ import {
   getUserProfileThunk,
   getUserByEmailThunk,
   updateUserPorifleThunk,
+  getAllUsersThunk,
+  getLiveblocksTokenThunk,
 } from "./authThunk";
 
 // --------------------
@@ -28,6 +30,12 @@ const initialState: IAuthState = {
   foundUser: null,
   findingUser: false,
   errorFindingUser: null,
+  registeredUsers: null,
+  loadingRegisteredUsers: false,
+  errorRegisteredUsers: null,
+  liveblocksToken: null,
+  loadingLiveblocksToken: false,
+  errorLiveblocksToken: null,
 };
 
 // --------------------
@@ -254,6 +262,38 @@ const authSlice = createSlice({
         state.generalError = payload?.message || "Update user profile failed";
         state.errors = payload?.errors || null;
         state.user = null;
+      })
+      // --------------------
+      // Get All Users
+      // --------------------
+      .addCase(getAllUsersThunk.pending, (state) => {
+        state.loadingRegisteredUsers = true;
+        state.errorRegisteredUsers = null;
+      })
+      .addCase(getAllUsersThunk.fulfilled, (state, { payload }) => {
+        state.loadingRegisteredUsers = false;
+        state.registeredUsers = payload.users;
+      })
+      .addCase(getAllUsersThunk.rejected, (state, { payload }) => {
+        state.loadingRegisteredUsers = false;
+        state.errorRegisteredUsers =
+          payload?.message || "Failed to get all users";
+      })
+      // ---------------------------
+      // Get Liveblocks Token
+      // ---------------------------
+      .addCase(getLiveblocksTokenThunk.pending, (state) => {
+        state.loadingLiveblocksToken = true;
+        state.errorLiveblocksToken = null;
+      })
+      .addCase(getLiveblocksTokenThunk.fulfilled, (state, { payload }) => {
+        state.loadingLiveblocksToken = false;
+        state.liveblocksToken = payload.token;
+      })
+      .addCase(getLiveblocksTokenThunk.rejected, (state, { payload }) => {
+        state.loadingLiveblocksToken = false;
+        state.errorLiveblocksToken =
+          payload?.message || "Failed to fetch Liveblocks token";
       });
   },
 });
