@@ -8,22 +8,22 @@ import {
   FloatingComposer,
   FloatingThreads,
   FloatingToolbar,
-  Toolbar,
 } from "@liveblocks/react-tiptap";
 import { useThreads } from "@liveblocks/react";
+import { StaticToolbar } from "./Toolbar";
+import "@liveblocks/react-ui/styles/dark/attributes.css";
 
 export function TiptapEditor() {
   const { editor } = useTipTapEditor();
 
   return (
     <div className="prose dark:prose-invert max-w-none">
-      <div className="bg-slate-50 dark:bg-slate-900">
-        <Toolbar editor={editor} style={{ background: "none" }} />
+      <div>
+        <StaticToolbar editor={editor} />
       </div>
-      <EditorContent editor={editor} className="editor" />
+      <EditorContent editor={editor} />
       <FloatingComposer editor={editor} className="w-[350px]" />
       <FloatingToolbar editor={editor} />
-
       <div className="xl:[&:not(:has(.lb-tiptap-anchored-threads))]:pr-[200px] [&:not(:has(.lb-tiptap-anchored-threads))]:pr-[50px]">
         <Threads editor={editor} />
       </div>

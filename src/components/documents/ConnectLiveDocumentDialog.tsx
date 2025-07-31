@@ -17,6 +17,7 @@ import {
   requestAccessThunk,
 } from "@/store/documents/documentThunk";
 import { useNavigate } from "react-router-dom";
+import { Loader } from "lucide-react";
 
 interface ConnectLiveDocumentForm {
   shareToken: string;
@@ -37,6 +38,7 @@ export default function ConnectLiveDocumentDialog({
     canNavigateToDetailFromConnect,
     currentDocument,
     canConnectToDocument,
+    loading,
   } = useAppSelector((state) => state.documents);
 
   const {
@@ -115,7 +117,9 @@ export default function ConnectLiveDocumentDialog({
             >
               Request Access
             </Button>
-            <Button type="submit">Connect</Button>
+            <Button type="submit" disabled={loading}>
+              {loading && <Loader className="w-4 h-4 animate-spin" />}Connect
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

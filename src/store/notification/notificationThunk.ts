@@ -34,7 +34,6 @@ export const getNotificationsThunk = createAsyncThunk<
         headers: { "Content-Type": "application/json" },
       }
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     let message = "Failed to fetch notifications";

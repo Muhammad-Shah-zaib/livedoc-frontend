@@ -13,6 +13,7 @@ export const API_ROUTES = {
     UPDATE_USER_PROFILE: `${BASE_API_URL}/user/update-profile/`,
     GET_ALL_USERS: `${BASE_API_URL}/user/all/`,
     GET_USERS_BY_EMAIL_LIST: `${BASE_API_URL}/user/by-emails/`,
+    GET_LIVE_USER_EMAILS: `${BASE_API_URL}/user/live-users-emails/`,
   },
   DOCUMENTS: {
     GET_POST: `${BASE_API_URL}/documents/`,
@@ -22,6 +23,8 @@ export const API_ROUTES = {
     },
     CHECK_LIVE_ACCESS: (share_token: string) =>
       `${BASE_API_URL}/documents/${share_token}/can-connect`,
+    GET_LIVE_USERS: (document_id: number) =>
+      `${BASE_API_URL}/document/${document_id}/users/`,
   },
   NOTIFICATIONS: {
     GET_POST: `${BASE_API_URL}/notifications/`,

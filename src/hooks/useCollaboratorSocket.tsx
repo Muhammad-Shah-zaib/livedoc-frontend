@@ -1,8 +1,11 @@
 import { SOCKET_ROUTES } from "@/environment/socketRoutes";
 import {
+  addCurrentDocumentUser,
   setCanInitializeEditor,
   setCurrentDocumentLiveMembers,
+  setCurrentDocumentUsers,
   setDocumentDetail,
+  setLiveUserStatusFromSocket,
 } from "@/store/documents/documentSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { NotebookPen, UserMinus, UserPlus } from "lucide-react";
@@ -61,11 +64,14 @@ export function useCollaboratorSocket() {
       hasShownToast.current = false;
       hasMounted.current = false;
     });
+
     socket.addEventListener("message", (event) => {
       try {
         const data = JSON.parse(event.data);
-
         switch (data.type) {
+          case "live_users_list":
+            dispatch(setCurrentDocumentUsers(data.users));
+            break;
           case "live_members":
             setTimeout(() => {
               dispatch(
@@ -82,35 +88,64 @@ export function useCollaboratorSocket() {
             break;
 
           case "user_joined":
+            dispatch(setLiveUserStatusFromSocket(data.user));
             if (user.id != data.user.id) {
               toast.custom(
                 () => (
-                  <div className="flex items-center gap-2">
-                    <UserPlus className="text-green-600 w-5 h-5" />
-                    <span>{`${data.user.first_name} ${data.user.last_name} joined the document.`}</span>
+                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 flex items-center gap-3 min-w-[280px] backdrop-blur-sm">
+                    <div className="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                      <UserPlus className="text-green-600 dark:text-green-400 w-5 h-5" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {data.user.name} joined
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Started collaborating on this document
+                      </p>
+                    </div>
                   </div>
                 ),
                 {
                   position: "bottom-right",
-                  duration: 3000,
+                  duration: 4000,
                   closeButton: true,
                 }
               );
             }
+            dispatch(
+              addCurrentDocumentUser({
+                name: data.user.name,
+                userId: data.user.id,
+                color: data.user.color,
+                avatar: data.user.avatar || "",
+                email: data.user.email,
+              })
+            );
             break;
 
           case "user_left":
+            dispatch(setLiveUserStatusFromSocket(data.user));
             if (user.id != data.user.id) {
               toast.custom(
                 () => (
-                  <div className="flex items-center gap-2">
-                    <UserMinus className="text-red-600 w-5 h-5" />
-                    <span>{`${data.user.first_name} ${data.user.last_name} left the document.`}</span>
+                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 flex items-center gap-3 min-w-[280px] backdrop-blur-sm">
+                    <div className="flex-shrink-0 w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                      <UserMinus className="text-red-600 dark:text-red-400 w-5 h-5" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {data.user.first_name} {data.user.last_name} left
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        No longer collaborating on this document
+                      </p>
+                    </div>
                   </div>
                 ),
                 {
                   position: "bottom-right",
-                  duration: 3000,
+                  duration: 4000,
                   closeButton: true,
                 }
               );
@@ -128,7 +163,6 @@ export function useCollaboratorSocket() {
             socket.close();
             break;
           default:
-            console.log("Unhandled socket message:", data);
         }
       } catch (err) {
         console.error("Failed to parse WebSocket message", err);

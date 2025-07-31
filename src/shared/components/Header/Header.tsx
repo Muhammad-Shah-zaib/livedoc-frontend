@@ -134,9 +134,6 @@ function Header() {
         <div className="flex items-center space-x-2">
           {/* Notifications Popover */}
           <NotificationPopover />
-
-          <ToggleThemeButton />
-
           {/* Avatar */}
           <AvatarDropdown user={user} getUserInitials={getUserInitials} />
         </div>

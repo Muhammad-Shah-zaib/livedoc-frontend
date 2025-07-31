@@ -31,17 +31,14 @@ import { useState } from "react";
 import ToggleThemeButton from "@/shared/components/ToggleThemeButton";
 import AvatarDropdown from "./AvatarDropDown";
 import { toast } from "sonner";
+import LiveMembersDialog from "../LIveMembersDialogue";
 
 function DocumentDetailHeader() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const {
-    currentDocument,
-    deleteSuccessful,
-    editorViewOnlyMode,
-    canInitializeEditor,
-  } = useAppSelector((state) => state.documents);
+  const { currentDocument, deleteSuccessful, editorViewOnlyMode } =
+    useAppSelector((state) => state.documents);
   const { toggleLive, loading } = useLiveToggle();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
@@ -69,8 +66,6 @@ function DocumentDetailHeader() {
   };
 
   const handleToggleLive = () => {
-    console.log(currentDocument.admin);
-    console.log(user);
     if (currentDocument.admin === user?.id) {
       toggleLive(currentDocument.id, !currentDocument.is_live);
     } else {
@@ -95,13 +90,7 @@ function DocumentDetailHeader() {
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <span className="text-xs font-mono font-black p-2 px-3 rounded-full shadow-md bg-gradient-to-r from-blue-500 text-white to-purple-500">
-              {canInitializeEditor &&
-                (currentDocument.is_live
-                  ? `${currentDocument.live_members_count} members live`
-                  : "Offline")}
-              {!canInitializeEditor && "Initializing..."}
-            </span>
+            <LiveMembersDialog />
           </div>
 
           <div className="hidden md:flex items-center space-x-3">

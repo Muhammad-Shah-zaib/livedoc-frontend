@@ -23,6 +23,8 @@ import {
   type LiveDocumentAccessResponse,
   type DeleteDocumentAccessPayload,
   type DeleteDocumentAccessResponse,
+  type GetLiveUsersRespnose,
+  type GetLiveUsersPayload,
 } from "./types";
 import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
@@ -41,6 +43,7 @@ const DELETE_DOCUMENT_ACTION = "documents/deleteDocument";
 const GRANT_ACCESS_ACTION = "documents/grantAccess";
 const CHECK_LIVE_DOCUMENT_ACCESS_ACTION = "documents/checkLiveDocumentAccess";
 const TOGLLE_LIVE_DOCUMENT_ACTION = "documents/toggleLiveDocument";
+const GET_LIVE_USERS_FOR_DOCUMENT_ACTION = "documents/getLiveUsersForDocument";
 
 export const getDocumentsThunk = createAsyncThunk<
   GetDocumentsResponse,
@@ -374,7 +377,6 @@ export const checkLiveDocumentAccessThunk = createAsyncThunk<
   } catch (error) {
     let message = "Failed to check live document access";
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data);
       message = error.response?.data?.detail || message;
     }
     return thunkAPI.rejectWithValue({ message });
@@ -429,5 +431,39 @@ export const ToggleLiveDocumentThunk = createAsyncThunk<
     let message = "Failed to update document";
 
     return { message };
+  }
+});
+
+export const getLiveUsersForDocumentThunk = createAsyncThunk<
+  GetLiveUsersRespnose,
+  GetLiveUsersPayload,
+  { rejectValue: ErrorResponse }
+>(GET_LIVE_USERS_FOR_DOCUMENT_ACTION, async (payload, { rejectWithValue }) => {
+  try {
+    const response = await axios.get(
+      API_ROUTES.DOCUMENTS.GET_LIVE_USERS(payload.id),
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to fetch live users for document";
+
+    if (axios.isAxiosError(error)) {
+      // Check for 403 specifically
+      if (error.response?.status === 403) {
+        return rejectWithValue({
+          message: error.response?.data?.detail || "Forbidden",
+        });
+      }
+
+      message = error.response?.data?.detail || message;
+    }
+
+    return rejectWithValue({ message });
   }
 });

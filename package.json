@@ -38,6 +38,8 @@
     "@tiptap/extension-collaboration-cursor": "2.26.1",
     "@tiptap/extension-document": "2.26.1",
     "@tiptap/extension-emoji": "^3.0.7",
+    "@tiptap/extension-highlight": "2",
+    "@tiptap/extension-link": "2",
     "@tiptap/extension-paragraph": "2.26.1",
     "@tiptap/extension-text": "2.26.1",
     "@tiptap/react": "2.26.1",

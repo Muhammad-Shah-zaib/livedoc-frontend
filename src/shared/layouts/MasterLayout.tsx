@@ -9,13 +9,16 @@ const MasterLayout = () => {
 
   dispatch(setCurrentDocument(null));
   return (
-    <div className="w-screen h-screen grid grid-rows-6 md:grid-rows-8 mt-0 md:mt-4 xl:mt-0 xl:grid-rows-10 justify-center overflow-y-auto overflow-x-hidden">
-      <div className="row-span-1 w-screen flex justify-center items-center p-4">
+    <div className="w-screen min-h-screen flex flex-col overflow-y-auto overflow-x-hidden">
+      {/* Header with responsive min-height */}
+      <div className="w-screen flex justify-center items-center p-4 min-h-[200px] sm:min-h-[120px] md:min-h-[100px] lg:min-h-[80px]">
         <div className="w-full max-w-7xl px-8">
           <Header />
         </div>
       </div>
-      <div className="row-span-5 sm:row-span-9 w-screen flex justify-center px-8">
+
+      {/* Main content area - takes remaining space */}
+      <div className="flex-1 w-screen flex justify-center px-8 pb-8">
         <div className="max-w-7xl w-full">
           <Outlet />
         </div>

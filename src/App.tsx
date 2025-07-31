@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "./store/store";
 import { useEffect } from "react";
 import { applyThemeInital } from "./store/theme/themeSlice";
 import { Toaster } from "sonner";
+import "./shared/components/Toolbar.module.css";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -33,6 +34,9 @@ function App() {
           break;
       }
     }
+
+    // also set the data-theme attribute on the html element
+    document.documentElement.setAttribute("data-theme", mode);
   }, [mode]);
   useEffect(() => {
     dispatch(applyThemeInital());

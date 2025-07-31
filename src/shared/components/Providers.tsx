@@ -5,10 +5,10 @@ import { API_ROUTES } from "@/environment/apiRoutes";
 import axios from "axios";
 
 export function Providers({ children }: PropsWithChildren) {
-  const registeredUsers = useAppSelector(
-    (state) => state.auth.registeredUsers!
-  );
   const user = useAppSelector((state) => state.auth.user!);
+  const currentDocumentUsers = useAppSelector(
+    (state) => state.documents.currentDocumentUsers
+  );
 
   // 1. Authentication
   async function liveblocksAuth(roomId?: string) {
@@ -43,7 +43,6 @@ export function Providers({ children }: PropsWithChildren) {
           headers: { "Content-Type": "application/json" },
         }
       );
-
       const rawUsers = response.data.users; // This should match backend response
       const users = rawUsers.map((user: any) => {
         if (user.info) {
@@ -61,14 +60,19 @@ export function Providers({ children }: PropsWithChildren) {
   };
 
   // 3. Resolve Mention Suggestions
-  const resolveMentionSuggestions = async ({ text }: { text: string }) => {
+  const resolveMentionSuggestions = async ({
+    text,
+  }: {
+    text: string;
+    roomId: string;
+  }) => {
     const normalizedText = text.toLowerCase();
-
-    const matches = registeredUsers.filter((u) =>
-      `${u.first_name} ${u.last_name}`.toLowerCase().includes(normalizedText)
+    const matches = currentDocumentUsers.filter(
+      (u) =>
+        u.email.toLowerCase().includes(normalizedText) ||
+        u.name.toLowerCase().includes(normalizedText)
     );
-
-    return matches.map((u) => String(u.id)); // Must return string IDs
+    return matches.map((u) => u.email);
   };
 
   return (

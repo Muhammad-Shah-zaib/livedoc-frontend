@@ -4,6 +4,8 @@ import type {
   Document,
   DocumentAccess,
   DocumentState,
+  LiveUserPofileForLiveBlock,
+  LiveUserSocketPayload,
 } from "./types";
 import {
   getDocumentByShareTokenThunk,
@@ -20,6 +22,7 @@ import {
   checkLiveDocumentAccessThunk,
   deleteDocumentAccessThunk,
   ToggleLiveDocumentThunk,
+  getLiveUsersForDocumentThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
 
@@ -48,6 +51,12 @@ const initialState: DocumentState = {
   isSearching: false,
   liveToggleLoading: false,
   canInitializeEditor: false,
+  currentDocumentUsers: [],
+  liveUsersForDocument: {
+    users_online: [],
+    users_offline: [],
+  },
+  liveUsersForDocumentError: null,
 };
 
 // --------------------
@@ -60,6 +69,63 @@ const documentSlice = createSlice({
     // set is searching state
     setIsSearching: (state, { payload }: PayloadAction<boolean>) => {
       state.isSearching = payload;
+    },
+    setCurrentDocumentUsers: (
+      state,
+      { payload }: PayloadAction<LiveUserPofileForLiveBlock[]>
+    ) => {
+      state.currentDocumentUsers = payload;
+    },
+    addCurrentDocumentUser: (
+      state,
+      { payload }: PayloadAction<LiveUserPofileForLiveBlock>
+    ) => {
+      const userExists = state.currentDocumentUsers.some(
+        (user) => user.userId == payload.userId
+      );
+      if (!userExists) {
+        state.currentDocumentUsers.push(payload);
+      } else
+        state.currentDocumentUsers = state.currentDocumentUsers.map((user) =>
+          user.userId === payload.userId ? payload : user
+        );
+    },
+    setLiveUserStatusFromSocket: (
+      state,
+      { payload: user }: PayloadAction<LiveUserSocketPayload>
+    ) => {
+      const userId = parseInt(user.id, 10); // converting from string to number
+
+      const liveUser: LiveUserPofileForLiveBlock = {
+        userId,
+        name: user.name,
+        email: user.email,
+        color: user.color,
+        avatar: user.avatar || "",
+      };
+
+      // Remove user from both lists
+      state.liveUsersForDocument.users_online =
+        state.liveUsersForDocument.users_online.filter(
+          (u) => u.userId !== userId
+        );
+      state.liveUsersForDocument.users_offline =
+        state.liveUsersForDocument.users_offline.filter(
+          (u) => u.userId !== userId
+        );
+
+      // Add to correct list based on is_online flag
+      if (user.is_online) {
+        state.liveUsersForDocument.users_online.push(liveUser);
+      } else {
+        state.liveUsersForDocument.users_offline.push(liveUser);
+      }
+    },
+
+    removeCurrentDocumentUser: (state, { payload }: PayloadAction<number>) => {
+      state.currentDocumentUsers = state.currentDocumentUsers.filter(
+        (user) => user.userId !== payload
+      );
     },
     // Set app initialization state
     setEditorViewOnlyMode: (state, { payload }: PayloadAction<boolean>) => {
@@ -597,6 +663,27 @@ const documentSlice = createSlice({
         state.error = null;
         state.generalError = "Unable to delete access request";
         toast.success(`Access request deleted successfully`);
+      })
+      // ---------------------------
+      // GET LIVE USERS FOR DOCUMENT
+      // ---------------------------
+      .addCase(getLiveUsersForDocumentThunk.pending, (state) => {
+        state.loading = true;
+        state.liveUsersForDocumentError = null;
+      })
+      .addCase(getLiveUsersForDocumentThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.liveUsersForDocumentError = null;
+        state.liveUsersForDocument = payload;
+      })
+      .addCase(getLiveUsersForDocumentThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.liveUsersForDocument = {
+          users_online: [],
+          users_offline: [],
+        };
+        state.liveUsersForDocumentError =
+          payload?.message || "Unable to fetch live users for document";
       });
   },
 });
@@ -622,5 +709,9 @@ export const {
   findAndSetDocumentWriteAccess,
   setIsSearching,
   setCanInitializeEditor,
+  setCurrentDocumentUsers,
+  addCurrentDocumentUser,
+  removeCurrentDocumentUser,
+  setLiveUserStatusFromSocket,
 } = documentSlice.actions;
 export default documentSlice.reducer;

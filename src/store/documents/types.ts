@@ -22,6 +22,20 @@ export interface DocumentState {
   isSearching: boolean;
   liveToggleLoading: boolean;
   canInitializeEditor: boolean;
+  currentDocumentUsers: LiveUserPofileForLiveBlock[];
+  liveUsersForDocument: LiveUsersForDocument;
+  liveUsersForDocumentError: string | null;
+}
+export interface LiveUsersForDocument {
+  users_online: LiveUserPofileForLiveBlock[];
+  users_offline: LiveUserPofileForLiveBlock[];
+}
+export interface LiveUserPofileForLiveBlock {
+  userId: number;
+  name: string;
+  color: string;
+  email: string;
+  avatar?: string;
 }
 
 export type AvailableTabsInDocumentAccess = "requests" | "invite";
@@ -157,4 +171,21 @@ export interface DeleteDocumentAccessPayload {
 }
 export interface DeleteDocumentAccessResponse {
   message: string;
+}
+
+export interface GetLiveUsersPayload {
+  id: number;
+}
+export interface GetLiveUsersRespnose {
+  users_online: LiveUserPofileForLiveBlock[];
+  users_offline: LiveUserPofileForLiveBlock[];
+}
+
+export interface LiveUserSocketPayload {
+  id: string; // user ID as string
+  name: string;
+  email: string;
+  color: string;
+  is_online: boolean;
+  avatar?: string;
 }

@@ -89,7 +89,6 @@ const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({
       return;
     }
     if (foundUser) {
-      console.log("Inviting:", { email: data.email, document: selectedDoc });
       dispatch(
         grantAccessThunk({
           user_id: foundUser.id,

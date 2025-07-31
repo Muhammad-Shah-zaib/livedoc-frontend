@@ -8,7 +8,8 @@ import CodeBlock from "@tiptap/extension-code-block";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Emoji, { gitHubEmojis } from "@tiptap/extension-emoji";
 import { createLowlight, all } from "lowlight";
-
+import Link from "@tiptap/extension-link";
+import Highlight from "@tiptap/extension-highlight";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { debounce } from "lodash";
 import { patchDocumentThunk } from "@/store/documents/documentThunk";
@@ -103,11 +104,10 @@ export const useTipTapEditor = () => {
   const editor = useEditor({
     editable: currentDocument?.can_write_access && !editorViewOnlyMode,
     injectCSS: true,
-    content: currentDocument?.content || "",
     editorProps: {
       attributes: {
         class:
-          "bg-white dark:bg-slate-900 min-h-[50vh] border-none outline-none ring-none text-slate-800 dark:text-slate-200 p-4",
+          "bg-white dark:bg-zinc-900 shadow-lg border-b-sm min-h-[50vh] border-none outline-none ring-none text-slate-800 dark:text-slate-200 p-4",
       },
     },
     extensions: [
@@ -120,14 +120,24 @@ export const useTipTapEditor = () => {
         code: false,
         codeBlock: false,
       }),
+      Link.configure({
+        HTMLAttributes: {
+          class: "tiptap-link",
+        },
+      }),
+      Highlight.configure({
+        HTMLAttributes: {
+          class: "tiptap-highlight",
+        },
+      }),
       liveblocks,
       CustomCode,
       CustomBlockQuote,
       CustomHeading,
-      CodeBlock,
+      // CodeBlock,
       CustomCodeBlockLowlight,
       CustomEmoji,
-      Heading,
+      // Heading,
     ],
     onUpdate: ({ editor }) => {
       const content = editor.getHTML();
