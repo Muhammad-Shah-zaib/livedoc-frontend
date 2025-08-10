@@ -27,6 +27,7 @@ import EditorSkeleton from "@/shared/components/EditorSkeleton";
 import { ClientSideSuspense, RoomProvider } from "@liveblocks/react";
 import { Providers } from "@/shared/components/Providers";
 import { Navigate } from "react-router-dom";
+import { SummaryButton } from "@/shared/components/TipTapEditor/SummaryButton";
 
 export default function DocumentDetail() {
   const {
@@ -83,7 +84,7 @@ export default function DocumentDetail() {
   return (
     <div>
       {canInitializeEditor && (
-        <div className="flex justify-between items-center px-4">
+        <div className="flex justify-between items-center px-4 my-10">
           <h1 className="flex items-center text-lg md:text-xl lg:text-3xl -xl:text-4xl font-bold">
             <div
               className="max-w-[200px] sm:max-w-[500px] lg:max-w-[800px] truncate whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer"
@@ -112,6 +113,7 @@ export default function DocumentDetail() {
             </div>
           </h1>
           <div className="flex gap-2 items-center">
+            <SummaryButton />
             {canSave && (
               <Button disabled={loading} variant="ghost" onClick={handleSave}>
                 <SaveIcon className="w-4 h-4 text0slate-600" />

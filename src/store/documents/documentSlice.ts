@@ -23,6 +23,7 @@ import {
   deleteDocumentAccessThunk,
   ToggleLiveDocumentThunk,
   getLiveUsersForDocumentThunk,
+  GetDocumentSummaryThunk,
 } from "./documentThunk";
 import { toast } from "sonner";
 
@@ -303,6 +304,7 @@ const documentSlice = createSlice({
           updated_at: payload.updated_at,
           admin: payload.admin,
           can_write_access: (payload as any).can_write_access ?? false,
+          summary: null,
         };
         state.documents.push(newDoc);
         state.filteredDocuments.push(newDoc);
@@ -684,6 +686,29 @@ const documentSlice = createSlice({
         };
         state.liveUsersForDocumentError =
           payload?.message || "Unable to fetch live users for document";
+      })
+      // ---------------------------
+      // GET DOCUMENT SUMMARY
+      // ---------------------------
+      .addCase(GetDocumentSummaryThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.generalError = null;
+      })
+      .addCase(GetDocumentSummaryThunk.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.error = null;
+        state.generalError = null;
+        // Assuming payload is a string summary
+        if (state.currentDocument) {
+          state.currentDocument.summary = payload.summary;
+        }
+      })
+      .addCase(GetDocumentSummaryThunk.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload?.erros || null;
+        state.generalError =
+          payload?.message || "Unable to fetch document summary";
       });
   },
 });

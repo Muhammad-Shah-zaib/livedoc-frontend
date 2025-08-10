@@ -25,6 +25,8 @@ export const API_ROUTES = {
       `${BASE_API_URL}/documents/${share_token}/can-connect`,
     GET_LIVE_USERS: (document_id: number) =>
       `${BASE_API_URL}/document/${document_id}/users/`,
+    GET_SUMMARY: (document_id: number) =>
+      `${BASE_API_URL}/ai/documents/summarize/${document_id}/`,
   },
   NOTIFICATIONS: {
     GET_POST: `${BASE_API_URL}/notifications/`,

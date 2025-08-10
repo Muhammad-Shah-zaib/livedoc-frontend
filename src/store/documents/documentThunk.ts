@@ -25,6 +25,8 @@ import {
   type DeleteDocumentAccessResponse,
   type GetLiveUsersRespnose,
   type GetLiveUsersPayload,
+  type GetDocumentSummaryResponse,
+  type GetDocumentSummaryPayload,
 } from "./types";
 import axios from "axios";
 import { API_ROUTES } from "@/environment/apiRoutes";
@@ -44,6 +46,7 @@ const GRANT_ACCESS_ACTION = "documents/grantAccess";
 const CHECK_LIVE_DOCUMENT_ACCESS_ACTION = "documents/checkLiveDocumentAccess";
 const TOGLLE_LIVE_DOCUMENT_ACTION = "documents/toggleLiveDocument";
 const GET_LIVE_USERS_FOR_DOCUMENT_ACTION = "documents/getLiveUsersForDocument";
+const GET_DOCUMENT_SUMMARY_ACTION = "documents/getDocumentSummary";
 
 export const getDocumentsThunk = createAsyncThunk<
   GetDocumentsResponse,
@@ -462,6 +465,35 @@ export const getLiveUsersForDocumentThunk = createAsyncThunk<
       }
 
       message = error.response?.data?.detail || message;
+    }
+
+    return rejectWithValue({ message });
+  }
+});
+
+export const GetDocumentSummaryThunk = createAsyncThunk<
+  GetDocumentSummaryResponse,
+  GetDocumentSummaryPayload,
+  { rejectValue: ErrorResponse }
+>(GET_DOCUMENT_SUMMARY_ACTION, async (payload, { rejectWithValue }) => {
+  try {
+    const response = await axios.patch(
+      API_ROUTES.DOCUMENTS.GET_SUMMARY(payload.id),
+      payload,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (err) {
+    let message = "Failed to summarize document";
+
+    if (axios.isAxiosError(err)) {
+      message = err.response?.data?.detail || message;
     }
 
     return rejectWithValue({ message });

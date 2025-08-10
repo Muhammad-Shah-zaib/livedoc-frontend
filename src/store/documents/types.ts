@@ -62,6 +62,7 @@ export interface Document {
   updated_at: string;
   admin: number;
   can_write_access: boolean;
+  summary: string | null;
 }
 
 // ERROR RESPOSNE
@@ -188,4 +189,14 @@ export interface LiveUserSocketPayload {
   color: string;
   is_online: boolean;
   avatar?: string;
+}
+
+export interface GetDocumentSummaryPayload {
+  id: number;
+  content: string;
+}
+
+export interface GetDocumentSummaryResponse {
+  summary: string;
+  detail: string;
 }
