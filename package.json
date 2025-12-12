@@ -32,19 +32,23 @@
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-table": "^8.21.3",
-    "@tiptap/core": "2.26.1",
-    "@tiptap/extension-code-block-lowlight": "^3.0.7",
-    "@tiptap/extension-collaboration": "2.26.1",
-    "@tiptap/extension-collaboration-cursor": "2.26.1",
-    "@tiptap/extension-document": "2.26.1",
-    "@tiptap/extension-emoji": "^3.0.7",
-    "@tiptap/extension-highlight": "2",
-    "@tiptap/extension-link": "2",
-    "@tiptap/extension-paragraph": "2.26.1",
-    "@tiptap/extension-text": "2.26.1",
-    "@tiptap/react": "2.26.1",
-    "@tiptap/starter-kit": "2.26.1",
-    "@tiptap/y-tiptap": "2.26.1",
+    "@tiptap/core": "^2.1.13",
+    "@tiptap/extension-blockquote": "^2.1.13",
+    "@tiptap/extension-code": "^2.1.13",
+    "@tiptap/extension-code-block": "^2.1.13",
+    "@tiptap/extension-code-block-lowlight": "^2.1.13",
+    "@tiptap/extension-collaboration": "^2.1.13",
+    "@tiptap/extension-collaboration-cursor": "^2.1.13",
+    "@tiptap/extension-document": "^2.1.13",
+    "@tiptap/extension-emoji": "^2.1.13",
+    "@tiptap/extension-heading": "^2.1.13",
+    "@tiptap/extension-highlight": "^2.1.13",
+    "@tiptap/extension-link": "^2.1.13",
+    "@tiptap/extension-paragraph": "^2.1.13",
+    "@tiptap/extension-text": "^2.1.13",
+    "@tiptap/react": "^2.1.13",
+    "@tiptap/starter-kit": "^2.1.13",
+    "@tiptap/suggestion": "^2.1.13",
     "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -87,6 +91,9 @@
     "vite": "^7.0.4"
   },
   "resolutions": {
-    "@tiptap/*": "2.26.1"
+    "@tiptap/*": "^2.1.13"
+  },
+  "overrides": {
+    "@tiptap/*": "^2.1.13"
   }
 }
