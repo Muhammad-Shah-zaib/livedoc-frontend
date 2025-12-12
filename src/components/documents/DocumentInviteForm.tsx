@@ -78,9 +78,6 @@ const DocumentInviteForm: React.FC<DocumentInviteFormProps> = ({
   }, [documents, setValue, documentId]);
 
   const onInvite = (data: { email: string; documentId: string }) => {
-    const selectedDoc = documents.find(
-      (doc) => doc.id.toString() === data.documentId
-    );
     if (foundUser && user && foundUser.id === user.id) {
       // Prevent self-invite
       reset({ email: "", documentId: documents[0]?.id?.toString() || "" });

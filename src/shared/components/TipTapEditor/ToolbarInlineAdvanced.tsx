@@ -1,7 +1,6 @@
 import { Toolbar } from "@liveblocks/react-tiptap";
 import { Editor } from "@tiptap/react";
 import { useState } from "react";
-import styles from "../Toolbar.module.css";
 import {
   Popover,
   PopoverContent,

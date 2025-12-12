@@ -4,10 +4,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2, X } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { deleteDocumentThunk } from "@/store/documents/documentThunk";
 import type { Document } from "@/store/documents/types";
@@ -28,7 +27,7 @@ export default function DeleteDocumentDialog({
   const handleDelete = () => {
     try {
       dispatch(deleteDocumentThunk({ id: document.id }));
-    } catch (e) {}
+    } catch (e) { }
   };
 
   return (

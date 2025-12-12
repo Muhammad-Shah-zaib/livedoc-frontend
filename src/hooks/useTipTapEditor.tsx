@@ -4,7 +4,6 @@ import Document from "@tiptap/extension-document";
 import Code from "@tiptap/extension-code";
 import Blockquote from "@tiptap/extension-blockquote";
 import Heading from "@tiptap/extension-heading";
-import CodeBlock from "@tiptap/extension-code-block";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Emoji, { gitHubEmojis } from "@tiptap/extension-emoji";
 import { createLowlight, all } from "lowlight";

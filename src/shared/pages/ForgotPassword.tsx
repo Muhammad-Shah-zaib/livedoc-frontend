@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Moon, Sun, Mail, CheckCircle, ArrowLeft } from "lucide-react";
+import { Mail, CheckCircle, ArrowLeft } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { forgotPasswordThunk } from "@/store/auth/authThunk";
@@ -18,7 +17,6 @@ import type { ForgetPassworPayload } from "@/store/auth/types";
 import PageHeader from "../components/PageHeader";
 
 export default function ForgotPasswordPage() {
-  const [isDark, setIsDark] = useState(false);
   const { loading, isSuccess } = useAppSelector((state) => ({
     loading: state.auth.loading,
     isSuccess: state.auth.forgetPasswordSuccess,
@@ -49,16 +47,10 @@ export default function ForgotPasswordPage() {
 
   if (isSuccess) {
     return (
-      <div
-        className={`min-h-screen transition-all duration-300 ${
-          isDark
-            ? "dark bg-slate-950"
-            : "bg-gradient-to-br from-slate-50 to-blue-50"
-        }`}
-      >
+      <div className="min-h-screen transition-all duration-300 bg-gradient-to-br from-slate-50 to-blue-50 dark:bg-slate-950">
         <div className="container mx-auto px-4 py-8">
           {/* Header with theme toggle */}
-          <PageHeader isDark={isDark} setIsDark={setIsDark} />
+          <PageHeader />
 
           {/* Success Card */}
           <div className="max-w-md mx-auto">
@@ -135,16 +127,10 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div
-      className={`min-h-screen transition-all duration-300 ${
-        isDark
-          ? "dark bg-slate-950"
-          : "bg-gradient-to-br from-slate-50 to-blue-50"
-      }`}
-    >
+    <div className="min-h-screen transition-all duration-300 bg-gradient-to-br from-slate-50 to-blue-50 dark:bg-slate-950">
       <div className="container mx-auto px-4 py-8">
         {/* Header with theme toggle */}
-        <PageHeader isDark={isDark} setIsDark={setIsDark} />
+        <PageHeader />
 
         {/* Forgot Password Form */}
         <div className="max-w-md mx-auto">
