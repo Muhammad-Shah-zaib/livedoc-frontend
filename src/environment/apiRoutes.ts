@@ -49,6 +49,6 @@ export const API_ROUTES = {
     GRANT_ACCESS: `${BASE_API_URL}/document_access/grant-access/`,
   },
   LIVEBLOCKS: {
-    AUTH: `http://localhost:3001/api/liveblocks-auth/`,
+    AUTH: `https://liveblock-auth-node.onrender.com/api/liveblocks-auth/`,
   },
 };
