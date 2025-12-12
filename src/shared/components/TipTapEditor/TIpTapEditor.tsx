@@ -1,6 +1,6 @@
 import "@liveblocks/react-ui/styles.css";
 import "@liveblocks/react-tiptap/styles.css";
-import { Editor, EditorContent } from "@tiptap/react";
+import { EditorContent, type Editor } from "@tiptap/react";
 import useTipTapEditor from "@/hooks/useTipTapEditor";
 import "./EmojiList.css";
 import "./style.css";

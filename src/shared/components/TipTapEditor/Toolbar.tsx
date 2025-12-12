@@ -1,5 +1,5 @@
 import { FloatingToolbar, Toolbar } from "@liveblocks/react-tiptap";
-import { Editor } from "@tiptap/react";
+import type { Editor } from "@tiptap/react";
 import { ToolbarInlineAdvanced } from "./ToolbarInlineAdvanced";
 
 type Props = {
