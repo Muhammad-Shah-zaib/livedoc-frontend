@@ -5,8 +5,6 @@ import {
   emailPasswordLoginThunk,
   emailPasswordSignupThunk,
   logoutThunk,
-  forgotPasswordThunk,
-  resetPasswordThunk,
   getUserProfileThunk,
   getUserByEmailThunk,
   updateUserPorifleThunk,
@@ -14,9 +12,6 @@ import {
   getLiveblocksTokenThunk,
 } from "./authThunk";
 
-// --------------------
-// Initial State
-// --------------------
 const initialState: IAuthState = {
   user: null,
   loading: false,
@@ -38,26 +33,19 @@ const initialState: IAuthState = {
   errorLiveblocksToken: null,
 };
 
-// --------------------
-// Slice
-// --------------------
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // Set email verification required flag
     serVerifyEmailRequired: (state, { payload }: PayloadAction<boolean>) => {
       state.email_verification_required = payload;
     },
-    // Set forget password success flag
     setForgetPasswordSuccess: (state, { payload }: PayloadAction<boolean>) => {
       state.forgetPasswordSuccess = payload;
     },
-    // Set reset password success flag
     setResetPasswordSuccess: (state, { payload }: PayloadAction<boolean>) => {
       state.resetPasswordSuccess = payload;
     },
-    // Set general error message
     setGeneralError: (state, { payload }: PayloadAction<string | null>) => {
       state.generalError = payload;
     },
@@ -67,11 +55,12 @@ const authSlice = createSlice({
     setErrorFindingUser: (state, { payload }: PayloadAction<string | null>) => {
       state.errorFindingUser = payload;
     },
+    clearAuthErrors: (state) => {
+      state.generalError = null;
+      state.errors = null;
+    },
   },
   extraReducers: (builder) => {
-    // --------------------
-    // Google Login
-    // --------------------
     builder
       .addCase(googleLoginThunk.pending, (state) => {
         state.loading = true;
@@ -91,9 +80,6 @@ const authSlice = createSlice({
         state.errors = action.payload?.errors || null;
       })
 
-      // --------------------
-      // Email/Password Login
-      // --------------------
       .addCase(emailPasswordLoginThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -113,9 +99,6 @@ const authSlice = createSlice({
         state.errors = action.payload?.errors || null;
       })
 
-      // --------------------
-      // Email/Password Signup
-      // --------------------
       .addCase(emailPasswordSignupThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -125,7 +108,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = true;
         state.generalError = null;
-        state.email_verification_required = payload.email_verification_required;
+        state.user = payload.user;
         state.errors = null;
       })
       .addCase(emailPasswordSignupThunk.rejected, (state, action) => {
@@ -134,9 +117,6 @@ const authSlice = createSlice({
         state.generalError = action.payload?.message || "Email signup failed";
       })
 
-      // --------------------
-      // Logout
-      // --------------------
       .addCase(logoutThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -155,49 +135,6 @@ const authSlice = createSlice({
         state.errors = action.payload?.errors || null;
       })
 
-      // --------------------
-      // Forgot Password
-      // --------------------
-      .addCase(forgotPasswordThunk.pending, (state) => {
-        state.loading = true;
-        state.generalError = null;
-        state.errors = null;
-      })
-      .addCase(forgotPasswordThunk.fulfilled, (state) => {
-        state.forgetPasswordSuccess = true;
-        state.loading = false;
-        state.generalError = null;
-        state.errors = null;
-      })
-      .addCase(forgotPasswordThunk.rejected, (state, { payload }) => {
-        state.loading = false;
-        state.forgetPasswordSuccess = false;
-        state.generalError = payload?.message || "Forgot password failed";
-      })
-
-      // --------------------
-      // Reset Password
-      // --------------------
-      .addCase(resetPasswordThunk.pending, (state) => {
-        state.loading = true;
-        state.generalError = null;
-        state.errors = null;
-      })
-      .addCase(resetPasswordThunk.fulfilled, (state) => {
-        state.loading = false;
-        state.generalError = null;
-        state.errors = null;
-        state.resetPasswordSuccess = true;
-      })
-      .addCase(resetPasswordThunk.rejected, (state, { payload }) => {
-        state.loading = false;
-        state.generalError = payload?.message || "Reset password failed";
-        state.errors = payload?.errors || null;
-      })
-
-      // --------------------
-      // Get User Profile
-      // --------------------
       .addCase(getUserProfileThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -219,9 +156,6 @@ const authSlice = createSlice({
         state.user = null;
       })
 
-      // --------------------
-      // Get User By Email
-      // --------------------
       .addCase(getUserByEmailThunk.pending, (state) => {
         state.generalError = null;
         state.errors = null;
@@ -243,9 +177,6 @@ const authSlice = createSlice({
           action.payload?.message || "Get user by email failed";
         state.errors = action.payload?.errors || null;
       })
-      // --------------------
-      // Update User Profile
-      // --------------------
       .addCase(updateUserPorifleThunk.pending, (state) => {
         state.loading = true;
         state.generalError = null;
@@ -263,9 +194,6 @@ const authSlice = createSlice({
         state.errors = payload?.errors || null;
         state.user = null;
       })
-      // --------------------
-      // Get All Users
-      // --------------------
       .addCase(getAllUsersThunk.pending, (state) => {
         state.loadingRegisteredUsers = true;
         state.errorRegisteredUsers = null;
@@ -279,9 +207,6 @@ const authSlice = createSlice({
         state.errorRegisteredUsers =
           payload?.message || "Failed to get all users";
       })
-      // ---------------------------
-      // Get Liveblocks Token
-      // ---------------------------
       .addCase(getLiveblocksTokenThunk.pending, (state) => {
         state.loadingLiveblocksToken = true;
         state.errorLiveblocksToken = null;
@@ -298,9 +223,6 @@ const authSlice = createSlice({
   },
 });
 
-// --------------------
-// Exports
-// --------------------
 export const {
   serVerifyEmailRequired,
   setForgetPasswordSuccess,
@@ -308,5 +230,6 @@ export const {
   setGeneralError,
   setErrorFindingUser,
   setFoundUser,
+  clearAuthErrors,
 } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,4 +1,5 @@
 import type { CredentialResponse } from "@react-oauth/google";
+import type { IUser } from "./types";
 
 export interface IAuthState {
   user: IUser | null;
@@ -30,8 +31,7 @@ export interface IUser {
   isActive: boolean;
 }
 
-// AUTHENTICATION TYPES
-export interface GoogleLoginPayload extends CredentialResponse {}
+export interface GoogleLoginPayload extends CredentialResponse { }
 
 export interface GoogleAuthResponse {
   detail: string;
@@ -62,31 +62,12 @@ export interface EmailPasswordSignupPayload {
 
 export interface EmailPasswordSignupResponse {
   message: string;
-  email_verification_required: boolean;
+  user: IUser;
   errors: Record<string, string[]> | null;
 }
 
 export interface LogoutResponse {
   success: boolean;
-}
-
-export interface ForgetPassworPayload {
-  email: string;
-}
-export interface ForgetPasswordResponse {
-  message: string;
-}
-
-export interface ResetPasswordPayload {
-  // The uid and token will be sent in the route
-  uid: string;
-  token: string;
-  password: string;
-  confirm_password: string;
-}
-
-export interface ResetPasswordResponse {
-  message: string;
 }
 
 export type GetUserProfileResponse = IUser;

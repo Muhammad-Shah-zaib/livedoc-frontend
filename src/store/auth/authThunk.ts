@@ -10,10 +10,6 @@ import type {
   EmailPasswordSignupPayload,
   EmailPasswordSignupResponse,
   LogoutResponse,
-  ForgetPassworPayload,
-  ForgetPasswordResponse,
-  ResetPasswordPayload,
-  ResetPasswordResponse,
   GetUserProfileResponse,
   GetUserByEmailPayload,
   GetUserByEmailResponse,
@@ -29,21 +25,17 @@ const GOOGLE_LOGIN_ACTION = "auth/login/google";
 const EMAIL_PASSWORD_LOGIN_ACTION = "auth/login";
 const EMAIL_PASSWORD_SIGNUP_ACTION = "auth/signup";
 const LOGOUT_ACTION = "auth/logout";
-const FORGET_PASSWORD_ACTION = "auth/forget-password";
-const RESET_PASSWORD_ACTION = "auth/reset-password";
 const GET_USER_PROFILE_ACTION = "auth/get-user-profile";
 const GET_USER_BY_EMAIL_ACTION = "auth/get-user-by-email";
 const UPDATE_USER_PROFILE_ACTION = "auth/update-user-profile";
 
 const GET_ALL_USERS_ACTION = "auth/get-all-users";
 
-// Async thunk for goole login
 export const googleLoginThunk = createAsyncThunk<
-  GoogleAuthResponse, // return type (fulfilled)
-  GoogleLoginPayload, // argument type
-  { rejectValue: ErrorResponse } // error type
+  GoogleAuthResponse,
+  GoogleLoginPayload,
+  { rejectValue: ErrorResponse }
 >(GOOGLE_LOGIN_ACTION, async (payload, thunkAPI) => {
-  // Make API call to Google login endpoint
   try {
     const response = await axios.post<GoogleAuthResponse>(
       API_ROUTES.AUTH.GOOGLE_LOGIN,
@@ -56,7 +48,6 @@ export const googleLoginThunk = createAsyncThunk<
 
     return response.data;
 
-    // If the API call fails, reject with an error message
   } catch (error: unknown) {
     let message = "Google login failed";
     if (axios.isAxiosError(error)) {
@@ -66,7 +57,6 @@ export const googleLoginThunk = createAsyncThunk<
   }
 });
 
-// Async thunk for email-password login
 export const emailPasswordLoginThunk = createAsyncThunk<
   EmailPasswordLoginResponse,
   EmailPasswordLoginPayload,
@@ -94,7 +84,6 @@ export const emailPasswordLoginThunk = createAsyncThunk<
   }
 });
 
-// Async thunk for email-password signup
 export const emailPasswordSignupThunk = createAsyncThunk<
   EmailPasswordSignupResponse,
   EmailPasswordSignupPayload,
@@ -117,7 +106,6 @@ export const emailPasswordSignupThunk = createAsyncThunk<
   }
 });
 
-// Async thunk for logout
 export const logoutThunk = createAsyncThunk<
   LogoutResponse,
   void,
@@ -146,55 +134,6 @@ export const logoutThunk = createAsyncThunk<
   }
 });
 
-// Async thunk for forget password
-export const forgotPasswordThunk = createAsyncThunk<
-  ForgetPasswordResponse,
-  ForgetPassworPayload,
-  { rejectValue: ErrorResponse }
->(FORGET_PASSWORD_ACTION, async (payload, thunkAPI) => {
-  try {
-    const response = await axios.post(API_ROUTES.AUTH.FORGOT_PASSWORD, payload);
-
-    return response.data;
-  } catch (e) {
-    let message = "Forget password failed";
-
-    if (axios.isAxiosError(e)) {
-      message = e.response?.data?.message || message;
-    }
-
-    return thunkAPI.rejectWithValue({ message });
-  }
-});
-
-// Async thunk for reset password
-export const resetPasswordThunk = createAsyncThunk<
-  ResetPasswordResponse,
-  ResetPasswordPayload,
-  { rejectValue: ErrorResponse }
->(RESET_PASSWORD_ACTION, async (payload, thinkAPI) => {
-  try {
-    const response = await axios.post<ResetPasswordResponse>(
-      `${API_ROUTES.AUTH.RESET_PASSWORD}/${payload.uid}/${payload.token}/`,
-      payload,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-
-    return response.data;
-  } catch (error) {
-    let message = "Reset password failed";
-
-    if (axios.isAxiosError(error)) {
-      message = error.response?.data?.message || message;
-    }
-
-    return thinkAPI.rejectWithValue({ message });
-  }
-});
-
-// Async think for getting user porfile
 export const getUserProfileThunk = createAsyncThunk<
   GetUserProfileResponse,
   void,
@@ -221,7 +160,6 @@ export const getUserProfileThunk = createAsyncThunk<
   }
 });
 
-// Async thunk for getting user by email
 export const getUserByEmailThunk = createAsyncThunk<
   GetUserByEmailResponse,
   GetUserByEmailPayload,
@@ -278,7 +216,6 @@ export const updateUserPorifleThunk = createAsyncThunk<
   }
 });
 
-// Get all users
 export const getAllUsersThunk = createAsyncThunk<
   GetAllUsersResponse,
   void,
@@ -302,7 +239,6 @@ export const getAllUsersThunk = createAsyncThunk<
   }
 });
 
-// get liveblock token thunk
 export const getLiveblocksTokenThunk = createAsyncThunk<
   LiveblocksAuthResponse,
   LiveblocksAuthPayload,

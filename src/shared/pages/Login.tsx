@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -11,15 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import {
-  emailPasswordLoginThunk,
-  googleLoginThunk,
-} from "@/store/auth/authThunk";
-import Spinner from "../components/spinner";
+import { emailPasswordLoginThunk } from "@/store/auth/authThunk";
+import { clearAuthErrors } from "@/store/auth/authSlice";
+
 import type { EmailPasswordLoginPayload } from "@/store/auth/types";
 import { NavLink, useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
@@ -31,19 +28,18 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    dispatch(clearAuthErrors());
+  }, [dispatch]);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<EmailPasswordLoginPayload>();
 
-  const handleGoogleLoginSuccess = async (
-    credentialResponse: CredentialResponse
-  ) => {
-    dispatch(googleLoginThunk(credentialResponse));
-  };
 
-  // Placeholder for form submit
+
   const onSubmit: SubmitHandler<EmailPasswordLoginPayload> = (data) => {
     dispatch(emailPasswordLoginThunk(data));
   };
@@ -51,13 +47,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen transition-all duration-300 bg-white dark:bg-slate-950">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <PageHeader />
 
-        {/* Login Card */}
         <div className="max-w-md mx-auto">
           <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden relative">
-            {isLoading && <Spinner />}
+
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-2xl font-semibold text-slate-800 dark:text-slate-200">
                 Welcome back
@@ -73,22 +67,8 @@ export default function LoginPage() {
             </CardHeader>
 
             <CardContent className="space-y-6">
-              {/* Google Login */}
-              <div className="space-y-3">
-                <GoogleLogin
-                  onSuccess={handleGoogleLoginSuccess}
-                  onError={() => {}}
-                />
-              </div>
 
-              <div className="relative">
-                <Separator className="bg-slate-200 dark:bg-slate-700" />
-                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-900 px-3 text-sm text-slate-500 dark:text-slate-400">
-                  or
-                </span>
-              </div>
 
-              {/* Email/Password Form */}
               <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                 <div className="space-y-2">
                   <Label
@@ -99,7 +79,7 @@ export default function LoginPage() {
                   </Label>
                   <Input
                     id="email"
-                    type="text" // was "email", changed to "text" for custom validation
+                    type="text"
                     placeholder="Enter your email"
                     disabled={isLoading}
                     {...register("email", {
@@ -170,23 +150,16 @@ export default function LoginPage() {
                   disabled={isLoading}
                   className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center"
                 >
-                  {isLoading && (
-                    <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                      Signing In...
+                    </>
+                  ) : (
+                    "Sign In"
                   )}
-                  Sign In
                 </Button>
               </form>
-
-              {/* Links */}
-              <div className="text-center">
-                <Button
-                  variant="link"
-                  disabled={isLoading}
-                  className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
-                >
-                  <NavLink to="/forget-password">Forgot your password?</NavLink>
-                </Button>
-              </div>
 
               <div className="text-center text-sm text-slate-600 dark:text-slate-400">
                 Don't have an account?{" "}
@@ -198,7 +171,6 @@ export default function LoginPage() {
                   <NavLink to="/signup">Sign up</NavLink>
                 </Button>
               </div>
-              {/* Explore About Us Link */}
               <div className="text-center mt-2">
                 <Button
                   variant="link"

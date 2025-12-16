@@ -11,19 +11,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+
 import { Checkbox } from "@/components/ui/checkbox";
-import { Eye, EyeOff } from "lucide-react";
-import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import {
-  emailPasswordSignupThunk,
-  googleLoginThunk,
-} from "@/store/auth/authThunk";
+import { emailPasswordSignupThunk } from "@/store/auth/authThunk";
+import { clearAuthErrors } from "@/store/auth/authSlice";
 import { useForm, Controller } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import type { EmailPasswordSignupPayload } from "@/store/auth/types";
-import Spinner from "../components/spinner";
+
 import { NavLink, useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 
@@ -31,17 +28,14 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const loading = useAppSelector((state) => state.auth.loading);
   const navigate = useNavigate();
-  const is_email_verification_required = useAppSelector(
-    (state) => state.auth.email_verification_required
-  );
   const fieldErrors = useAppSelector((state) => state.auth.errors);
   const generalError = useAppSelector((state) => state.auth.generalError);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (is_email_verification_required) navigate("/signup/verify-email");
-  }, [is_email_verification_required]);
+    dispatch(clearAuthErrors());
+  }, [dispatch]);
 
   type SignupFormInputs = EmailPasswordSignupPayload & {
     terms: boolean;
@@ -60,24 +54,18 @@ export default function Signup() {
     dispatch(emailPasswordSignupThunk(data));
   };
 
-  const handleGoogleLoginSuccess = (
-    credentialResponse: CredentialResponse
-  ): void => {
-    dispatch(googleLoginThunk(credentialResponse));
-  };
+
 
   return (
     <div
       className={`min-h-screen transition-all duration-300 bg-white dark:bg-slate-950`}
     >
       <div className="container mx-auto px-4 py-8">
-        {/* Header with theme toggle */}
         <PageHeader />
 
-        {/* Signup Form */}
         <div className="max-w-md mx-auto">
           <Card className="relative border-0 shadow-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
-            {loading && <Spinner opacity={0.1} />}
+
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-2xl font-semibold text-slate-800 dark:text-slate-200">
                 Create your account
@@ -92,22 +80,8 @@ export default function Signup() {
               )}
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Social Signup Buttons */}
-              <div className="space-y-3">
-                <GoogleLogin
-                  onSuccess={handleGoogleLoginSuccess}
-                  onError={() => {}}
-                />
-              </div>
 
-              <div className="relative">
-                <Separator className="bg-slate-200 dark:bg-slate-700" />
-                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-900 px-3 text-sm text-slate-500 dark:text-slate-400">
-                  or
-                </span>
-              </div>
 
-              {/* Form Fields */}
               <form
                 className="space-y-4"
                 onSubmit={handleSubmit(onSubmit)}
@@ -124,6 +98,7 @@ export default function Signup() {
                     <Input
                       id="first_name"
                       placeholder="John"
+                      disabled={loading}
                       className="h-12 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 transition-colors"
                       {...register("first_name", {
                         required: "First name is required",
@@ -149,6 +124,7 @@ export default function Signup() {
                     <Input
                       id="last_name"
                       placeholder="Doe"
+                      disabled={loading}
                       className="h-12 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 transition-colors"
                       {...register("last_name", {
                         required: "Last name is required",
@@ -176,6 +152,7 @@ export default function Signup() {
                     id="email"
                     type="email"
                     placeholder="john@example.com"
+                    disabled={loading}
                     className="h-12 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 transition-colors"
                     {...register("email", {
                       required: "Email is required",
@@ -207,6 +184,7 @@ export default function Signup() {
                       id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="********"
+                      disabled={loading}
                       className="h-12 pr-12 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 transition-colors"
                       {...register("password", {
                         required: "Password is required",
@@ -223,6 +201,7 @@ export default function Signup() {
                       type="button"
                       variant="ghost"
                       size="icon"
+                      disabled={loading}
                       className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-slate-200 dark:hover:bg-slate-700"
                       onClick={() => setShowPassword(!showPassword)}
                     >
@@ -243,7 +222,6 @@ export default function Signup() {
                     </span>
                   ) : null}
                 </div>
-                {/* Terms checkbox */}
                 <div className="flex items-start space-x-3">
                   <Controller
                     name="terms"
@@ -253,6 +231,7 @@ export default function Signup() {
                       <Checkbox
                         id="terms"
                         className="mt-1"
+                        disabled={loading}
                         checked={field.value ? true : false}
                         onCheckedChange={field.onChange}
                       />
@@ -289,9 +268,17 @@ export default function Signup() {
                 ) : null}
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+                  disabled={loading}
+                  className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center"
                 >
-                  Create Account
+                  {loading ? (
+                    <>
+                      <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                      Creating Account...
+                    </>
+                  ) : (
+                    "Create Account"
+                  )}
                 </Button>
               </form>
               <div className="text-center text-sm text-slate-600 dark:text-slate-400">
@@ -303,7 +290,6 @@ export default function Signup() {
                   <NavLink to={"/login"}>Sign in</NavLink>
                 </Button>
               </div>
-              {/* Explore About Us Link */}
               <div className="text-center mt-2">
                 <Button
                   variant="link"

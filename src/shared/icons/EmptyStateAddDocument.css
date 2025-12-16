@@ -1,0 +1,459 @@
+.empty-state-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+}
+
+.empty-state-scene {
+    position: relative;
+    width: 280px;
+    height: 220px;
+    transform-style: preserve-3d;
+}
+
+.document-stack-3d {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transform-style: preserve-3d;
+    animation: stackFloat 4s ease-in-out infinite;
+}
+
+.document-3d {
+    position: absolute;
+    width: 90px;
+    height: 110px;
+    border-radius: 8px;
+    transform-style: preserve-3d;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.15),
+        0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.doc-back {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    transform: translateZ(-20px) translateX(-20px) translateY(10px) rotateY(-8deg) rotateX(5deg);
+    animation: docBack 4s ease-in-out infinite;
+}
+
+.doc-middle {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+    transform: translateZ(-10px) translateX(-10px) translateY(5px) rotateY(-5deg) rotateX(3deg);
+    animation: docMiddle 4s ease-in-out infinite;
+}
+
+.doc-front {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+    transform: translateZ(0px) rotateY(-2deg) rotateX(2deg);
+    animation: docFront 4s ease-in-out infinite;
+    overflow: hidden;
+}
+
+.doc-corner-fold {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+}
+
+.doc-content {
+    padding: 15px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.doc-line {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 2px;
+    animation: lineShimmer 3s ease-in-out infinite;
+}
+
+.doc-line.short {
+    width: 60%;
+}
+
+.phong-ball-container {
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    transform-style: preserve-3d;
+}
+
+.phong-ball {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    position: relative;
+    animation: ballBounce 2s cubic-bezier(0.36, 0, 0.66, -0.56) infinite alternate;
+    transform-style: preserve-3d;
+
+    background:
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95) 0%, transparent 25%),
+        radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.6) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, #10b981 0%, #059669 50%, #047857 100%);
+
+    box-shadow:
+        inset -8px -8px 20px rgba(0, 0, 0, 0.3),
+        inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+        0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.ball-highlight {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    width: 14px;
+    height: 10px;
+    background: radial-gradient(ellipse, rgba(255, 255, 255, 0.9) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+}
+
+.ball-highlight-secondary {
+    position: absolute;
+    top: 14px;
+    left: 22px;
+    width: 6px;
+    height: 4px;
+    background: radial-gradient(ellipse, rgba(255, 255, 255, 0.6) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+}
+
+.ball-reflection {
+    position: absolute;
+    bottom: 6px;
+    right: 10px;
+    width: 20px;
+    height: 12px;
+    background: radial-gradient(ellipse, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: rotate(30deg);
+}
+
+.ball-shadow {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 12px;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.25) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: shadowPulse 2s cubic-bezier(0.36, 0, 0.66, -0.56) infinite alternate;
+}
+
+.plus-button-3d {
+    position: absolute;
+    left: 40px;
+    bottom: 40px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 8px 25px rgba(245, 158, 11, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    animation: plusPulse 3s ease-in-out infinite;
+    transform-style: preserve-3d;
+}
+
+.plus-icon {
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.plus-h,
+.plus-v {
+    position: absolute;
+    background: white;
+    border-radius: 2px;
+}
+
+.plus-h {
+    width: 20px;
+    height: 3px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.plus-v {
+    width: 3px;
+    height: 20px;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
+
+.floating-elements {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.floating-orb {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    box-shadow:
+        inset -2px -2px 4px rgba(0, 0, 0, 0.2),
+        inset 1px 1px 3px rgba(255, 255, 255, 0.4),
+        0 0 10px rgba(251, 191, 36, 0.3);
+}
+
+.orb-1 {
+    width: 12px;
+    height: 12px;
+    top: 20px;
+    left: 60px;
+    animation: orbFloat1 5s ease-in-out infinite;
+}
+
+.orb-2 {
+    width: 8px;
+    height: 8px;
+    top: 80px;
+    right: 20px;
+    animation: orbFloat2 4s ease-in-out infinite;
+    animation-delay: 1s;
+}
+
+.orb-3 {
+    width: 6px;
+    height: 6px;
+    bottom: 60px;
+    left: 30px;
+    animation: orbFloat3 6s ease-in-out infinite;
+    animation-delay: 2s;
+}
+
+@keyframes stackFloat {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) rotateX(10deg) rotateY(-15deg);
+    }
+
+    50% {
+        transform: translate(-50%, -55%) rotateX(12deg) rotateY(-10deg);
+    }
+}
+
+@keyframes docBack {
+
+    0%,
+    100% {
+        transform: translateZ(-20px) translateX(-20px) translateY(10px) rotateY(-8deg) rotateX(5deg);
+    }
+
+    50% {
+        transform: translateZ(-22px) translateX(-22px) translateY(8px) rotateY(-10deg) rotateX(7deg);
+    }
+}
+
+@keyframes docMiddle {
+
+    0%,
+    100% {
+        transform: translateZ(-10px) translateX(-10px) translateY(5px) rotateY(-5deg) rotateX(3deg);
+    }
+
+    50% {
+        transform: translateZ(-12px) translateX(-12px) translateY(3px) rotateY(-7deg) rotateX(5deg);
+    }
+}
+
+@keyframes docFront {
+
+    0%,
+    100% {
+        transform: translateZ(0px) rotateY(-2deg) rotateX(2deg);
+    }
+
+    50% {
+        transform: translateZ(2px) rotateY(-4deg) rotateX(4deg);
+    }
+}
+
+@keyframes ballBounce {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        transform: translateY(-30px) scale(0.95);
+    }
+}
+
+@keyframes shadowPulse {
+    0% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.25;
+    }
+
+    100% {
+        transform: translateX(-50%) scale(0.6);
+        opacity: 0.15;
+    }
+}
+
+@keyframes plusPulse {
+
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    25% {
+        transform: scale(1.05) rotate(5deg);
+    }
+
+    50% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    75% {
+        transform: scale(1.05) rotate(-5deg);
+    }
+}
+
+@keyframes orbFloat1 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translate(10px, -15px) scale(1.1);
+        opacity: 1;
+    }
+}
+
+@keyframes orbFloat2 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translate(-8px, 12px) scale(0.9);
+        opacity: 1;
+    }
+}
+
+@keyframes orbFloat3 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: translate(12px, -8px) scale(1.2);
+        opacity: 1;
+    }
+}
+
+@keyframes lineShimmer {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 0.9;
+    }
+}
+
+:root[data-theme="dark"] .phong-ball,
+.dark .phong-ball {
+    background:
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 1) 0%, transparent 20%),
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8) 0%, transparent 35%),
+        radial-gradient(circle at 50% 50%, #34d399 0%, #10b981 40%, #059669 70%, #047857 100%);
+
+    box-shadow:
+        inset -10px -10px 25px rgba(0, 0, 0, 0.4),
+        inset 6px 6px 18px rgba(255, 255, 255, 0.3),
+        0 0 30px rgba(52, 211, 153, 0.5),
+        0 0 60px rgba(16, 185, 129, 0.3);
+}
+
+:root[data-theme="dark"] .ball-highlight,
+.dark .ball-highlight {
+    background: radial-gradient(ellipse, rgba(255, 255, 255, 1) 0%, transparent 65%);
+}
+
+:root[data-theme="dark"] .ball-highlight-secondary,
+.dark .ball-highlight-secondary {
+    background: radial-gradient(ellipse, rgba(255, 255, 255, 0.8) 0%, transparent 65%);
+}
+
+:root[data-theme="dark"] .ball-reflection,
+.dark .ball-reflection {
+    background: radial-gradient(ellipse, rgba(255, 255, 255, 0.25) 0%, transparent 70%);
+}
+
+:root[data-theme="dark"] .ball-shadow,
+.dark .ball-shadow {
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5) 0%, transparent 70%);
+}
+
+:root[data-theme="dark"] .document-3d,
+.dark .document-3d {
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .doc-front,
+.dark .doc-front {
+    background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+}
+
+:root[data-theme="dark"] .doc-middle,
+.dark .doc-middle {
+    background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 100%);
+}
+
+:root[data-theme="dark"] .doc-back,
+.dark .doc-back {
+    background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+}
+
+:root[data-theme="dark"] .floating-orb,
+.dark .floating-orb {
+    box-shadow:
+        inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+        inset 1px 1px 3px rgba(255, 255, 255, 0.5),
+        0 0 15px rgba(251, 191, 36, 0.5);
+}
+
+:root[data-theme="dark"] .plus-button-3d,
+.dark .plus-button-3d {
+    box-shadow:
+        0 10px 30px rgba(245, 158, 11, 0.5),
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        inset 0 3px 6px rgba(255, 255, 255, 0.4);
+}
