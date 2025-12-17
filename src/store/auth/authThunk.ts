@@ -18,6 +18,9 @@ import type {
   GetAllUsersResponse,
   LiveblocksAuthResponse,
   LiveblocksAuthPayload,
+  ForgetPasswordPayload,
+  ResetPasswordPayload,
+  PasswordResetResponse,
 } from "./types";
 import { wait } from "@/utils/wait";
 
@@ -30,6 +33,8 @@ const GET_USER_BY_EMAIL_ACTION = "auth/get-user-by-email";
 const UPDATE_USER_PROFILE_ACTION = "auth/update-user-profile";
 
 const GET_ALL_USERS_ACTION = "auth/get-all-users";
+const FORGOT_PASSWORD_ACTION = "auth/forgot-password";
+const RESET_PASSWORD_ACTION = "auth/reset-password";
 
 export const googleLoginThunk = createAsyncThunk<
   GoogleAuthResponse,
@@ -260,5 +265,58 @@ export const getLiveblocksTokenThunk = createAsyncThunk<
       message = error.response?.data?.error || error.message || message;
     }
     return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const forgotPasswordThunk = createAsyncThunk<
+  PasswordResetResponse,
+  ForgetPasswordPayload,
+  { rejectValue: ErrorResponse }
+>(FORGOT_PASSWORD_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.post<PasswordResetResponse>(
+      API_ROUTES.AUTH.FORGOT_PASSWORD,
+      payload,
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to send reset password email";
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+    }
+    return thunkAPI.rejectWithValue({ message });
+  }
+});
+
+export const resetPasswordThunk = createAsyncThunk<
+  PasswordResetResponse,
+  ResetPasswordPayload,
+  { rejectValue: ErrorResponse }
+>(RESET_PASSWORD_ACTION, async (payload, thunkAPI) => {
+  try {
+    const response = await axios.post<PasswordResetResponse>(
+      API_ROUTES.AUTH.RESET_PASSWORD_CONFIRM,
+      payload,
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let message = "Failed to reset password";
+    let errors: Record<string, string[]> | null = null;
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.detail || message;
+      if (error.response?.data?.errors) {
+        errors = error.response?.data?.errors;
+      }
+    }
+    return thunkAPI.rejectWithValue({ message, errors });
   }
 });

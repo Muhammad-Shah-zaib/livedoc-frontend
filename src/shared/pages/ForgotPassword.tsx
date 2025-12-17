@@ -13,7 +13,7 @@ import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { forgotPasswordThunk } from "@/store/auth/authThunk";
 import { useForm } from "react-hook-form";
-import type { ForgetPassworPayload } from "@/store/auth/types";
+import type { ForgetPasswordPayload } from "@/store/auth/types";
 import PageHeader from "../components/PageHeader";
 
 export default function ForgotPasswordPage() {
@@ -31,13 +31,13 @@ export default function ForgotPasswordPage() {
     formState: { errors },
     reset,
     watch,
-  } = useForm<ForgetPassworPayload>({
+  } = useForm<ForgetPasswordPayload>({
     mode: "onTouched",
   });
 
   const email = watch("email", "");
 
-  const onSubmit = async (data: ForgetPassworPayload) => {
+  const onSubmit = async (data: ForgetPasswordPayload) => {
     try {
       await dispatch(forgotPasswordThunk(data));
       reset();

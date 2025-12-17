@@ -12,6 +12,8 @@ export const API_ROUTES = {
     GET_ALL_USERS: `${BASE_API_URL}/user/all/`,
     GET_USERS_BY_EMAIL_LIST: `${BASE_API_URL}/user/by-emails/`,
     GET_LIVE_USER_EMAILS: `${BASE_API_URL}/user/live-users-emails/`,
+    FORGOT_PASSWORD: `${BASE_API_URL}/password_reset/`,
+    RESET_PASSWORD_CONFIRM: `${BASE_API_URL}/password_reset/confirm/`,
   },
   DOCUMENTS: {
     GET_POST: `${BASE_API_URL}/documents/`,

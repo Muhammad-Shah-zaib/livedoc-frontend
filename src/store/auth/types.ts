@@ -1,5 +1,5 @@
 import type { CredentialResponse } from "@react-oauth/google";
-import type { IUser } from "./types";
+// import type { IUser } from "./types";
 
 export interface IAuthState {
   user: IUser | null;
@@ -103,4 +103,19 @@ export interface LiveblocksAuthPayload {
 
 export interface LiveblocksAuthResponse {
   token: string;
+}
+
+export interface ForgetPasswordPayload {
+  email: string;
+}
+
+export interface ResetPasswordPayload {
+  uid: string;
+  token: string;
+  password: string;
+  confirm_password: string;
+}
+
+export interface PasswordResetResponse {
+  detail: string;
 }
