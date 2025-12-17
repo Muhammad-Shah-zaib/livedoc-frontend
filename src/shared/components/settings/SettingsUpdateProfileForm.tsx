@@ -32,7 +32,7 @@ function SettingsUpdateProfileForm() {
       onSubmit={handleSubmit(onSubmit)}
       className="px-4 pb-4 space-y-4 border-t border-slate-200 dark:border-slate-700 mt-2 pt-4"
     >
-      <div className="grid grid-cols-3 gap-4">
+      <div className="space-y-4">
         {/* First Name */}
         <div className="space-y-2">
           <Label htmlFor="drawerFirstName" className="text-sm font-medium">
